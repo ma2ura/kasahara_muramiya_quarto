@@ -1,0 +1,123 @@
+project:
+  type: book
+  output-dir: docs
+
+lightbox: auto
+
+book:
+  title: "実証会計・ファイナンスの勉強ノート"
+  author: "Soichi Matsuura"
+  search: true
+  date: "2026-01-01"
+  license: "CC BY-NC-SA"
+  favicon: img/favicon.ico
+  cover-image: img/kasahara_muramiya.jpg
+  # site-url: https://ma2ura.github.io/Marketing_Data_Analysis/
+  # repo-url: https://github.com/ma2ura/Marketing_Data_Analysis/
+  repo-branch: main
+
+  reader-mode: true
+
+  google-analytics: "G-SFB56VHK63"
+
+  page-navigation: true
+
+  page-footer:
+        border: true
+        background: "#a10000"
+        left: "Copyright 2025, Soichi Matsuura"
+        right:
+          - icon: house
+            href: https://so-ichi.com/r.html
+          - icon: github
+            href: https://github.com/ma2ura
+          - icon: twitter
+            href: https://twitter.com/matsuura_rits
+            aria-label: Twitter
+
+  sidebar:
+    style: docked
+    background: light
+    collapse: true
+
+
+
+  chapters:
+    - index.qmd
+    - chapter02.qmd
+    - chapter03.qmd
+    - chapter04.qmd
+
+website:
+  back-to-top-navigation: true
+
+format:
+  html:
+    theme:
+      light: united
+      dark: cyborg
+      # - cosmo
+      # - styles.scss
+    mainfont: "Noto Sans JP"
+    monofont: "0xProto"
+    toc: true
+    toc-depth: 3
+    toc-expand: 2
+    code-tools: true
+    code-link: true
+    code-line-numbers: true
+    code-block-bg: true
+    code-block-border-left: "#002D72"
+    link-external-icon: true
+    html-math-method: katex
+    author-meta: "Soichi Matsuura"
+
+    # fontsize: 1.2em
+    # callout-appearance: simple
+    # code-copy: hover
+    # code-overflow: scroll
+    # code-link: true
+    # df-print: paged
+
+    twitter-card: true
+
+    include-in-header:
+      text: |
+        <style>
+        .marky {
+          background: linear-gradient(transparent 60%, #FCFFC1 0%);
+        }
+        .markb {
+          background: linear-gradient(transparent 60%, #88E2EA 0%);
+        }
+        .markp{
+          background: linear-gradient(transparent 70%, #ffcdd2 0%)
+        }
+        </style>
+  pdf:
+    pdf-engine: lualatex
+    documentclass: ltjsbook
+    prefer-html: true
+    include-in-header:
+      - text: |
+          \usepackage{float}
+          \usepackage{caption}
+          \usepackage{longtable}
+          \usepackage{placeins}
+          \usepackage{booktabs}
+          \usepackage{indentfirst}
+          \setlength{\parindent}{2em}
+          \setlength{\parskip}{0pt}
+          \usepackage{fvextra}
+          \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+
+execute:
+  freeze: false
+
+knitr:
+  opts_chunk:
+    dev: ragg_png     # 文字化け防止
+    dpi: 450          # 高解像度の図を使用（サイズ大きめ）
+    fig-align: center # 図は中央揃え
+    warning: false    # 警告メッセージを消す
+    message: false    # 通常メッセージを消す

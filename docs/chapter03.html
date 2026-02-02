@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Soichi Matsuura">
+<title>3&nbsp; R言語入門 – 実証会計・ファイナンスの勉強ノート</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter04.html" rel="next">
+<link href="./chapter02.html" rel="prev">
+<link href="./img/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-9b98439fbe4ae1eb56616ecad9777bd3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-SFB56VHK63"></script><script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-SFB56VHK63', { 'anonymize_ip': true});
+</script><style>
+.marky {
+  background: linear-gradient(transparent 60%, #FCFFC1 0%);
+}
+.markb {
+  background: linear-gradient(transparent 60%, #88E2EA 0%);
+}
+.markp{
+  background: linear-gradient(transparent 70%, #ffcdd2 0%)
+}
+</style>
+<script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+<meta name="twitter:title" content="3&nbsp; R言語入門 – 実証会計・ファイナンスの勉強ノート">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="chapter03_files/figure-html/unnamed-chunk-13-1.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter03.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R言語入門</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">実証会計・ファイナンスの勉強ノート</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">はじめに</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">ファイナンス入門</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter03.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R言語入門</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">第4章 財務データの取得と可視化</span></span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#r%E3%81%AE%E5%9F%BA%E6%9C%AC%E7%9A%84%E3%81%AA%E6%A9%9F%E8%83%BD" id="toc-rの基本的な機能" class="nav-link active" data-scroll-target="#r%E3%81%AE%E5%9F%BA%E6%9C%AC%E7%9A%84%E3%81%AA%E6%A9%9F%E8%83%BD"><span class="header-section-number">3.1</span> Rの基本的な機能</a>
+  <ul class="collapse">
+<li><a href="#%E3%82%B9%E3%82%AB%E3%83%A9%E3%83%BC%E5%A4%89%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9" id="toc-スカラー変数の定義" class="nav-link" data-scroll-target="#%E3%82%B9%E3%82%AB%E3%83%A9%E3%83%BC%E5%A4%89%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9"><span class="header-section-number">3.1.1</span> スカラー変数の定義</a></li>
+  <li><a href="#%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%A4%89%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9" id="toc-ベクトル変数の定義" class="nav-link" data-scroll-target="#%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%A4%89%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9"><span class="header-section-number">3.1.2</span> ベクトル変数の定義</a></li>
+  <li><a href="#%E5%9F%BA%E6%9C%AC%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8plot%E3%81%AB%E3%82%88%E3%82%8B%E4%BD%9C%E5%9B%B3" id="toc-基本パッケージplotによる作図" class="nav-link" data-scroll-target="#%E5%9F%BA%E6%9C%AC%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8plot%E3%81%AB%E3%82%88%E3%82%8B%E4%BD%9C%E5%9B%B3"><span class="header-section-number">3.1.3</span> 基本パッケージ<code>plot</code>による作図</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#for%E6%96%87%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9" id="toc-for文の使い方" class="nav-link" data-scroll-target="#for%E6%96%87%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9"><span class="header-section-number">4</span> <code>for</code>文の使い方</a>
+  <ul class="collapse">
+<li><a href="#if%E6%96%87" id="toc-if文" class="nav-link" data-scroll-target="#if%E6%96%87"><span class="header-section-number">4.0.1</span> <code>if</code>文</a></li>
+  <li><a href="#npv%E3%81%A8%E5%89%B2%E5%BC%95%E7%8E%87%E3%81%AE%E9%96%A2%E4%BF%82%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-npvと割引率の関係の可視化" class="nav-link" data-scroll-target="#npv%E3%81%A8%E5%89%B2%E5%BC%95%E7%8E%87%E3%81%AE%E9%96%A2%E4%BF%82%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.1</span> NPVと割引率の関係の可視化</a></li>
+  </ul>
+</li>
+  <li><a href="#%E7%8B%AC%E8%87%AA%E9%96%A2%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9%E3%81%AE%E4%BB%95%E6%96%B9" id="toc-独自関数の定義の仕方" class="nav-link" data-scroll-target="#%E7%8B%AC%E8%87%AA%E9%96%A2%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9%E3%81%AE%E4%BB%95%E6%96%B9"><span class="header-section-number">5</span> 独自関数の定義の仕方</a></li>
+  <li><a href="#%E3%81%BE%E3%81%A8%E3%82%81" id="toc-まとめ" class="nav-link" data-scroll-target="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="header-section-number">6</span> まとめ</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R言語入門</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>プログラミング言語にはいろんな種類があるけれど、今回学習する<strong>R言語</strong>は、インタプリタ型とよばれるもので、コンパイルという作業の必要が無く、書いたらすぐ実行できる仕様となっています。たとえば、教科書にあるように</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 90.90909</code></pre>
+</div>
+</div>
+<p>を実行すれば、結果がすぐ表示されます。 RstudioとかVS Codeを使って、上のようなRソースコードを一気に書いて、まとめて実行するための<strong>スクリプト・ファイル</strong>を作成します。</p>
+<p>ソースコードを書くにあたり注意する点として、以下の4つについて説明します。</p>
+<ol type="1">
+<li>
+<strong>大文字と小文字は区別される</strong>ので、<code>x</code>と<code>X</code>は別の変数として扱われます。</li>
+<li>
+<strong>半角スペース</strong>は、<strong>区切り文字</strong>として扱われるので、<code>x &lt;- 100</code>と<code>x&lt;-100</code>は同じ意味になります。</li>
+<li>
+<strong>改行</strong>も、<strong>区切り文字</strong>として扱われます。長いソースコードは改行して読みやすくしましょう。</li>
+<li>
+<strong>コメント</strong>は、<code>#</code>から行末までの文字列がコメントとして扱われ、実行されません。プログラムの内容を説明するためにたくさん書いて残しておきましょう。</li>
+</ol>
+<section id="rの基本的な機能" class="level2 page-columns page-full" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="rの基本的な機能">
+<span class="header-section-number">3.1</span> Rの基本的な機能</h2>
+<section id="スカラー変数の定義" class="level3 page-columns page-full" data-number="3.1.1"><h3 data-number="3.1.1" class="anchored" data-anchor-id="スカラー変数の定義">
+<span class="header-section-number">3.1.1</span> スカラー変数の定義</h3>
+<p>この学習を通じて<strong>変数</strong>(variable)とは、<strong>数値や文字といったデータを格納するための箱</strong>を表し、中に何が入っているのかにより、スカラー変数、ベクトル、行列、データフレームなどに分類されます。まずは、スカラー変数の定義を学びます。</p>
+<p>スカラー(scalar)とは、大きさだけで決まる量のことで、つまり、<strong>1つの数値</strong>を指します。 R言語ではスカラー変数を定義するには、<code>&lt;-</code>を使います。たとえば、<code>x &lt;- 100</code>と書けば、xというスカラー変数に100という数値を格納できます。このとき、<code>&lt;-</code>は代入演算子と呼ばれ、右辺の値を左辺の変数に代入するという意味です。また、<code>x</code>という変数を<strong>左辺値</strong>(left-hand side)、<code>100</code>という数値を<strong>右辺値</strong>(right-hand side)と呼びます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>x <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># 代入演算子&lt;- の前後に半角スペースを入れるのがお作法</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>この中身を表示されるには、<code><a href="https://rdrr.io/r/base/print.html">print()</a></code>関数を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">print</span>(x) <span class="co"># xの中身を表示</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100</code></pre>
+</div>
+</div>
+<p>あるいは</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100</code></pre>
+</div>
+</div>
+<p>でも表示されます。</p>
+<aside>
+Rでは<code>#</code>の後ろの文章はコメントとして扱われ、実行されません。コメントはプログラムの内容を説明するためにたくさん書いて残しておきましょう。
+</aside></section><section id="ベクトル変数の定義" class="level3" data-number="3.1.2"><h3 data-number="3.1.2" class="anchored" data-anchor-id="ベクトル変数の定義">
+<span class="header-section-number">3.1.2</span> ベクトル変数の定義</h3>
+<p><strong>ベクトル</strong>(vector)とは、大きさと向きで決まる量のことで、つまり、<strong>複数の数値</strong>を指します。R言語ではベクトル変数を定義するには、<code><a href="https://rdrr.io/r/base/c.html">c()</a></code>を使います。たとえば、<code>x &lt;- c(1, 2, 3)</code>と書けば、xというベクトル変数に1, 2, 3という数値を格納できます。このとき、<code><a href="https://rdrr.io/r/base/c.html">c()</a></code>はベクトルを作る関数と呼ばれ、<code>1, 2, 3</code>という数値を引数として与えています。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>) <span class="co"># xに1と5と9を要素とするベクトルを代入</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 5 9</code></pre>
+</div>
+</div>
+<p>等差数列を作る関数に<code><a href="https://rdrr.io/r/base/seq.html">seq()</a></code>関数があります。<code><a href="https://rdrr.io/r/base/seq.html">seq()</a></code>は3つの引数をとり、</p>
+<ul>
+<li>
+<code>from</code> : 始点</li>
+<li>
+<code>to</code> : 終点</li>
+<li>
+<code>by</code> : 差分</li>
+</ul>
+<p>を指定します。たとえば、2000年から2020年を表す年度の変数を<code>year</code>として定義するには、</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>year <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">2000</span>, <span class="at">to =</span> <span class="dv">2020</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">print</span>(year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014
+[16] 2015 2016 2017 2018 2019 2020</code></pre>
+</div>
+</div>
+<p>と書けば、2000から2020までの公差1の等差数列を作ります。 <code><a href="https://rdrr.io/r/base/seq.html">seq()</a></code>変数の引数には、<code>from</code>と<code>to</code>と<code>by</code>の3つの引数を指定することができますが、<code>from</code>と<code>to</code>のみを指定することもできます。このとき、<code>by</code>の値は1となります。次のように書いても、上と同じ結果を得ることができます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">seq</span>(<span class="dv">2000</span>,<span class="dv">2020</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014
+[16] 2015 2016 2017 2018 2019 2020</code></pre>
+</div>
+</div>
+<p>ベクトルの要素数を知るには、<code><a href="https://rdrr.io/r/base/length.html">length()</a></code>関数を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">length</span>(year) <span class="co"># yearの要素数を表示</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21</code></pre>
+</div>
+</div>
+<p>ベクトル変数<code>year</code>の中には21個の要素があることがわかります。</p>
+<section id="ベクトルの要素の取り出し" class="level4" data-number="3.1.2.1"><h4 data-number="3.1.2.1" class="anchored" data-anchor-id="ベクトルの要素の取り出し">
+<span class="header-section-number">3.1.2.1</span> ベクトルの要素の取り出し</h4>
+<p>複数の要素をもつベクトルから、一部の要素を取り出すには、<code>[]</code>を使います。たとえば、<code>x</code>の2番目の要素を取り出すには、<code>x[2]</code>と書きます。このとき、<code>[]</code>は添字演算子と呼ばれ、<code>2</code>という添字を引数として与えています。添字は1から始まります。</p>
+<p>上の<code>year</code>から2000を取り出すには、<code>year[1]</code>、2020を取り出すには<code>year[20]</code>と書きます。 次のような書き方で、好きな要素を指定して取り出すことができます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>year[<span class="dv">1</span>] <span class="co"># 1番目のデータを取り出す</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>year[<span class="dv">20</span>] <span class="co"># 20番目のデータを取り出す</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2019</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>year[<span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># 2番目から5番目のデータを取り出す</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2001 2002 2003 2004</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>year[<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">10</span>)] <span class="co"># 1番目と20番目のデータを取り出す</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2004 2009</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>year[<span class="dv">6</span><span class="sc">:</span><span class="fu">length</span>(year)] <span class="co"># 6番目から最後のデータを取り出す</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019
+[16] 2020</code></pre>
+</div>
+</div>
+</section><section id="現在価値の計算" class="level4" data-number="3.1.2.2"><h4 data-number="3.1.2.2" class="anchored" data-anchor-id="現在価値の計算">
+<span class="header-section-number">3.1.2.2</span> 現在価値の計算</h4>
+<p>今の時点を<span class="math inline">t=0</span>として、<span class="math inline">T</span>年後に確実に得られるキャッシュ・フロー<span class="math inline">CF_T</span>の現在価値<span class="math inline">PV_0</span>は、 <span class="math display">
+PV_0 = \frac{CF_T}{(1+r)^T}
+</span> と書けます。たとえば1年後に確実に受け取れる100万円の現在価値<span class="math inline">PV_0</span>を計算してみます。いま、無リスク利子率<span class="math inline">r</span>は10%とします。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 90.90909</code></pre>
+</div>
+</div>
+<p>次に、この無リスク利子率<span class="math inline">r</span>が変化した場合の現在価値の計算を考えます。まず、無リスク利子率のベクトルを定義します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="co"># 下の２つは同じ結果</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>, <span class="at">to =</span> <span class="fl">0.2</span>, <span class="at">by =</span> <span class="fl">0.01</span>)　<span class="co"># 省略せずに書いた場合</span></span>
+<span id="cb28-3"><a href="#cb28-3"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span>) <span class="co"># 略した場合</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>次に、無リスク利子率が変化した場合の現在価値を計算します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>PV <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">1</span></span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="fu">print</span>(PV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 90.90909 90.09009 89.28571 88.49558 87.71930 86.95652 86.20690 85.47009
+ [9] 84.74576 84.03361 83.33333</code></pre>
+</div>
+</div>
+<p>無リスク利子率が0.1から0.2まで0.01ずつ変化した場合の現在価値が計算されました。この結果をグラフにしてみます。</p>
+</section></section><section id="基本パッケージplotによる作図" class="level3" data-number="3.1.3"><h3 data-number="3.1.3" class="anchored" data-anchor-id="基本パッケージplotによる作図">
+<span class="header-section-number">3.1.3</span> 基本パッケージ<code>plot</code>による作図</h3>
+<p>とりあえずサクッと作図してデータをチェックしたいとき、もとからR言語に組み込まれている基本関数<code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>が便利です。先ほど作成したベクトル変数<code>PV</code>をグラフにしてみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">plot</span>(PV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_files/figure-html/unnamed-chunk-13-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="chapter03_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>いま、<code>PV</code>は11個の要素をもつベクトル変数なので、データを左から順番に並べた散布図(scatter diagram)が作成されています。これだと何のグラフか分かりづらいので、いろいろとオプションを指定してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">plot</span>(</span>
+<span id="cb32-2"><a href="#cb32-2"></a>    <span class="at">x =</span> R, <span class="co"># x軸のデータ</span></span>
+<span id="cb32-3"><a href="#cb32-3"></a>    <span class="at">y =</span> PV, <span class="co"># y軸のデータ</span></span>
+<span id="cb32-4"><a href="#cb32-4"></a>    <span class="at">xlab =</span> <span class="st">"無リスク利子率"</span>,</span>
+<span id="cb32-5"><a href="#cb32-5"></a>    <span class="at">ylab =</span> <span class="st">"現在価値"</span>,</span>
+<span id="cb32-6"><a href="#cb32-6"></a>    <span class="at">main =</span> <span class="st">"無リスク利子率と現在価値の関係"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7"></a>    <span class="at">type =</span> <span class="st">"l"</span> <span class="co"># 線グラフ</span></span>
+<span id="cb32-8"><a href="#cb32-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_files/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="chapter03_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Macだと文字化けしてしまいました。そこで文字コードを指定します。Windowsだとこの作業は不要です。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu">par</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>) <span class="co"># Macの場合のみ</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a><span class="fu">plot</span>(</span>
+<span id="cb33-3"><a href="#cb33-3"></a>    <span class="at">x =</span> R, <span class="co"># x軸のデータ</span></span>
+<span id="cb33-4"><a href="#cb33-4"></a>    <span class="at">y =</span> PV, <span class="co"># y軸のデータ</span></span>
+<span id="cb33-5"><a href="#cb33-5"></a>    <span class="at">xlab =</span> <span class="st">"無リスク利子率"</span>, <span class="co"># x軸のラベル</span></span>
+<span id="cb33-6"><a href="#cb33-6"></a>    <span class="at">ylab =</span> <span class="st">"現在価値"</span>, <span class="co"># y軸のラベル</span></span>
+<span id="cb33-7"><a href="#cb33-7"></a>    <span class="at">main =</span> <span class="st">"無リスク利子率と現在価値の関係"</span>, <span class="co"># グラフのタイトル</span></span>
+<span id="cb33-8"><a href="#cb33-8"></a>    <span class="at">type =</span> <span class="st">"l"</span> <span class="co"># 折れ線グラフ</span></span>
+<span id="cb33-9"><a href="#cb33-9"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="chapter03_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="for文の使い方" class="level1 page-columns page-full" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> <code>for</code>文の使い方</h1>
+<p>プログラミングの基本要素である</p>
+<ul>
+<li>繰り返し</li>
+<li>分岐</li>
+<li>関数</li>
+</ul>
+<p>の最初の要素である「繰り返し」を行うための文法が<code>for</code>文です。<code>for</code>文は、ある処理を繰り返し行うための文法です。たとえば、1から10までの整数を順番に表示するには、次のように書きます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a>    <span class="fu">print</span>(i) <span class="co"># iを表示</span></span>
+<span id="cb34-3"><a href="#cb34-3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10</code></pre>
+</div>
+</div>
+<p>この文の構造は、基本的には</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="cf">for</span> (好きな変数 <span class="cf">in</span> 繰り返す範囲) {</span>
+<span id="cb36-2"><a href="#cb36-2"></a>    繰り返したい処理</span>
+<span id="cb36-3"><a href="#cb36-3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>となっています。</p>
+<p>たとえば、教科書のように、</p>
+<ul>
+<li>初期投資100万円</li>
+<li>1年後に50万円のキャッシュ・フロー</li>
+<li>2年後に50万円のキャッシュ・フロー</li>
+<li>3年後に50万円のキャッシュ・フロー</li>
+</ul>
+<p>という投資プロジェクトの現在価値を計算する場合、愚直に書くと次のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>NPV1 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="sc">+</span></span>
+<span id="cb37-2"><a href="#cb37-2"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb37-3"><a href="#cb37-3"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb37-4"><a href="#cb37-4"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb37-5"><a href="#cb37-5"></a><span class="fu">print</span>(NPV1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24.3426</code></pre>
+</div>
+</div>
+<p>この上のコードの2行目から4行目はほぼ同じ内容なので、数字が変化しているところに注目し、<code>for</code>文を使って書き換えてみます。ここでは<code>^1</code>のところが1ずつ大きくなってます。この部分を<code>i</code>という変数に置き換えてみます。 ついでに、後で変化させることがあるかもしれない部分をすべて変数として定義しておきます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb39-2"><a href="#cb39-2"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb39-3"><a href="#cb39-3"></a>CF <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="co"># キャッシュ・フロー</span></span>
+<span id="cb39-4"><a href="#cb39-4"></a></span>
+<span id="cb39-5"><a href="#cb39-5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) { <span class="co"># iは1から3まで</span></span>
+<span id="cb39-6"><a href="#cb39-6"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> CF <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i <span class="co"># 現在価値の計算</span></span>
+<span id="cb39-7"><a href="#cb39-7"></a>}</span>
+<span id="cb39-8"><a href="#cb39-8"></a><span class="fu">print</span>(NPV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24.3426</code></pre>
+</div>
+</div>
+<p>愚直に計算した場合の同じ結果となりました。 これを10年間の現在価値を計算する場合だとすると、</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb41-3"><a href="#cb41-3"></a>NPV1 <span class="ot">&lt;-</span> NPV <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb41-5"><a href="#cb41-5"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb41-6"><a href="#cb41-6"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">4</span> <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">5</span> <span class="sc">+</span></span>
+<span id="cb41-9"><a href="#cb41-9"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">6</span> <span class="sc">+</span></span>
+<span id="cb41-10"><a href="#cb41-10"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">7</span> <span class="sc">+</span></span>
+<span id="cb41-11"><a href="#cb41-11"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">8</span> <span class="sc">+</span></span>
+<span id="cb41-12"><a href="#cb41-12"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">9</span> <span class="sc">+</span></span>
+<span id="cb41-13"><a href="#cb41-13"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">10</span></span>
+<span id="cb41-14"><a href="#cb41-14"></a><span class="fu">print</span>(NPV1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 207.2284</code></pre>
+</div>
+</div>
+<p>と面倒くさいことこの上ないですが、<code>for</code>文を使えば、</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i</span>
+<span id="cb43-5"><a href="#cb43-5"></a>}</span>
+<span id="cb43-6"><a href="#cb43-6"></a><span class="fu">print</span>(NPV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 207.2284</code></pre>
+</div>
+</div>
+<p>と短く書くことができます。使いこなせるように練習しておきましょう。</p>
+<p>次のように、<code><a href="https://rdrr.io/r/base/print.html">print()</a></code>関数の位置を変えた場合、どうなるか考えてみてください。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb45-3"><a href="#cb45-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb45-4"><a href="#cb45-4"></a>    <span class="fu">print</span>(NPV)</span>
+<span id="cb45-5"><a href="#cb45-5"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i</span>
+<span id="cb45-6"><a href="#cb45-6"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -100
+[1] -54.54545
+[1] -13.22314</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a><span class="fu">print</span>(NPV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24.3426</code></pre>
+</div>
+</div>
+<p>この場合、最初にNPVの中を表示し、次に1期目の現在価値を計算し、またその結果を表示し、2期目の現在価値を計算し・・・という順番で繰り返しが行われるので、計算の途中経過が表示されることになります。</p>
+<section id="if文" class="level3" data-number="4.0.1"><h3 data-number="4.0.1" class="anchored" data-anchor-id="if文">
+<span class="header-section-number">4.0.1</span> <code>if</code>文</h3>
+<p>次に、プログラミングの基本要素である</p>
+<ul>
+<li>繰り返し</li>
+<li><strong>分岐</strong></li>
+<li>関数</li>
+</ul>
+<p>のうち分岐を行うための文法が<code>if</code>文です。<code>if</code>文は、ある条件を満たす場合にのみ処理を行うための文法です。たとえば、ある変数<code>x</code>が0より大きい場合にのみ、その変数を表示するには、次のように書きます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>x <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb49-2"><a href="#cb49-2"></a><span class="cf">if</span> (x <span class="sc">&gt;</span> <span class="dv">0</span>) { <span class="co"># xが0より大きい場合</span></span>
+<span id="cb49-3"><a href="#cb49-3"></a>    <span class="fu">print</span>(x) <span class="co"># xを表示</span></span>
+<span id="cb49-4"><a href="#cb49-4"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>この文の構造は、基本的には</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="cf">if</span> (条件) {</span>
+<span id="cb50-2"><a href="#cb50-2"></a>    条件を満たす場合に実行する処理</span>
+<span id="cb50-3"><a href="#cb50-3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>のようになっています。 この<code>if</code>文を使って、NPVが0より大きい場合にのみ、「プロジェクトを実行！」と表示されるようにしてみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb51-2"><a href="#cb51-2"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb51-3"><a href="#cb51-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb51-4"><a href="#cb51-4"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i</span>
+<span id="cb51-5"><a href="#cb51-5"></a>}</span>
+<span id="cb51-6"><a href="#cb51-6"></a><span class="cf">if</span> (NPV <span class="sc">&gt;</span> <span class="dv">0</span>) { <span class="co"># NPVが0より大きい場合</span></span>
+<span id="cb51-7"><a href="#cb51-7"></a>    <span class="fu">print</span>(<span class="st">"プロジェクトを実行！"</span>) <span class="co"># 文字列を表示</span></span>
+<span id="cb51-8"><a href="#cb51-8"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "プロジェクトを実行！"</code></pre>
+</div>
+</div>
+<p>ここではNPVの値が<code>207.2284</code>となりプラスになっているので、「プロジェクトを実行！」と表示されます。</p>
+</section><section id="npvと割引率の関係の可視化" class="level2 page-columns page-full" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="npvと割引率の関係の可視化">
+<span class="header-section-number">4.1</span> NPVと割引率の関係の可視化</h2>
+<p>無リスク利子率が0.1から0.2まで0.01ずつ変化した場合の現在価値NPVの値を計算してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span>) <span class="co"># 無リスク利子率</span></span>
+<span id="cb53-2"><a href="#cb53-2"></a>N <span class="ot">&lt;-</span> <span class="fu">length</span>(R) <span class="co"># 無リスク利子率の要素数 11個</span></span>
+<span id="cb53-3"><a href="#cb53-3"></a>NPV <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N) <span class="co"># ベクトル変数にN個のNAを代入</span></span>
+<span id="cb53-4"><a href="#cb53-4"></a></span>
+<span id="cb53-5"><a href="#cb53-5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) { <span class="co"># iは1からNまで</span></span>
+<span id="cb53-6"><a href="#cb53-6"></a>    NPV[i] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb53-7"><a href="#cb53-7"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) { <span class="co"># jは1から3まで</span></span>
+<span id="cb53-8"><a href="#cb53-8"></a>        NPV[i] <span class="ot">&lt;-</span> NPV[i] <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R[i])<span class="sc">^</span>j <span class="co"># 現在価値</span></span>
+<span id="cb53-9"><a href="#cb53-9"></a>    }</span>
+<span id="cb53-10"><a href="#cb53-10"></a>}</span>
+<span id="cb53-11"><a href="#cb53-11"></a><span class="fu">print</span>(NPV) <span class="co"># 11個の現在価値を表示</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 24.342600 22.185736 20.091563 18.057630 16.081601 14.161256 12.294477
+ [8] 10.479248  8.713646  6.995838  5.324074</code></pre>
+</div>
+</div>
+<p>少し複雑な構造しているので、順番に説明します。</p>
+<ul>
+<li>1行目は、無リスク利子率のベクトル変数<code>R</code>を定義しています。ここでは、0.1から0.2まで0.01刻みのデータを作成しています。</li>
+<li>2行目は、ベクトル変数<code>R</code>の要素数を<code>N</code>として定義しています。ここでは、<code>N</code>は11となります。</li>
+<li>3行目は、ベクトル変数<code>NPV</code>に<code>N</code>個の<code>NA</code>を代入しています。<code>NA</code>はNot Availableの略で、欠損値を表します。<code>NA</code>を代入することで、空っぽの箱が11個入ったベクトル変数<code>NPV</code>を用意します。</li>
+<li>4行目から9行目は、<code>for</code>文を使って、<code>NPV</code>の中身を計算しています。 <code>for</code>が2回出てきているので、二重に繰り返しの処理を行っています。これを<strong>ネスト</strong>と呼びます。 1つのめ<code>for</code>は<code>i</code>が1からN(ここでは11)まで変化し、2つめの<code>for</code>は<code>j</code>が1から3まで変化します。1つめの<code>for</code>文のiが1のとき、次の<code>for</code>文の<code>j</code>が1から3までの処理を繰り返し、次に1つめの<code>for</code>文の<code>i</code>が2のとき、次の<code>for</code>文の<code>j</code>が1から3までの処理を繰り返し・・・という順番で処理が行われます。</li>
+<li>10行目は、<code>NPV</code>の中身を表示しています。</li>
+</ul>
+<aside>
+TABキーを使って、インデントを行い、ソースコードのまとまりをわかりやすくしています。インデントは、プログラムの構造をわかりやすくするために行います。インデントを行うときは、半角スペース2つか4つを使います。どちらを使っても構いませんが、どちらかに統一することが大切です。
+</aside><p>この結果をグラフにしてみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1"></a><span class="fu">plot</span>(</span>
+<span id="cb55-2"><a href="#cb55-2"></a>    <span class="at">x =</span> R, <span class="co"># x軸のデータ</span></span>
+<span id="cb55-3"><a href="#cb55-3"></a>    <span class="at">y =</span> NPV, <span class="co"># y軸のデータ</span></span>
+<span id="cb55-4"><a href="#cb55-4"></a>    <span class="at">xlab =</span> <span class="st">"無リスク利子率"</span>, <span class="co"># x軸のラベル</span></span>
+<span id="cb55-5"><a href="#cb55-5"></a>    <span class="at">ylab =</span> <span class="st">"現在価値"</span>, <span class="co"># y軸のラベル</span></span>
+<span id="cb55-6"><a href="#cb55-6"></a>    <span class="at">main =</span> <span class="st">"図：無リスク利子率と現在価値"</span>, <span class="co"># グラフのタイトル</span></span>
+<span id="cb55-7"><a href="#cb55-7"></a>    <span class="at">type =</span> <span class="st">"l"</span> <span class="co"># 線グラフ</span></span>
+<span id="cb55-8"><a href="#cb55-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_files/figure-html/unnamed-chunk-27-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="chapter03_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="ベクトル化" class="level4" data-number="4.1.0.1"><h4 data-number="4.1.0.1" class="anchored" data-anchor-id="ベクトル化">
+<span class="header-section-number">4.1.0.1</span> ベクトル化</h4>
+<p>上のコードは、<code>for</code>文を使って、<code>NPV</code>の中身を計算しています。しかし、R言語では、<code>for</code>文を使わずに、ベクトルを使って、同じことを行うことができます。このように、<code>for</code>文を使わずに、ベクトルを使って処理を行うことを<strong>ベクトル化</strong>と呼びます。ベクトル化を行うと、処理が高速化されることがあります。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率 10%</span></span>
+<span id="cb56-2"><a href="#cb56-2"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>) <span class="co"># キャッシュ・フローのベクトル</span></span>
+<span id="cb56-3"><a href="#cb56-3"></a>year <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">3</span> <span class="co"># 年度のベクトル</span></span>
+<span id="cb56-4"><a href="#cb56-4"></a>PV_CF <span class="ot">&lt;-</span> CF <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>year <span class="co"># 各期の現在価値を計算</span></span>
+<span id="cb56-5"><a href="#cb56-5"></a>NPV <span class="ot">&lt;-</span> <span class="fu">sum</span>(PV_CF) <span class="co"># 現在価値の合計</span></span>
+<span id="cb56-6"><a href="#cb56-6"></a><span class="fu">print</span>(NPV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24.3426</code></pre>
+</div>
+</div>
+</section></section></section><section id="独自関数の定義の仕方" class="level1" data-number="5"><h1 data-number="5">
+<span class="header-section-number">5</span> 独自関数の定義の仕方</h1>
+<p>プログラミングの基本要素である</p>
+<ul>
+<li>繰り返し</li>
+<li>分岐</li>
+<li><strong>関数</strong></li>
+</ul>
+<p>の作り方について説明します。 Rでは自分で関数を定義することができます。関数を定義することで、同じ処理を何度も書く必要がなくなり、プログラムの見通しがよくなります。 例えば、足し算をする関数<code>my_add()</code>を定義してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>my_add <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y){</span>
+<span id="cb58-2"><a href="#cb58-2"></a>    x <span class="sc">+</span> y</span>
+<span id="cb58-3"><a href="#cb58-3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>この関数の構造は、</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a>好きな関数名 <span class="ot">&lt;-</span> <span class="cf">function</span>(引数1, 引数2){</span>
+<span id="cb59-2"><a href="#cb59-2"></a>    処理内容</span>
+<span id="cb59-3"><a href="#cb59-3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>となっています。つまり、この独自関数<code>my_add()</code>は、<code>x</code>と<code>y</code>という2つの引数(ひきすう)を足し合わせる関数です。数学的に書くなら、</p>
+<p><span class="math display">
+f(x, y) = x + y
+</span></p>
+<p>となります。これは<span class="math inline">f</span>という関数は2つの引数を足す関数であるという意味になっています。 作成した独自関数<code>my_add()</code>を使ってみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a><span class="fu">my_add</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>3が出力されました。</p>
+<p>このように、独自関数を作成する場合には、</p>
+<ol type="1">
+<li>どのような引数を与えるのか？</li>
+<li>それに対してどのような処理を行うのか？</li>
+<li>最終的にどの値を返す(出力させる)のか？</li>
+</ol>
+<p>を考えておく必要があります。</p>
+<p>では今までの流れで、現在価値を計算する関数を作成してみます。変化させたい値は、キャッシュフロー<code>CF</code>と無リスク利子率<code>R</code>なので、その2つを引数とする独自関数を作成します。 少し注意する必要がある点として、以下の計算例では<code>CF</code>の1番目の要素は初期投資額となることに注意しましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a>calc_PV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, R) {</span>
+<span id="cb62-2"><a href="#cb62-2"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="co"># 初期投資額なのでマイナスの値</span></span>
+<span id="cb62-3"><a href="#cb62-3"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) { <span class="co"># iは2からCFの要素数まで</span></span>
+<span id="cb62-4"><a href="#cb62-4"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 現在価値</span></span>
+<span id="cb62-5"><a href="#cb62-5"></a>    }</span>
+<span id="cb62-6"><a href="#cb62-6"></a>    <span class="fu">return</span>(PV) <span class="co"># 現在価値を返す</span></span>
+<span id="cb62-7"><a href="#cb62-7"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>この関数<code>calc_PV()</code>を使って、現在価値を計算してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1"></a><span class="fu">calc_PV</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>), <span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24.3426</code></pre>
+</div>
+</div>
+<p>ちゃんと計算されました。この関数を使って、無リスク利子率が0.1から0.2まで0.01ずつ変化した場合の現在価値を計算してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>) <span class="co"># キャッシュ・フローのベクトル</span></span>
+<span id="cb65-2"><a href="#cb65-2"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span>) <span class="co"># 無リスク利子率のベクトル</span></span>
+<span id="cb65-3"><a href="#cb65-3"></a><span class="fu">calc_PV</span>(CF,R)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 24.342600 22.185736 20.091563 18.057630 16.081601 14.161256 12.294477
+ [8] 10.479248  8.713646  6.995838  5.324074</code></pre>
+</div>
+</div>
+<p>計算されました。 関数の引数にデフォルトで値を設定することで、入力を楽にすることができます。例えば、無リスク利子率のデフォルト値を0.1に設定してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>calc_PV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb67-2"><a href="#cb67-2"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="co"># 初期投資額なのでマイナスの値</span></span>
+<span id="cb67-3"><a href="#cb67-3"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) { <span class="co"># iは2からCFの要素数まで</span></span>
+<span id="cb67-4"><a href="#cb67-4"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 現在価値</span></span>
+<span id="cb67-5"><a href="#cb67-5"></a>    }</span>
+<span id="cb67-6"><a href="#cb67-6"></a>    <span class="fu">return</span>(PV) <span class="co"># 現在価値を返す</span></span>
+<span id="cb67-7"><a href="#cb67-7"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>すると、無リスク利子率を指定しなくても、デフォルト値が使われるようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>) <span class="co"># キャッシュ・フローのベクトル</span></span>
+<span id="cb68-2"><a href="#cb68-2"></a><span class="fu">calc_PV</span>(CF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24.3426</code></pre>
+</div>
+</div>
+<p>ただ計算を間違えるもとにもなるので、なるべく省略せずに、しっかり書くことが大事です。</p>
+<section id="もっと凝った独自関数" class="level4" data-number="5.0.0.1"><h4 data-number="5.0.0.1" class="anchored" data-anchor-id="もっと凝った独自関数">
+<span class="header-section-number">5.0.0.1</span> もっと凝った独自関数</h4>
+<p>繰り返し、分岐、関数というプログラミングの基本要素を勉強したので、もう少し複雑なプログラムを作成してみます。</p>
+<p>まずは、引数に正の数字以外のもの、あるいは文字列を入力した場合にエラーを表示する関数を作成します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1"></a>calc_PV_new <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, R) {</span>
+<span id="cb70-2"><a href="#cb70-2"></a>    <span class="cf">if</span> (R <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb70-3"><a href="#cb70-3"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は正の値を入力してください。"</span>) <span class="co"># エラー処理</span></span>
+<span id="cb70-4"><a href="#cb70-4"></a>    }</span>
+<span id="cb70-5"><a href="#cb70-5"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(CF) ) {</span>
+<span id="cb70-6"><a href="#cb70-6"></a>        <span class="fu">stop</span>(<span class="st">"キャッシュ・フローは数値を入力してください。"</span>)</span>
+<span id="cb70-7"><a href="#cb70-7"></a>    }</span>
+<span id="cb70-8"><a href="#cb70-8"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(R) ) {</span>
+<span id="cb70-9"><a href="#cb70-9"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は数値を入力してください。"</span>)</span>
+<span id="cb70-10"><a href="#cb70-10"></a>    }</span>
+<span id="cb70-11"><a href="#cb70-11"></a></span>
+<span id="cb70-12"><a href="#cb70-12"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>]</span>
+<span id="cb70-13"><a href="#cb70-13"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) {</span>
+<span id="cb70-14"><a href="#cb70-14"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb70-15"><a href="#cb70-15"></a>    }</span>
+<span id="cb70-16"><a href="#cb70-16"></a>    <span class="fu">return</span>(PV)</span>
+<span id="cb70-17"><a href="#cb70-17"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>できました。ついでに、NPVの計算結果とともに、NPVが0より大きい場合にのみ、「プロジェクトを実行！」と表示する機能も実装してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1"></a>calc_PV_new <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb71-2"><a href="#cb71-2"></a>    <span class="cf">if</span> (R <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb71-3"><a href="#cb71-3"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は正の値を入力してください。"</span>) <span class="co"># エラー処理</span></span>
+<span id="cb71-4"><a href="#cb71-4"></a>    }</span>
+<span id="cb71-5"><a href="#cb71-5"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(CF) ) {</span>
+<span id="cb71-6"><a href="#cb71-6"></a>        <span class="fu">stop</span>(<span class="st">"キャッシュ・フローは数値を入力してください。"</span>)</span>
+<span id="cb71-7"><a href="#cb71-7"></a>    }</span>
+<span id="cb71-8"><a href="#cb71-8"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(R) ) {</span>
+<span id="cb71-9"><a href="#cb71-9"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は数値を入力してください。"</span>)</span>
+<span id="cb71-10"><a href="#cb71-10"></a>    }</span>
+<span id="cb71-11"><a href="#cb71-11"></a></span>
+<span id="cb71-12"><a href="#cb71-12"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>]</span>
+<span id="cb71-13"><a href="#cb71-13"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) {</span>
+<span id="cb71-14"><a href="#cb71-14"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb71-15"><a href="#cb71-15"></a>    }</span>
+<span id="cb71-16"><a href="#cb71-16"></a></span>
+<span id="cb71-17"><a href="#cb71-17"></a>    <span class="cf">if</span> (PV <span class="sc">&gt;=</span> <span class="dv">0</span>) { <span class="co"># NPVが0より大きい場合</span></span>
+<span id="cb71-18"><a href="#cb71-18"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なので、プロジェクトを実行！"</span>) <span class="co"># 文字列を表示</span></span>
+<span id="cb71-19"><a href="#cb71-19"></a>    } <span class="cf">else</span> {</span>
+<span id="cb71-20"><a href="#cb71-20"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なのでプロジェクト中止！"</span>) <span class="co"># 文字列を表示</span></span>
+<span id="cb71-21"><a href="#cb71-21"></a>    }</span>
+<span id="cb71-22"><a href="#cb71-22"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>いろいろ駆使してより短く簡単に書くなら、</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1"></a>calc_PV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb72-2"><a href="#cb72-2"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(CF) <span class="sc">||</span> <span class="sc">!</span><span class="fu">is.numeric</span>(R) <span class="sc">||</span> R <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb72-3"><a href="#cb72-3"></a>    <span class="fu">stop</span>(<span class="st">"キャッシュ・フローと無リスク利子率は数値を入力し、無リスク利子率は正の値を入力してください。"</span>)</span>
+<span id="cb72-4"><a href="#cb72-4"></a>  }</span>
+<span id="cb72-5"><a href="#cb72-5"></a>  PV <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(CF), <span class="cf">function</span>(i) CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>)))</span>
+<span id="cb72-6"><a href="#cb72-6"></a></span>
+<span id="cb72-7"><a href="#cb72-7"></a>  <span class="cf">if</span> (PV <span class="sc">&gt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb72-8"><a href="#cb72-8"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なので、プロジェクトを実行！"</span>)</span>
+<span id="cb72-9"><a href="#cb72-9"></a>  } <span class="cf">else</span> {</span>
+<span id="cb72-10"><a href="#cb72-10"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なのでプロジェクト中止！"</span>)</span>
+<span id="cb72-11"><a href="#cb72-11"></a>  }</span>
+<span id="cb72-12"><a href="#cb72-12"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb73-2"><a href="#cb73-2"></a><span class="fu">calc_PV</span>(CF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NPVが24.34なので、プロジェクトを実行！"</code></pre>
+</div>
+</div>
+<p>うまくいきました。 ちょっとキャッシュフローのベクトルを変化させて、初期投資を-200にすると、</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb75-2"><a href="#cb75-2"></a><span class="fu">calc_PV</span>(CF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NPVが-75.66なのでプロジェクト中止！"</code></pre>
+</div>
+</div>
+<p>ちゃんと中止のメッセージが出ました。</p>
+<p>このように、分岐、繰り返し、関数を駆使して、様々なプログラムを作成することができます。プログラミングの基本要素を使いこなせるように、練習を重ねてください。まずは教科書に書いてあるソースコードを自分のPC上で実行してみてください。その際は、コピペせずに自分で入力するようにしてください。</p>
+</section><section id="付録ベクトル化で早くなるのか" class="level4" data-number="5.0.0.2"><h4 data-number="5.0.0.2" class="anchored" data-anchor-id="付録ベクトル化で早くなるのか">
+<span class="header-section-number">5.0.0.2</span> 付録：ベクトル化で早くなるのか？</h4>
+<p>どれほど高速化されるのかを確認するため、100万年分の現在価値を計算してみます。 最初に松浦のR環境を確認してみます。 Mac miniで、CPUはM1、メモリは8GBです。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a>R.version</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               _                           
+platform       aarch64-apple-darwin20      
+arch           aarch64                     
+os             darwin20                    
+system         aarch64, darwin20           
+status                                     
+major          4                           
+minor          5.0                         
+year           2025                        
+month          04                          
+day            11                          
+svn rev        88135                       
+language       R                           
+version.string R version 4.5.0 (2025-04-11)
+nickname       How About a Twenty-Six      </code></pre>
+</div>
+</div>
+<p>まずは、<code>for</code>文を使って計算してみます。 <code>for</code>で現在価値を計算する関数を作成します。 この関数では、繰り返し毎期の現在価値を計算し、それを足し合わせていく、という処理を繰り返し行っています。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a>calc_PV_for <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb79-2"><a href="#cb79-2"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="co"># 初期投資額なのでマイナスの値</span></span>
+<span id="cb79-3"><a href="#cb79-3"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) { <span class="co"># iは2からCFの要素数まで</span></span>
+<span id="cb79-4"><a href="#cb79-4"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 現在価値</span></span>
+<span id="cb79-5"><a href="#cb79-5"></a>    }</span>
+<span id="cb79-6"><a href="#cb79-6"></a>    <span class="fu">return</span>(PV) <span class="co"># 現在価値を返す</span></span>
+<span id="cb79-7"><a href="#cb79-7"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>プログラムの実行時間を計算するため、<code><a href="https://rdrr.io/r/base/system.time.html">system.time()</a></code>関数を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">50</span>, <span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>))</span>
+<span id="cb80-2"><a href="#cb80-2"></a>(res_for <span class="ot">&lt;-</span> <span class="fu">system.time</span>(<span class="fu">calc_PV_for</span>(CF)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+  0.047   0.001   0.049 </code></pre>
+</div>
+</div>
+<p>0.049 秒かかりました。 次に、ベクトル化した計算結果を見てみましょう。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1"></a>calc_PV_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>){</span>
+<span id="cb82-2"><a href="#cb82-2"></a>    year <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span>(<span class="fu">length</span>(CF) <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 年度のベクトル</span></span>
+<span id="cb82-3"><a href="#cb82-3"></a>    PV_CF <span class="ot">&lt;-</span> CF <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>year <span class="co"># 各期の現在価値を計算</span></span>
+<span id="cb82-4"><a href="#cb82-4"></a>    NPV <span class="ot">&lt;-</span> <span class="fu">sum</span>(PV_CF) <span class="co"># 現在価値の合計</span></span>
+<span id="cb82-5"><a href="#cb82-5"></a>    <span class="fu">return</span>(NPV)</span>
+<span id="cb82-6"><a href="#cb82-6"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>ベクトルから直接現在価値を計算する関数を用いた計算速度を測ってみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">50</span>, <span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>))</span>
+<span id="cb83-2"><a href="#cb83-2"></a>(res_vec <span class="ot">&lt;-</span> <span class="fu">system.time</span>(<span class="fu">calc_PV_vec</span>(CF)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+  0.010   0.002   0.012 </code></pre>
+</div>
+</div>
+<p>0.012 秒と、<code>for</code>文を使った場合に比べて、約 4.08 倍高速化されました。これがベクトル化による実行速度の効率化です。 とはいえ、演算に時間がかかるような大規模データや複雑なシミュレーションをするようになるまで、ベクトル化の恩恵はそれほど大きくないので、まずは読みやすく、確実に動くプログラムを書くことを心がけましょう。</p>
+</section></section><section id="まとめ" class="level1" data-number="6"><h1 data-number="6">
+<span class="header-section-number">6</span> まとめ</h1>
+<ul>
+<li>スカラー変数・ベクトル変数の作り方</li>
+<li>変数から任意の値を取り出す方法</li>
+<li>
+<code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>関数による作図</li>
+<li>
+<code>for</code>文を用いた繰り返し処理</li>
+<li>
+<code>if</code>文を用いた分岐処理</li>
+<li>
+<code>funciton()</code>を用いた独自関数</li>
+<li>(参考) ベクトル化のすすめ</li>
+</ul>
+
+
+<!-- -->
+
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./chapter02.html" class="pagination-link" aria-label="ファイナンス入門">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">ファイナンス入門</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter04.html" class="pagination-link" aria-label="第4章 財務データの取得と可視化">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">第4章 財務データの取得と可視化</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb85-1"><a href="#cb85-1"></a><span class="fu">## R言語入門</span></span>
+<span id="cb85-2"><a href="#cb85-2"></a></span>
+<span id="cb85-3"><a href="#cb85-3"></a><span class="in">```{r setup, echo = FALSE}</span></span>
+<span id="cb85-4"><a href="#cb85-4"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb85-5"><a href="#cb85-5"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, ggthemes)</span>
+<span id="cb85-6"><a href="#cb85-6"></a>mystyle <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb85-7"><a href="#cb85-7"></a>  <span class="fu">theme_economist_white</span>(</span>
+<span id="cb85-8"><a href="#cb85-8"></a>    <span class="co"># gray_bg = FALSE,</span></span>
+<span id="cb85-9"><a href="#cb85-9"></a>    <span class="at">base_family =</span> <span class="st">"HiraKakuProN-W3"</span></span>
+<span id="cb85-10"><a href="#cb85-10"></a>    ),</span>
+<span id="cb85-11"><a href="#cb85-11"></a>  <span class="fu">scale_colour_economist</span>(),</span>
+<span id="cb85-12"><a href="#cb85-12"></a>  <span class="fu">theme</span>(</span>
+<span id="cb85-13"><a href="#cb85-13"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>), <span class="co"># フォントファミリーは上で指定済みなので省略可</span></span>
+<span id="cb85-14"><a href="#cb85-14"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb85-15"><a href="#cb85-15"></a>  )</span>
+<span id="cb85-16"><a href="#cb85-16"></a>)</span>
+<span id="cb85-17"><a href="#cb85-17"></a></span>
+<span id="cb85-18"><a href="#cb85-18"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb85-19"><a href="#cb85-19"></a>  <span class="co"># ソースを番号付けする</span></span>
+<span id="cb85-20"><a href="#cb85-20"></a>  <span class="at">class.source =</span> <span class="st">"numberLines lineAnchors"</span></span>
+<span id="cb85-21"><a href="#cb85-21"></a>  <span class="co"># 出力を番号付けする</span></span>
+<span id="cb85-22"><a href="#cb85-22"></a>  <span class="co"># class.output = "numberLines lineAnchors chunkout"</span></span>
+<span id="cb85-23"><a href="#cb85-23"></a>  )</span>
+<span id="cb85-24"><a href="#cb85-24"></a><span class="in">```</span></span>
+<span id="cb85-25"><a href="#cb85-25"></a></span>
+<span id="cb85-26"><a href="#cb85-26"></a>プログラミング言語にはいろんな種類があるけれど、今回学習する**R言語**は、インタプリタ型とよばれるもので、コンパイルという作業の必要が無く、書いたらすぐ実行できる仕様となっています。たとえば、教科書にあるように</span>
+<span id="cb85-27"><a href="#cb85-27"></a></span>
+<span id="cb85-30"><a href="#cb85-30"></a><span class="in">```{r}</span></span>
+<span id="cb85-31"><a href="#cb85-31"></a><span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)</span>
+<span id="cb85-32"><a href="#cb85-32"></a><span class="in">```</span></span>
+<span id="cb85-33"><a href="#cb85-33"></a></span>
+<span id="cb85-34"><a href="#cb85-34"></a>を実行すれば、結果がすぐ表示されます。 RstudioとかVS Codeを使って、上のようなRソースコードを一気に書いて、まとめて実行するための**スクリプト・ファイル**を作成します。</span>
+<span id="cb85-35"><a href="#cb85-35"></a></span>
+<span id="cb85-36"><a href="#cb85-36"></a>ソースコードを書くにあたり注意する点として、以下の4つについて説明します。</span>
+<span id="cb85-37"><a href="#cb85-37"></a></span>
+<span id="cb85-38"><a href="#cb85-38"></a><span class="ss">1.  </span>**大文字と小文字は区別される**ので、<span class="in">`x`</span>と<span class="in">`X`</span>は別の変数として扱われます。</span>
+<span id="cb85-39"><a href="#cb85-39"></a><span class="ss">2.  </span>**半角スペース**は、**区切り文字**として扱われるので、<span class="in">`x &lt;- 100`</span>と<span class="in">`x&lt;-100`</span>は同じ意味になります。</span>
+<span id="cb85-40"><a href="#cb85-40"></a><span class="ss">3.  </span>**改行**も、**区切り文字**として扱われます。長いソースコードは改行して読みやすくしましょう。</span>
+<span id="cb85-41"><a href="#cb85-41"></a><span class="ss">4.  </span>**コメント**は、<span class="in">`#`</span>から行末までの文字列がコメントとして扱われ、実行されません。プログラムの内容を説明するためにたくさん書いて残しておきましょう。</span>
+<span id="cb85-42"><a href="#cb85-42"></a></span>
+<span id="cb85-43"><a href="#cb85-43"></a><span class="fu">## Rの基本的な機能</span></span>
+<span id="cb85-44"><a href="#cb85-44"></a></span>
+<span id="cb85-45"><a href="#cb85-45"></a><span class="fu">### スカラー変数の定義</span></span>
+<span id="cb85-46"><a href="#cb85-46"></a></span>
+<span id="cb85-47"><a href="#cb85-47"></a>この学習を通じて**変数**(variable)とは、**数値や文字といったデータを格納するための箱**を表し、中に何が入っているのかにより、スカラー変数、ベクトル、行列、データフレームなどに分類されます。まずは、スカラー変数の定義を学びます。</span>
+<span id="cb85-48"><a href="#cb85-48"></a></span>
+<span id="cb85-49"><a href="#cb85-49"></a>スカラー(scalar)とは、大きさだけで決まる量のことで、つまり、**1つの数値**を指します。 R言語ではスカラー変数を定義するには、`&lt;-`を使います。たとえば、`x &lt;- 100`と書けば、xというスカラー変数に100という数値を格納できます。このとき、`&lt;-`は代入演算子と呼ばれ、右辺の値を左辺の変数に代入するという意味です。また、`x`という変数を**左辺値**(left-hand side)、`100`という数値を**右辺値**(right-hand side)と呼びます。</span>
+<span id="cb85-50"><a href="#cb85-50"></a></span>
+<span id="cb85-53"><a href="#cb85-53"></a><span class="in">```{r}</span></span>
+<span id="cb85-54"><a href="#cb85-54"></a>x <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># 代入演算子&lt;- の前後に半角スペースを入れるのがお作法</span></span>
+<span id="cb85-55"><a href="#cb85-55"></a><span class="in">```</span></span>
+<span id="cb85-56"><a href="#cb85-56"></a></span>
+<span id="cb85-57"><a href="#cb85-57"></a>この中身を表示されるには、<span class="in">`print()`</span>関数を使います。</span>
+<span id="cb85-58"><a href="#cb85-58"></a></span>
+<span id="cb85-61"><a href="#cb85-61"></a><span class="in">```{r}</span></span>
+<span id="cb85-62"><a href="#cb85-62"></a><span class="fu">print</span>(x) <span class="co"># xの中身を表示</span></span>
+<span id="cb85-63"><a href="#cb85-63"></a><span class="in">```</span></span>
+<span id="cb85-64"><a href="#cb85-64"></a></span>
+<span id="cb85-65"><a href="#cb85-65"></a>あるいは</span>
+<span id="cb85-66"><a href="#cb85-66"></a></span>
+<span id="cb85-69"><a href="#cb85-69"></a><span class="in">```{r}</span></span>
+<span id="cb85-70"><a href="#cb85-70"></a>x</span>
+<span id="cb85-71"><a href="#cb85-71"></a><span class="in">```</span></span>
+<span id="cb85-72"><a href="#cb85-72"></a></span>
+<span id="cb85-73"><a href="#cb85-73"></a>でも表示されます。</span>
+<span id="cb85-74"><a href="#cb85-74"></a></span>
+<span id="cb85-75"><a href="#cb85-75"></a><span class="dt">&lt;</span><span class="kw">aside</span><span class="dt">&gt;</span>Rでは<span class="in">`#`</span>の後ろの文章はコメントとして扱われ、実行されません。コメントはプログラムの内容を説明するためにたくさん書いて残しておきましょう。<span class="dt">&lt;/</span><span class="kw">aside</span><span class="dt">&gt;</span></span>
+<span id="cb85-76"><a href="#cb85-76"></a></span>
+<span id="cb85-77"><a href="#cb85-77"></a><span class="fu">### ベクトル変数の定義</span></span>
+<span id="cb85-78"><a href="#cb85-78"></a></span>
+<span id="cb85-79"><a href="#cb85-79"></a>**ベクトル**(vector)とは、大きさと向きで決まる量のことで、つまり、**複数の数値**を指します。R言語ではベクトル変数を定義するには、<span class="in">`c()`</span>を使います。たとえば、<span class="in">`x &lt;- c(1, 2, 3)`</span>と書けば、xというベクトル変数に1, 2, 3という数値を格納できます。このとき、<span class="in">`c()`</span>はベクトルを作る関数と呼ばれ、<span class="in">`1, 2, 3`</span>という数値を引数として与えています。</span>
+<span id="cb85-80"><a href="#cb85-80"></a></span>
+<span id="cb85-83"><a href="#cb85-83"></a><span class="in">```{r}</span></span>
+<span id="cb85-84"><a href="#cb85-84"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>) <span class="co"># xに1と5と9を要素とするベクトルを代入</span></span>
+<span id="cb85-85"><a href="#cb85-85"></a><span class="fu">print</span>(x)</span>
+<span id="cb85-86"><a href="#cb85-86"></a><span class="in">```</span></span>
+<span id="cb85-87"><a href="#cb85-87"></a></span>
+<span id="cb85-88"><a href="#cb85-88"></a>等差数列を作る関数に<span class="in">`seq()`</span>関数があります。<span class="in">`seq()`</span>は3つの引数をとり、</span>
+<span id="cb85-89"><a href="#cb85-89"></a></span>
+<span id="cb85-90"><a href="#cb85-90"></a><span class="ss">-   </span><span class="in">`from`</span> : 始点</span>
+<span id="cb85-91"><a href="#cb85-91"></a><span class="ss">-   </span><span class="in">`to`</span> : 終点</span>
+<span id="cb85-92"><a href="#cb85-92"></a><span class="ss">-   </span><span class="in">`by`</span> : 差分</span>
+<span id="cb85-93"><a href="#cb85-93"></a></span>
+<span id="cb85-94"><a href="#cb85-94"></a>を指定します。たとえば、2000年から2020年を表す年度の変数を<span class="in">`year`</span>として定義するには、</span>
+<span id="cb85-95"><a href="#cb85-95"></a></span>
+<span id="cb85-98"><a href="#cb85-98"></a><span class="in">```{r}</span></span>
+<span id="cb85-99"><a href="#cb85-99"></a>year <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">2000</span>, <span class="at">to =</span> <span class="dv">2020</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb85-100"><a href="#cb85-100"></a><span class="fu">print</span>(year)</span>
+<span id="cb85-101"><a href="#cb85-101"></a><span class="in">```</span></span>
+<span id="cb85-102"><a href="#cb85-102"></a></span>
+<span id="cb85-103"><a href="#cb85-103"></a>と書けば、2000から2020までの公差1の等差数列を作ります。 <span class="in">`seq()`</span>変数の引数には、<span class="in">`from`</span>と<span class="in">`to`</span>と<span class="in">`by`</span>の3つの引数を指定することができますが、<span class="in">`from`</span>と<span class="in">`to`</span>のみを指定することもできます。このとき、<span class="in">`by`</span>の値は1となります。次のように書いても、上と同じ結果を得ることができます。</span>
+<span id="cb85-104"><a href="#cb85-104"></a></span>
+<span id="cb85-107"><a href="#cb85-107"></a><span class="in">```{r}</span></span>
+<span id="cb85-108"><a href="#cb85-108"></a><span class="fu">seq</span>(<span class="dv">2000</span>,<span class="dv">2020</span>)</span>
+<span id="cb85-109"><a href="#cb85-109"></a><span class="in">```</span></span>
+<span id="cb85-110"><a href="#cb85-110"></a></span>
+<span id="cb85-111"><a href="#cb85-111"></a>ベクトルの要素数を知るには、<span class="in">`length()`</span>関数を使います。</span>
+<span id="cb85-112"><a href="#cb85-112"></a></span>
+<span id="cb85-115"><a href="#cb85-115"></a><span class="in">```{r}</span></span>
+<span id="cb85-116"><a href="#cb85-116"></a><span class="fu">length</span>(year) <span class="co"># yearの要素数を表示</span></span>
+<span id="cb85-117"><a href="#cb85-117"></a><span class="in">```</span></span>
+<span id="cb85-118"><a href="#cb85-118"></a></span>
+<span id="cb85-119"><a href="#cb85-119"></a>ベクトル変数<span class="in">`year`</span>の中には21個の要素があることがわかります。</span>
+<span id="cb85-120"><a href="#cb85-120"></a></span>
+<span id="cb85-121"><a href="#cb85-121"></a><span class="fu">#### ベクトルの要素の取り出し</span></span>
+<span id="cb85-122"><a href="#cb85-122"></a></span>
+<span id="cb85-123"><a href="#cb85-123"></a>複数の要素をもつベクトルから、一部の要素を取り出すには、<span class="in">`[]`</span>を使います。たとえば、<span class="in">`x`</span>の2番目の要素を取り出すには、<span class="in">`x[2]`</span>と書きます。このとき、<span class="in">`[]`</span>は添字演算子と呼ばれ、<span class="in">`2`</span>という添字を引数として与えています。添字は1から始まります。</span>
+<span id="cb85-124"><a href="#cb85-124"></a></span>
+<span id="cb85-125"><a href="#cb85-125"></a>上の<span class="in">`year`</span>から2000を取り出すには、<span class="in">`year[1]`</span>、2020を取り出すには<span class="in">`year[20]`</span>と書きます。 次のような書き方で、好きな要素を指定して取り出すことができます。</span>
+<span id="cb85-126"><a href="#cb85-126"></a></span>
+<span id="cb85-129"><a href="#cb85-129"></a><span class="in">```{r}</span></span>
+<span id="cb85-130"><a href="#cb85-130"></a>year[<span class="dv">1</span>] <span class="co"># 1番目のデータを取り出す</span></span>
+<span id="cb85-131"><a href="#cb85-131"></a>year[<span class="dv">20</span>] <span class="co"># 20番目のデータを取り出す</span></span>
+<span id="cb85-132"><a href="#cb85-132"></a>year[<span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># 2番目から5番目のデータを取り出す</span></span>
+<span id="cb85-133"><a href="#cb85-133"></a>year[<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">10</span>)] <span class="co"># 1番目と20番目のデータを取り出す</span></span>
+<span id="cb85-134"><a href="#cb85-134"></a>year[<span class="dv">6</span><span class="sc">:</span><span class="fu">length</span>(year)] <span class="co"># 6番目から最後のデータを取り出す</span></span>
+<span id="cb85-135"><a href="#cb85-135"></a><span class="in">```</span></span>
+<span id="cb85-136"><a href="#cb85-136"></a></span>
+<span id="cb85-137"><a href="#cb85-137"></a><span class="fu">#### 現在価値の計算</span></span>
+<span id="cb85-138"><a href="#cb85-138"></a></span>
+<span id="cb85-139"><a href="#cb85-139"></a>今の時点を$t=0$として、$T$年後に確実に得られるキャッシュ・フロー$CF_T$の現在価値$PV_0$は、 $$</span>
+<span id="cb85-140"><a href="#cb85-140"></a>PV_0 = \frac{CF_T}{(1+r)^T}</span>
+<span id="cb85-141"><a href="#cb85-141"></a>$$ と書けます。たとえば1年後に確実に受け取れる100万円の現在価値$PV_0$を計算してみます。いま、無リスク利子率$r$は10%とします。</span>
+<span id="cb85-142"><a href="#cb85-142"></a></span>
+<span id="cb85-145"><a href="#cb85-145"></a><span class="in">```{r}</span></span>
+<span id="cb85-146"><a href="#cb85-146"></a><span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">1</span></span>
+<span id="cb85-147"><a href="#cb85-147"></a><span class="in">```</span></span>
+<span id="cb85-148"><a href="#cb85-148"></a></span>
+<span id="cb85-149"><a href="#cb85-149"></a>次に、この無リスク利子率$r$が変化した場合の現在価値の計算を考えます。まず、無リスク利子率のベクトルを定義します。</span>
+<span id="cb85-150"><a href="#cb85-150"></a></span>
+<span id="cb85-153"><a href="#cb85-153"></a><span class="in">```{r}</span></span>
+<span id="cb85-154"><a href="#cb85-154"></a><span class="co"># 下の２つは同じ結果</span></span>
+<span id="cb85-155"><a href="#cb85-155"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>, <span class="at">to =</span> <span class="fl">0.2</span>, <span class="at">by =</span> <span class="fl">0.01</span>)　<span class="co"># 省略せずに書いた場合</span></span>
+<span id="cb85-156"><a href="#cb85-156"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span>) <span class="co"># 略した場合</span></span>
+<span id="cb85-157"><a href="#cb85-157"></a><span class="in">```</span></span>
+<span id="cb85-158"><a href="#cb85-158"></a></span>
+<span id="cb85-159"><a href="#cb85-159"></a>次に、無リスク利子率が変化した場合の現在価値を計算します。</span>
+<span id="cb85-160"><a href="#cb85-160"></a></span>
+<span id="cb85-163"><a href="#cb85-163"></a><span class="in">```{r}</span></span>
+<span id="cb85-164"><a href="#cb85-164"></a>PV <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">1</span></span>
+<span id="cb85-165"><a href="#cb85-165"></a><span class="fu">print</span>(PV)</span>
+<span id="cb85-166"><a href="#cb85-166"></a><span class="in">```</span></span>
+<span id="cb85-167"><a href="#cb85-167"></a></span>
+<span id="cb85-168"><a href="#cb85-168"></a>無リスク利子率が0.1から0.2まで0.01ずつ変化した場合の現在価値が計算されました。この結果をグラフにしてみます。</span>
+<span id="cb85-169"><a href="#cb85-169"></a></span>
+<span id="cb85-170"><a href="#cb85-170"></a><span class="fu">### 基本パッケージ`plot`による作図</span></span>
+<span id="cb85-171"><a href="#cb85-171"></a></span>
+<span id="cb85-172"><a href="#cb85-172"></a>とりあえずサクッと作図してデータをチェックしたいとき、もとからR言語に組み込まれている基本関数<span class="in">`plot()`</span>が便利です。先ほど作成したベクトル変数<span class="in">`PV`</span>をグラフにしてみます。</span>
+<span id="cb85-173"><a href="#cb85-173"></a></span>
+<span id="cb85-176"><a href="#cb85-176"></a><span class="in">```{r}</span></span>
+<span id="cb85-177"><a href="#cb85-177"></a><span class="fu">plot</span>(PV)</span>
+<span id="cb85-178"><a href="#cb85-178"></a><span class="in">```</span></span>
+<span id="cb85-179"><a href="#cb85-179"></a></span>
+<span id="cb85-180"><a href="#cb85-180"></a>いま、<span class="in">`PV`</span>は11個の要素をもつベクトル変数なので、データを左から順番に並べた散布図(scatter diagram)が作成されています。これだと何のグラフか分かりづらいので、いろいろとオプションを指定してみます。</span>
+<span id="cb85-181"><a href="#cb85-181"></a></span>
+<span id="cb85-184"><a href="#cb85-184"></a><span class="in">```{r}</span></span>
+<span id="cb85-185"><a href="#cb85-185"></a><span class="fu">plot</span>(</span>
+<span id="cb85-186"><a href="#cb85-186"></a>    <span class="at">x =</span> R, <span class="co"># x軸のデータ</span></span>
+<span id="cb85-187"><a href="#cb85-187"></a>    <span class="at">y =</span> PV, <span class="co"># y軸のデータ</span></span>
+<span id="cb85-188"><a href="#cb85-188"></a>    <span class="at">xlab =</span> <span class="st">"無リスク利子率"</span>,</span>
+<span id="cb85-189"><a href="#cb85-189"></a>    <span class="at">ylab =</span> <span class="st">"現在価値"</span>,</span>
+<span id="cb85-190"><a href="#cb85-190"></a>    <span class="at">main =</span> <span class="st">"無リスク利子率と現在価値の関係"</span>,</span>
+<span id="cb85-191"><a href="#cb85-191"></a>    <span class="at">type =</span> <span class="st">"l"</span> <span class="co"># 線グラフ</span></span>
+<span id="cb85-192"><a href="#cb85-192"></a>)</span>
+<span id="cb85-193"><a href="#cb85-193"></a><span class="in">```</span></span>
+<span id="cb85-194"><a href="#cb85-194"></a></span>
+<span id="cb85-195"><a href="#cb85-195"></a>Macだと文字化けしてしまいました。そこで文字コードを指定します。Windowsだとこの作業は不要です。</span>
+<span id="cb85-196"><a href="#cb85-196"></a></span>
+<span id="cb85-199"><a href="#cb85-199"></a><span class="in">```{r}</span></span>
+<span id="cb85-200"><a href="#cb85-200"></a><span class="fu">par</span>(<span class="at">family =</span> <span class="st">"HiraKakuProN-W3"</span>) <span class="co"># Macの場合のみ</span></span>
+<span id="cb85-201"><a href="#cb85-201"></a><span class="fu">plot</span>(</span>
+<span id="cb85-202"><a href="#cb85-202"></a>    <span class="at">x =</span> R, <span class="co"># x軸のデータ</span></span>
+<span id="cb85-203"><a href="#cb85-203"></a>    <span class="at">y =</span> PV, <span class="co"># y軸のデータ</span></span>
+<span id="cb85-204"><a href="#cb85-204"></a>    <span class="at">xlab =</span> <span class="st">"無リスク利子率"</span>, <span class="co"># x軸のラベル</span></span>
+<span id="cb85-205"><a href="#cb85-205"></a>    <span class="at">ylab =</span> <span class="st">"現在価値"</span>, <span class="co"># y軸のラベル</span></span>
+<span id="cb85-206"><a href="#cb85-206"></a>    <span class="at">main =</span> <span class="st">"無リスク利子率と現在価値の関係"</span>, <span class="co"># グラフのタイトル</span></span>
+<span id="cb85-207"><a href="#cb85-207"></a>    <span class="at">type =</span> <span class="st">"l"</span> <span class="co"># 折れ線グラフ</span></span>
+<span id="cb85-208"><a href="#cb85-208"></a>)</span>
+<span id="cb85-209"><a href="#cb85-209"></a><span class="in">```</span></span>
+<span id="cb85-210"><a href="#cb85-210"></a></span>
+<span id="cb85-211"><a href="#cb85-211"></a><span class="fu"># `for`文の使い方</span></span>
+<span id="cb85-212"><a href="#cb85-212"></a></span>
+<span id="cb85-213"><a href="#cb85-213"></a>プログラミングの基本要素である</span>
+<span id="cb85-214"><a href="#cb85-214"></a></span>
+<span id="cb85-215"><a href="#cb85-215"></a><span class="ss">-   </span>繰り返し</span>
+<span id="cb85-216"><a href="#cb85-216"></a><span class="ss">-   </span>分岐</span>
+<span id="cb85-217"><a href="#cb85-217"></a><span class="ss">-   </span>関数</span>
+<span id="cb85-218"><a href="#cb85-218"></a></span>
+<span id="cb85-219"><a href="#cb85-219"></a>の最初の要素である「繰り返し」を行うための文法が<span class="in">`for`</span>文です。<span class="in">`for`</span>文は、ある処理を繰り返し行うための文法です。たとえば、1から10までの整数を順番に表示するには、次のように書きます。</span>
+<span id="cb85-220"><a href="#cb85-220"></a></span>
+<span id="cb85-223"><a href="#cb85-223"></a><span class="in">```{r}</span></span>
+<span id="cb85-224"><a href="#cb85-224"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb85-225"><a href="#cb85-225"></a>    <span class="fu">print</span>(i) <span class="co"># iを表示</span></span>
+<span id="cb85-226"><a href="#cb85-226"></a>}</span>
+<span id="cb85-227"><a href="#cb85-227"></a><span class="in">```</span></span>
+<span id="cb85-228"><a href="#cb85-228"></a></span>
+<span id="cb85-229"><a href="#cb85-229"></a>この文の構造は、基本的には</span>
+<span id="cb85-230"><a href="#cb85-230"></a></span>
+<span id="cb85-231"><a href="#cb85-231"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb85-232"><a href="#cb85-232"></a><span class="cf">for</span> (好きな変数 <span class="cf">in</span> 繰り返す範囲) {</span>
+<span id="cb85-233"><a href="#cb85-233"></a>    繰り返したい処理</span>
+<span id="cb85-234"><a href="#cb85-234"></a>}</span>
+<span id="cb85-235"><a href="#cb85-235"></a><span class="in">```</span></span>
+<span id="cb85-236"><a href="#cb85-236"></a></span>
+<span id="cb85-237"><a href="#cb85-237"></a>となっています。</span>
+<span id="cb85-238"><a href="#cb85-238"></a></span>
+<span id="cb85-239"><a href="#cb85-239"></a>たとえば、教科書のように、</span>
+<span id="cb85-240"><a href="#cb85-240"></a></span>
+<span id="cb85-241"><a href="#cb85-241"></a><span class="ss">-   </span>初期投資100万円</span>
+<span id="cb85-242"><a href="#cb85-242"></a><span class="ss">-   </span>1年後に50万円のキャッシュ・フロー</span>
+<span id="cb85-243"><a href="#cb85-243"></a><span class="ss">-   </span>2年後に50万円のキャッシュ・フロー</span>
+<span id="cb85-244"><a href="#cb85-244"></a><span class="ss">-   </span>3年後に50万円のキャッシュ・フロー</span>
+<span id="cb85-245"><a href="#cb85-245"></a></span>
+<span id="cb85-246"><a href="#cb85-246"></a>という投資プロジェクトの現在価値を計算する場合、愚直に書くと次のようになります。</span>
+<span id="cb85-247"><a href="#cb85-247"></a></span>
+<span id="cb85-250"><a href="#cb85-250"></a><span class="in">```{r}</span></span>
+<span id="cb85-251"><a href="#cb85-251"></a>NPV1 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="sc">+</span></span>
+<span id="cb85-252"><a href="#cb85-252"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb85-253"><a href="#cb85-253"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb85-254"><a href="#cb85-254"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span>)<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb85-255"><a href="#cb85-255"></a><span class="fu">print</span>(NPV1)</span>
+<span id="cb85-256"><a href="#cb85-256"></a><span class="in">```</span></span>
+<span id="cb85-257"><a href="#cb85-257"></a></span>
+<span id="cb85-258"><a href="#cb85-258"></a>この上のコードの2行目から4行目はほぼ同じ内容なので、数字が変化しているところに注目し、<span class="in">`for`</span>文を使って書き換えてみます。ここでは<span class="in">`^1`</span>のところが1ずつ大きくなってます。この部分を<span class="in">`i`</span>という変数に置き換えてみます。 ついでに、後で変化させることがあるかもしれない部分をすべて変数として定義しておきます。</span>
+<span id="cb85-259"><a href="#cb85-259"></a></span>
+<span id="cb85-262"><a href="#cb85-262"></a><span class="in">```{r}</span></span>
+<span id="cb85-263"><a href="#cb85-263"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb85-264"><a href="#cb85-264"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb85-265"><a href="#cb85-265"></a>CF <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="co"># キャッシュ・フロー</span></span>
+<span id="cb85-266"><a href="#cb85-266"></a></span>
+<span id="cb85-267"><a href="#cb85-267"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) { <span class="co"># iは1から3まで</span></span>
+<span id="cb85-268"><a href="#cb85-268"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> CF <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i <span class="co"># 現在価値の計算</span></span>
+<span id="cb85-269"><a href="#cb85-269"></a>}</span>
+<span id="cb85-270"><a href="#cb85-270"></a><span class="fu">print</span>(NPV)</span>
+<span id="cb85-271"><a href="#cb85-271"></a><span class="in">```</span></span>
+<span id="cb85-272"><a href="#cb85-272"></a></span>
+<span id="cb85-273"><a href="#cb85-273"></a>愚直に計算した場合の同じ結果となりました。 これを10年間の現在価値を計算する場合だとすると、</span>
+<span id="cb85-274"><a href="#cb85-274"></a></span>
+<span id="cb85-277"><a href="#cb85-277"></a><span class="in">```{r}</span></span>
+<span id="cb85-278"><a href="#cb85-278"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb85-279"><a href="#cb85-279"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb85-280"><a href="#cb85-280"></a>NPV1 <span class="ot">&lt;-</span> NPV <span class="sc">+</span></span>
+<span id="cb85-281"><a href="#cb85-281"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb85-282"><a href="#cb85-282"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb85-283"><a href="#cb85-283"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span></span>
+<span id="cb85-284"><a href="#cb85-284"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">4</span> <span class="sc">+</span></span>
+<span id="cb85-285"><a href="#cb85-285"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">5</span> <span class="sc">+</span></span>
+<span id="cb85-286"><a href="#cb85-286"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">6</span> <span class="sc">+</span></span>
+<span id="cb85-287"><a href="#cb85-287"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">7</span> <span class="sc">+</span></span>
+<span id="cb85-288"><a href="#cb85-288"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">8</span> <span class="sc">+</span></span>
+<span id="cb85-289"><a href="#cb85-289"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">9</span> <span class="sc">+</span></span>
+<span id="cb85-290"><a href="#cb85-290"></a>    <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">10</span></span>
+<span id="cb85-291"><a href="#cb85-291"></a><span class="fu">print</span>(NPV1)</span>
+<span id="cb85-292"><a href="#cb85-292"></a><span class="in">```</span></span>
+<span id="cb85-293"><a href="#cb85-293"></a></span>
+<span id="cb85-294"><a href="#cb85-294"></a>と面倒くさいことこの上ないですが、<span class="in">`for`</span>文を使えば、</span>
+<span id="cb85-295"><a href="#cb85-295"></a></span>
+<span id="cb85-298"><a href="#cb85-298"></a><span class="in">```{r}</span></span>
+<span id="cb85-299"><a href="#cb85-299"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb85-300"><a href="#cb85-300"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb85-301"><a href="#cb85-301"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb85-302"><a href="#cb85-302"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i</span>
+<span id="cb85-303"><a href="#cb85-303"></a>}</span>
+<span id="cb85-304"><a href="#cb85-304"></a><span class="fu">print</span>(NPV)</span>
+<span id="cb85-305"><a href="#cb85-305"></a><span class="in">```</span></span>
+<span id="cb85-306"><a href="#cb85-306"></a></span>
+<span id="cb85-307"><a href="#cb85-307"></a>と短く書くことができます。使いこなせるように練習しておきましょう。</span>
+<span id="cb85-308"><a href="#cb85-308"></a></span>
+<span id="cb85-309"><a href="#cb85-309"></a>次のように、<span class="in">`print()`</span>関数の位置を変えた場合、どうなるか考えてみてください。</span>
+<span id="cb85-310"><a href="#cb85-310"></a></span>
+<span id="cb85-313"><a href="#cb85-313"></a><span class="in">```{r}</span></span>
+<span id="cb85-314"><a href="#cb85-314"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb85-315"><a href="#cb85-315"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb85-316"><a href="#cb85-316"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb85-317"><a href="#cb85-317"></a>    <span class="fu">print</span>(NPV)</span>
+<span id="cb85-318"><a href="#cb85-318"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i</span>
+<span id="cb85-319"><a href="#cb85-319"></a>}</span>
+<span id="cb85-320"><a href="#cb85-320"></a><span class="fu">print</span>(NPV)</span>
+<span id="cb85-321"><a href="#cb85-321"></a><span class="in">```</span></span>
+<span id="cb85-322"><a href="#cb85-322"></a></span>
+<span id="cb85-323"><a href="#cb85-323"></a>この場合、最初にNPVの中を表示し、次に1期目の現在価値を計算し、またその結果を表示し、2期目の現在価値を計算し・・・という順番で繰り返しが行われるので、計算の途中経過が表示されることになります。</span>
+<span id="cb85-324"><a href="#cb85-324"></a></span>
+<span id="cb85-325"><a href="#cb85-325"></a><span class="fu">### `if`文</span></span>
+<span id="cb85-326"><a href="#cb85-326"></a></span>
+<span id="cb85-327"><a href="#cb85-327"></a>次に、プログラミングの基本要素である</span>
+<span id="cb85-328"><a href="#cb85-328"></a></span>
+<span id="cb85-329"><a href="#cb85-329"></a><span class="ss">-   </span>繰り返し</span>
+<span id="cb85-330"><a href="#cb85-330"></a><span class="ss">-   </span>**分岐**</span>
+<span id="cb85-331"><a href="#cb85-331"></a><span class="ss">-   </span>関数</span>
+<span id="cb85-332"><a href="#cb85-332"></a></span>
+<span id="cb85-333"><a href="#cb85-333"></a>のうち分岐を行うための文法が<span class="in">`if`</span>文です。<span class="in">`if`</span>文は、ある条件を満たす場合にのみ処理を行うための文法です。たとえば、ある変数<span class="in">`x`</span>が0より大きい場合にのみ、その変数を表示するには、次のように書きます。</span>
+<span id="cb85-334"><a href="#cb85-334"></a></span>
+<span id="cb85-337"><a href="#cb85-337"></a><span class="in">```{r}</span></span>
+<span id="cb85-338"><a href="#cb85-338"></a>x <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb85-339"><a href="#cb85-339"></a><span class="cf">if</span> (x <span class="sc">&gt;</span> <span class="dv">0</span>) { <span class="co"># xが0より大きい場合</span></span>
+<span id="cb85-340"><a href="#cb85-340"></a>    <span class="fu">print</span>(x) <span class="co"># xを表示</span></span>
+<span id="cb85-341"><a href="#cb85-341"></a>}</span>
+<span id="cb85-342"><a href="#cb85-342"></a><span class="in">```</span></span>
+<span id="cb85-343"><a href="#cb85-343"></a></span>
+<span id="cb85-344"><a href="#cb85-344"></a>この文の構造は、基本的には</span>
+<span id="cb85-345"><a href="#cb85-345"></a></span>
+<span id="cb85-346"><a href="#cb85-346"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb85-347"><a href="#cb85-347"></a><span class="cf">if</span> (条件) {</span>
+<span id="cb85-348"><a href="#cb85-348"></a>    条件を満たす場合に実行する処理</span>
+<span id="cb85-349"><a href="#cb85-349"></a>}</span>
+<span id="cb85-350"><a href="#cb85-350"></a><span class="in">```</span></span>
+<span id="cb85-351"><a href="#cb85-351"></a></span>
+<span id="cb85-352"><a href="#cb85-352"></a>のようになっています。 この<span class="in">`if`</span>文を使って、NPVが0より大きい場合にのみ、「プロジェクトを実行！」と表示されるようにしてみます。</span>
+<span id="cb85-353"><a href="#cb85-353"></a></span>
+<span id="cb85-356"><a href="#cb85-356"></a><span class="in">```{r}</span></span>
+<span id="cb85-357"><a href="#cb85-357"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb85-358"><a href="#cb85-358"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb85-359"><a href="#cb85-359"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) { <span class="co"># iは1から10まで</span></span>
+<span id="cb85-360"><a href="#cb85-360"></a>    NPV <span class="ot">&lt;-</span> NPV <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>i</span>
+<span id="cb85-361"><a href="#cb85-361"></a>}</span>
+<span id="cb85-362"><a href="#cb85-362"></a><span class="cf">if</span> (NPV <span class="sc">&gt;</span> <span class="dv">0</span>) { <span class="co"># NPVが0より大きい場合</span></span>
+<span id="cb85-363"><a href="#cb85-363"></a>    <span class="fu">print</span>(<span class="st">"プロジェクトを実行！"</span>) <span class="co"># 文字列を表示</span></span>
+<span id="cb85-364"><a href="#cb85-364"></a>}</span>
+<span id="cb85-365"><a href="#cb85-365"></a></span>
+<span id="cb85-366"><a href="#cb85-366"></a><span class="in">```</span></span>
+<span id="cb85-367"><a href="#cb85-367"></a></span>
+<span id="cb85-368"><a href="#cb85-368"></a>ここではNPVの値が<span class="in">`207.2284`</span>となりプラスになっているので、「プロジェクトを実行！」と表示されます。</span>
+<span id="cb85-369"><a href="#cb85-369"></a></span>
+<span id="cb85-370"><a href="#cb85-370"></a><span class="fu">## NPVと割引率の関係の可視化</span></span>
+<span id="cb85-371"><a href="#cb85-371"></a></span>
+<span id="cb85-372"><a href="#cb85-372"></a>無リスク利子率が0.1から0.2まで0.01ずつ変化した場合の現在価値NPVの値を計算してみます。</span>
+<span id="cb85-373"><a href="#cb85-373"></a></span>
+<span id="cb85-376"><a href="#cb85-376"></a><span class="in">```{r}</span></span>
+<span id="cb85-377"><a href="#cb85-377"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span>) <span class="co"># 無リスク利子率</span></span>
+<span id="cb85-378"><a href="#cb85-378"></a>N <span class="ot">&lt;-</span> <span class="fu">length</span>(R) <span class="co"># 無リスク利子率の要素数 11個</span></span>
+<span id="cb85-379"><a href="#cb85-379"></a>NPV <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, N) <span class="co"># ベクトル変数にN個のNAを代入</span></span>
+<span id="cb85-380"><a href="#cb85-380"></a></span>
+<span id="cb85-381"><a href="#cb85-381"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) { <span class="co"># iは1からNまで</span></span>
+<span id="cb85-382"><a href="#cb85-382"></a>    NPV[i] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="co"># 初期投資</span></span>
+<span id="cb85-383"><a href="#cb85-383"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) { <span class="co"># jは1から3まで</span></span>
+<span id="cb85-384"><a href="#cb85-384"></a>        NPV[i] <span class="ot">&lt;-</span> NPV[i] <span class="sc">+</span> <span class="dv">50</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R[i])<span class="sc">^</span>j <span class="co"># 現在価値</span></span>
+<span id="cb85-385"><a href="#cb85-385"></a>    }</span>
+<span id="cb85-386"><a href="#cb85-386"></a>}</span>
+<span id="cb85-387"><a href="#cb85-387"></a><span class="fu">print</span>(NPV) <span class="co"># 11個の現在価値を表示</span></span>
+<span id="cb85-388"><a href="#cb85-388"></a><span class="in">```</span></span>
+<span id="cb85-389"><a href="#cb85-389"></a></span>
+<span id="cb85-390"><a href="#cb85-390"></a>少し複雑な構造しているので、順番に説明します。</span>
+<span id="cb85-391"><a href="#cb85-391"></a></span>
+<span id="cb85-392"><a href="#cb85-392"></a><span class="ss">-   </span>1行目は、無リスク利子率のベクトル変数<span class="in">`R`</span>を定義しています。ここでは、0.1から0.2まで0.01刻みのデータを作成しています。</span>
+<span id="cb85-393"><a href="#cb85-393"></a><span class="ss">-   </span>2行目は、ベクトル変数<span class="in">`R`</span>の要素数を<span class="in">`N`</span>として定義しています。ここでは、<span class="in">`N`</span>は11となります。</span>
+<span id="cb85-394"><a href="#cb85-394"></a><span class="ss">-   </span>3行目は、ベクトル変数<span class="in">`NPV`</span>に<span class="in">`N`</span>個の<span class="in">`NA`</span>を代入しています。<span class="in">`NA`</span>はNot Availableの略で、欠損値を表します。<span class="in">`NA`</span>を代入することで、空っぽの箱が11個入ったベクトル変数<span class="in">`NPV`</span>を用意します。</span>
+<span id="cb85-395"><a href="#cb85-395"></a><span class="ss">-   </span>4行目から9行目は、<span class="in">`for`</span>文を使って、<span class="in">`NPV`</span>の中身を計算しています。 <span class="in">`for`</span>が2回出てきているので、二重に繰り返しの処理を行っています。これを**ネスト**と呼びます。 1つのめ<span class="in">`for`</span>は<span class="in">`i`</span>が1からN(ここでは11)まで変化し、2つめの<span class="in">`for`</span>は<span class="in">`j`</span>が1から3まで変化します。1つめの<span class="in">`for`</span>文のiが1のとき、次の<span class="in">`for`</span>文の<span class="in">`j`</span>が1から3までの処理を繰り返し、次に1つめの<span class="in">`for`</span>文の<span class="in">`i`</span>が2のとき、次の<span class="in">`for`</span>文の<span class="in">`j`</span>が1から3までの処理を繰り返し・・・という順番で処理が行われます。</span>
+<span id="cb85-396"><a href="#cb85-396"></a><span class="ss">-   </span>10行目は、<span class="in">`NPV`</span>の中身を表示しています。</span>
+<span id="cb85-397"><a href="#cb85-397"></a></span>
+<span id="cb85-398"><a href="#cb85-398"></a><span class="dt">&lt;</span><span class="kw">aside</span><span class="dt">&gt;</span>TABキーを使って、インデントを行い、ソースコードのまとまりをわかりやすくしています。インデントは、プログラムの構造をわかりやすくするために行います。インデントを行うときは、半角スペース2つか4つを使います。どちらを使っても構いませんが、どちらかに統一することが大切です。<span class="dt">&lt;/</span><span class="kw">aside</span><span class="dt">&gt;</span></span>
+<span id="cb85-399"><a href="#cb85-399"></a></span>
+<span id="cb85-400"><a href="#cb85-400"></a>この結果をグラフにしてみます。</span>
+<span id="cb85-401"><a href="#cb85-401"></a></span>
+<span id="cb85-404"><a href="#cb85-404"></a><span class="in">```{r}</span></span>
+<span id="cb85-405"><a href="#cb85-405"></a><span class="fu">plot</span>(</span>
+<span id="cb85-406"><a href="#cb85-406"></a>    <span class="at">x =</span> R, <span class="co"># x軸のデータ</span></span>
+<span id="cb85-407"><a href="#cb85-407"></a>    <span class="at">y =</span> NPV, <span class="co"># y軸のデータ</span></span>
+<span id="cb85-408"><a href="#cb85-408"></a>    <span class="at">xlab =</span> <span class="st">"無リスク利子率"</span>, <span class="co"># x軸のラベル</span></span>
+<span id="cb85-409"><a href="#cb85-409"></a>    <span class="at">ylab =</span> <span class="st">"現在価値"</span>, <span class="co"># y軸のラベル</span></span>
+<span id="cb85-410"><a href="#cb85-410"></a>    <span class="at">main =</span> <span class="st">"図：無リスク利子率と現在価値"</span>, <span class="co"># グラフのタイトル</span></span>
+<span id="cb85-411"><a href="#cb85-411"></a>    <span class="at">type =</span> <span class="st">"l"</span> <span class="co"># 線グラフ</span></span>
+<span id="cb85-412"><a href="#cb85-412"></a>)</span>
+<span id="cb85-413"><a href="#cb85-413"></a><span class="in">```</span></span>
+<span id="cb85-414"><a href="#cb85-414"></a></span>
+<span id="cb85-415"><a href="#cb85-415"></a><span class="fu">#### ベクトル化</span></span>
+<span id="cb85-416"><a href="#cb85-416"></a></span>
+<span id="cb85-417"><a href="#cb85-417"></a>上のコードは、<span class="in">`for`</span>文を使って、<span class="in">`NPV`</span>の中身を計算しています。しかし、R言語では、<span class="in">`for`</span>文を使わずに、ベクトルを使って、同じことを行うことができます。このように、<span class="in">`for`</span>文を使わずに、ベクトルを使って処理を行うことを**ベクトル化**と呼びます。ベクトル化を行うと、処理が高速化されることがあります。</span>
+<span id="cb85-418"><a href="#cb85-418"></a></span>
+<span id="cb85-421"><a href="#cb85-421"></a><span class="in">```{r}</span></span>
+<span id="cb85-422"><a href="#cb85-422"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 無リスク利子率 10%</span></span>
+<span id="cb85-423"><a href="#cb85-423"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>) <span class="co"># キャッシュ・フローのベクトル</span></span>
+<span id="cb85-424"><a href="#cb85-424"></a>year <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">3</span> <span class="co"># 年度のベクトル</span></span>
+<span id="cb85-425"><a href="#cb85-425"></a>PV_CF <span class="ot">&lt;-</span> CF <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>year <span class="co"># 各期の現在価値を計算</span></span>
+<span id="cb85-426"><a href="#cb85-426"></a>NPV <span class="ot">&lt;-</span> <span class="fu">sum</span>(PV_CF) <span class="co"># 現在価値の合計</span></span>
+<span id="cb85-427"><a href="#cb85-427"></a><span class="fu">print</span>(NPV)</span>
+<span id="cb85-428"><a href="#cb85-428"></a><span class="in">```</span></span>
+<span id="cb85-429"><a href="#cb85-429"></a></span>
+<span id="cb85-430"><a href="#cb85-430"></a><span class="fu"># 独自関数の定義の仕方</span></span>
+<span id="cb85-431"><a href="#cb85-431"></a></span>
+<span id="cb85-432"><a href="#cb85-432"></a>プログラミングの基本要素である</span>
+<span id="cb85-433"><a href="#cb85-433"></a></span>
+<span id="cb85-434"><a href="#cb85-434"></a><span class="ss">-   </span>繰り返し</span>
+<span id="cb85-435"><a href="#cb85-435"></a><span class="ss">-   </span>分岐</span>
+<span id="cb85-436"><a href="#cb85-436"></a><span class="ss">-   </span>**関数**</span>
+<span id="cb85-437"><a href="#cb85-437"></a></span>
+<span id="cb85-438"><a href="#cb85-438"></a>の作り方について説明します。 Rでは自分で関数を定義することができます。関数を定義することで、同じ処理を何度も書く必要がなくなり、プログラムの見通しがよくなります。 例えば、足し算をする関数<span class="in">`my_add()`</span>を定義してみます。</span>
+<span id="cb85-439"><a href="#cb85-439"></a></span>
+<span id="cb85-442"><a href="#cb85-442"></a><span class="in">```{r}</span></span>
+<span id="cb85-443"><a href="#cb85-443"></a>my_add <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y){</span>
+<span id="cb85-444"><a href="#cb85-444"></a>    x <span class="sc">+</span> y</span>
+<span id="cb85-445"><a href="#cb85-445"></a>}</span>
+<span id="cb85-446"><a href="#cb85-446"></a><span class="in">```</span></span>
+<span id="cb85-447"><a href="#cb85-447"></a></span>
+<span id="cb85-448"><a href="#cb85-448"></a>この関数の構造は、</span>
+<span id="cb85-449"><a href="#cb85-449"></a></span>
+<span id="cb85-450"><a href="#cb85-450"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb85-451"><a href="#cb85-451"></a>好きな関数名 <span class="ot">&lt;-</span> <span class="cf">function</span>(引数1, 引数2){</span>
+<span id="cb85-452"><a href="#cb85-452"></a>    処理内容</span>
+<span id="cb85-453"><a href="#cb85-453"></a>}</span>
+<span id="cb85-454"><a href="#cb85-454"></a><span class="in">```</span></span>
+<span id="cb85-455"><a href="#cb85-455"></a></span>
+<span id="cb85-456"><a href="#cb85-456"></a>となっています。つまり、この独自関数<span class="in">`my_add()`</span>は、<span class="in">`x`</span>と<span class="in">`y`</span>という2つの引数(ひきすう)を足し合わせる関数です。数学的に書くなら、</span>
+<span id="cb85-457"><a href="#cb85-457"></a></span>
+<span id="cb85-458"><a href="#cb85-458"></a>$$</span>
+<span id="cb85-459"><a href="#cb85-459"></a>f(x, y) = x + y</span>
+<span id="cb85-460"><a href="#cb85-460"></a>$$</span>
+<span id="cb85-461"><a href="#cb85-461"></a></span>
+<span id="cb85-462"><a href="#cb85-462"></a>となります。これは$f$という関数は2つの引数を足す関数であるという意味になっています。 作成した独自関数<span class="in">`my_add()`</span>を使ってみます。</span>
+<span id="cb85-463"><a href="#cb85-463"></a></span>
+<span id="cb85-466"><a href="#cb85-466"></a><span class="in">```{r}</span></span>
+<span id="cb85-467"><a href="#cb85-467"></a><span class="fu">my_add</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb85-468"><a href="#cb85-468"></a><span class="in">```</span></span>
+<span id="cb85-469"><a href="#cb85-469"></a></span>
+<span id="cb85-470"><a href="#cb85-470"></a>3が出力されました。</span>
+<span id="cb85-471"><a href="#cb85-471"></a></span>
+<span id="cb85-472"><a href="#cb85-472"></a>このように、独自関数を作成する場合には、</span>
+<span id="cb85-473"><a href="#cb85-473"></a></span>
+<span id="cb85-474"><a href="#cb85-474"></a><span class="ss">1.  </span>どのような引数を与えるのか？</span>
+<span id="cb85-475"><a href="#cb85-475"></a><span class="ss">2.  </span>それに対してどのような処理を行うのか？</span>
+<span id="cb85-476"><a href="#cb85-476"></a><span class="ss">3.  </span>最終的にどの値を返す(出力させる)のか？</span>
+<span id="cb85-477"><a href="#cb85-477"></a></span>
+<span id="cb85-478"><a href="#cb85-478"></a>を考えておく必要があります。</span>
+<span id="cb85-479"><a href="#cb85-479"></a></span>
+<span id="cb85-480"><a href="#cb85-480"></a>では今までの流れで、現在価値を計算する関数を作成してみます。変化させたい値は、キャッシュフロー<span class="in">`CF`</span>と無リスク利子率<span class="in">`R`</span>なので、その2つを引数とする独自関数を作成します。 少し注意する必要がある点として、以下の計算例では<span class="in">`CF`</span>の1番目の要素は初期投資額となることに注意しましょう。</span>
+<span id="cb85-481"><a href="#cb85-481"></a></span>
+<span id="cb85-484"><a href="#cb85-484"></a><span class="in">```{r}</span></span>
+<span id="cb85-485"><a href="#cb85-485"></a>calc_PV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, R) {</span>
+<span id="cb85-486"><a href="#cb85-486"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="co"># 初期投資額なのでマイナスの値</span></span>
+<span id="cb85-487"><a href="#cb85-487"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) { <span class="co"># iは2からCFの要素数まで</span></span>
+<span id="cb85-488"><a href="#cb85-488"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 現在価値</span></span>
+<span id="cb85-489"><a href="#cb85-489"></a>    }</span>
+<span id="cb85-490"><a href="#cb85-490"></a>    <span class="fu">return</span>(PV) <span class="co"># 現在価値を返す</span></span>
+<span id="cb85-491"><a href="#cb85-491"></a>}</span>
+<span id="cb85-492"><a href="#cb85-492"></a><span class="in">```</span></span>
+<span id="cb85-493"><a href="#cb85-493"></a></span>
+<span id="cb85-494"><a href="#cb85-494"></a>この関数<span class="in">`calc_PV()`</span>を使って、現在価値を計算してみます。</span>
+<span id="cb85-495"><a href="#cb85-495"></a></span>
+<span id="cb85-498"><a href="#cb85-498"></a><span class="in">```{r}</span></span>
+<span id="cb85-499"><a href="#cb85-499"></a><span class="fu">calc_PV</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>), <span class="fl">0.1</span>)</span>
+<span id="cb85-500"><a href="#cb85-500"></a><span class="in">```</span></span>
+<span id="cb85-501"><a href="#cb85-501"></a></span>
+<span id="cb85-502"><a href="#cb85-502"></a>ちゃんと計算されました。この関数を使って、無リスク利子率が0.1から0.2まで0.01ずつ変化した場合の現在価値を計算してみます。</span>
+<span id="cb85-503"><a href="#cb85-503"></a></span>
+<span id="cb85-506"><a href="#cb85-506"></a><span class="in">```{r}</span></span>
+<span id="cb85-507"><a href="#cb85-507"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>) <span class="co"># キャッシュ・フローのベクトル</span></span>
+<span id="cb85-508"><a href="#cb85-508"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span>) <span class="co"># 無リスク利子率のベクトル</span></span>
+<span id="cb85-509"><a href="#cb85-509"></a><span class="fu">calc_PV</span>(CF,R)</span>
+<span id="cb85-510"><a href="#cb85-510"></a><span class="in">```</span></span>
+<span id="cb85-511"><a href="#cb85-511"></a></span>
+<span id="cb85-512"><a href="#cb85-512"></a>計算されました。 関数の引数にデフォルトで値を設定することで、入力を楽にすることができます。例えば、無リスク利子率のデフォルト値を0.1に設定してみます。</span>
+<span id="cb85-513"><a href="#cb85-513"></a></span>
+<span id="cb85-516"><a href="#cb85-516"></a><span class="in">```{r}</span></span>
+<span id="cb85-517"><a href="#cb85-517"></a>calc_PV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb85-518"><a href="#cb85-518"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="co"># 初期投資額なのでマイナスの値</span></span>
+<span id="cb85-519"><a href="#cb85-519"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) { <span class="co"># iは2からCFの要素数まで</span></span>
+<span id="cb85-520"><a href="#cb85-520"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 現在価値</span></span>
+<span id="cb85-521"><a href="#cb85-521"></a>    }</span>
+<span id="cb85-522"><a href="#cb85-522"></a>    <span class="fu">return</span>(PV) <span class="co"># 現在価値を返す</span></span>
+<span id="cb85-523"><a href="#cb85-523"></a>}</span>
+<span id="cb85-524"><a href="#cb85-524"></a><span class="in">```</span></span>
+<span id="cb85-525"><a href="#cb85-525"></a></span>
+<span id="cb85-526"><a href="#cb85-526"></a>すると、無リスク利子率を指定しなくても、デフォルト値が使われるようになります。</span>
+<span id="cb85-527"><a href="#cb85-527"></a></span>
+<span id="cb85-530"><a href="#cb85-530"></a><span class="in">```{r}</span></span>
+<span id="cb85-531"><a href="#cb85-531"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>) <span class="co"># キャッシュ・フローのベクトル</span></span>
+<span id="cb85-532"><a href="#cb85-532"></a><span class="fu">calc_PV</span>(CF)</span>
+<span id="cb85-533"><a href="#cb85-533"></a><span class="in">```</span></span>
+<span id="cb85-534"><a href="#cb85-534"></a></span>
+<span id="cb85-535"><a href="#cb85-535"></a>ただ計算を間違えるもとにもなるので、なるべく省略せずに、しっかり書くことが大事です。</span>
+<span id="cb85-536"><a href="#cb85-536"></a></span>
+<span id="cb85-537"><a href="#cb85-537"></a><span class="fu">#### もっと凝った独自関数</span></span>
+<span id="cb85-538"><a href="#cb85-538"></a></span>
+<span id="cb85-539"><a href="#cb85-539"></a>繰り返し、分岐、関数というプログラミングの基本要素を勉強したので、もう少し複雑なプログラムを作成してみます。</span>
+<span id="cb85-540"><a href="#cb85-540"></a></span>
+<span id="cb85-541"><a href="#cb85-541"></a>まずは、引数に正の数字以外のもの、あるいは文字列を入力した場合にエラーを表示する関数を作成します。</span>
+<span id="cb85-542"><a href="#cb85-542"></a></span>
+<span id="cb85-545"><a href="#cb85-545"></a><span class="in">```{r}</span></span>
+<span id="cb85-546"><a href="#cb85-546"></a>calc_PV_new <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, R) {</span>
+<span id="cb85-547"><a href="#cb85-547"></a>    <span class="cf">if</span> (R <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb85-548"><a href="#cb85-548"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は正の値を入力してください。"</span>) <span class="co"># エラー処理</span></span>
+<span id="cb85-549"><a href="#cb85-549"></a>    }</span>
+<span id="cb85-550"><a href="#cb85-550"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(CF) ) {</span>
+<span id="cb85-551"><a href="#cb85-551"></a>        <span class="fu">stop</span>(<span class="st">"キャッシュ・フローは数値を入力してください。"</span>)</span>
+<span id="cb85-552"><a href="#cb85-552"></a>    }</span>
+<span id="cb85-553"><a href="#cb85-553"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(R) ) {</span>
+<span id="cb85-554"><a href="#cb85-554"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は数値を入力してください。"</span>)</span>
+<span id="cb85-555"><a href="#cb85-555"></a>    }</span>
+<span id="cb85-556"><a href="#cb85-556"></a></span>
+<span id="cb85-557"><a href="#cb85-557"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>]</span>
+<span id="cb85-558"><a href="#cb85-558"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) {</span>
+<span id="cb85-559"><a href="#cb85-559"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb85-560"><a href="#cb85-560"></a>    }</span>
+<span id="cb85-561"><a href="#cb85-561"></a>    <span class="fu">return</span>(PV)</span>
+<span id="cb85-562"><a href="#cb85-562"></a>}</span>
+<span id="cb85-563"><a href="#cb85-563"></a><span class="in">```</span></span>
+<span id="cb85-564"><a href="#cb85-564"></a></span>
+<span id="cb85-565"><a href="#cb85-565"></a>できました。ついでに、NPVの計算結果とともに、NPVが0より大きい場合にのみ、「プロジェクトを実行！」と表示する機能も実装してみます。</span>
+<span id="cb85-566"><a href="#cb85-566"></a></span>
+<span id="cb85-569"><a href="#cb85-569"></a><span class="in">```{r}</span></span>
+<span id="cb85-570"><a href="#cb85-570"></a>calc_PV_new <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb85-571"><a href="#cb85-571"></a>    <span class="cf">if</span> (R <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb85-572"><a href="#cb85-572"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は正の値を入力してください。"</span>) <span class="co"># エラー処理</span></span>
+<span id="cb85-573"><a href="#cb85-573"></a>    }</span>
+<span id="cb85-574"><a href="#cb85-574"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(CF) ) {</span>
+<span id="cb85-575"><a href="#cb85-575"></a>        <span class="fu">stop</span>(<span class="st">"キャッシュ・フローは数値を入力してください。"</span>)</span>
+<span id="cb85-576"><a href="#cb85-576"></a>    }</span>
+<span id="cb85-577"><a href="#cb85-577"></a>    <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.numeric</span>(R) ) {</span>
+<span id="cb85-578"><a href="#cb85-578"></a>        <span class="fu">stop</span>(<span class="st">"無リスク利子率は数値を入力してください。"</span>)</span>
+<span id="cb85-579"><a href="#cb85-579"></a>    }</span>
+<span id="cb85-580"><a href="#cb85-580"></a></span>
+<span id="cb85-581"><a href="#cb85-581"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>]</span>
+<span id="cb85-582"><a href="#cb85-582"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) {</span>
+<span id="cb85-583"><a href="#cb85-583"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb85-584"><a href="#cb85-584"></a>    }</span>
+<span id="cb85-585"><a href="#cb85-585"></a></span>
+<span id="cb85-586"><a href="#cb85-586"></a>    <span class="cf">if</span> (PV <span class="sc">&gt;=</span> <span class="dv">0</span>) { <span class="co"># NPVが0より大きい場合</span></span>
+<span id="cb85-587"><a href="#cb85-587"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なので、プロジェクトを実行！"</span>) <span class="co"># 文字列を表示</span></span>
+<span id="cb85-588"><a href="#cb85-588"></a>    } <span class="cf">else</span> {</span>
+<span id="cb85-589"><a href="#cb85-589"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なのでプロジェクト中止！"</span>) <span class="co"># 文字列を表示</span></span>
+<span id="cb85-590"><a href="#cb85-590"></a>    }</span>
+<span id="cb85-591"><a href="#cb85-591"></a>}</span>
+<span id="cb85-592"><a href="#cb85-592"></a><span class="in">```</span></span>
+<span id="cb85-593"><a href="#cb85-593"></a></span>
+<span id="cb85-594"><a href="#cb85-594"></a>いろいろ駆使してより短く簡単に書くなら、</span>
+<span id="cb85-595"><a href="#cb85-595"></a></span>
+<span id="cb85-598"><a href="#cb85-598"></a><span class="in">```{r}</span></span>
+<span id="cb85-599"><a href="#cb85-599"></a>calc_PV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb85-600"><a href="#cb85-600"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(CF) <span class="sc">||</span> <span class="sc">!</span><span class="fu">is.numeric</span>(R) <span class="sc">||</span> R <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb85-601"><a href="#cb85-601"></a>    <span class="fu">stop</span>(<span class="st">"キャッシュ・フローと無リスク利子率は数値を入力し、無リスク利子率は正の値を入力してください。"</span>)</span>
+<span id="cb85-602"><a href="#cb85-602"></a>  }</span>
+<span id="cb85-603"><a href="#cb85-603"></a>  PV <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(CF), <span class="cf">function</span>(i) CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>)))</span>
+<span id="cb85-604"><a href="#cb85-604"></a></span>
+<span id="cb85-605"><a href="#cb85-605"></a>  <span class="cf">if</span> (PV <span class="sc">&gt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb85-606"><a href="#cb85-606"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なので、プロジェクトを実行！"</span>)</span>
+<span id="cb85-607"><a href="#cb85-607"></a>  } <span class="cf">else</span> {</span>
+<span id="cb85-608"><a href="#cb85-608"></a>    <span class="fu">paste0</span>(<span class="st">"NPVが"</span>, <span class="fu">round</span>(PV, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"なのでプロジェクト中止！"</span>)</span>
+<span id="cb85-609"><a href="#cb85-609"></a>  }</span>
+<span id="cb85-610"><a href="#cb85-610"></a>}</span>
+<span id="cb85-611"><a href="#cb85-611"></a><span class="in">```</span></span>
+<span id="cb85-612"><a href="#cb85-612"></a></span>
+<span id="cb85-615"><a href="#cb85-615"></a><span class="in">```{r}</span></span>
+<span id="cb85-616"><a href="#cb85-616"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb85-617"><a href="#cb85-617"></a><span class="fu">calc_PV</span>(CF)</span>
+<span id="cb85-618"><a href="#cb85-618"></a><span class="in">```</span></span>
+<span id="cb85-619"><a href="#cb85-619"></a></span>
+<span id="cb85-620"><a href="#cb85-620"></a>うまくいきました。 ちょっとキャッシュフローのベクトルを変化させて、初期投資を-200にすると、</span>
+<span id="cb85-621"><a href="#cb85-621"></a></span>
+<span id="cb85-624"><a href="#cb85-624"></a><span class="in">```{r}</span></span>
+<span id="cb85-625"><a href="#cb85-625"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">200</span>, <span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">50</span>)</span>
+<span id="cb85-626"><a href="#cb85-626"></a><span class="fu">calc_PV</span>(CF)</span>
+<span id="cb85-627"><a href="#cb85-627"></a><span class="in">```</span></span>
+<span id="cb85-628"><a href="#cb85-628"></a></span>
+<span id="cb85-629"><a href="#cb85-629"></a>ちゃんと中止のメッセージが出ました。</span>
+<span id="cb85-630"><a href="#cb85-630"></a></span>
+<span id="cb85-631"><a href="#cb85-631"></a>このように、分岐、繰り返し、関数を駆使して、様々なプログラムを作成することができます。プログラミングの基本要素を使いこなせるように、練習を重ねてください。まずは教科書に書いてあるソースコードを自分のPC上で実行してみてください。その際は、コピペせずに自分で入力するようにしてください。</span>
+<span id="cb85-632"><a href="#cb85-632"></a></span>
+<span id="cb85-633"><a href="#cb85-633"></a><span class="fu">#### 付録：ベクトル化で早くなるのか？</span></span>
+<span id="cb85-634"><a href="#cb85-634"></a></span>
+<span id="cb85-635"><a href="#cb85-635"></a>どれほど高速化されるのかを確認するため、100万年分の現在価値を計算してみます。 最初に松浦のR環境を確認してみます。 Mac miniで、CPUはM1、メモリは8GBです。</span>
+<span id="cb85-636"><a href="#cb85-636"></a></span>
+<span id="cb85-639"><a href="#cb85-639"></a><span class="in">```{r}</span></span>
+<span id="cb85-640"><a href="#cb85-640"></a>R.version</span>
+<span id="cb85-641"><a href="#cb85-641"></a><span class="in">```</span></span>
+<span id="cb85-642"><a href="#cb85-642"></a></span>
+<span id="cb85-643"><a href="#cb85-643"></a>まずは、<span class="in">`for`</span>文を使って計算してみます。 <span class="in">`for`</span>で現在価値を計算する関数を作成します。 この関数では、繰り返し毎期の現在価値を計算し、それを足し合わせていく、という処理を繰り返し行っています。</span>
+<span id="cb85-644"><a href="#cb85-644"></a></span>
+<span id="cb85-647"><a href="#cb85-647"></a><span class="in">```{r}</span></span>
+<span id="cb85-648"><a href="#cb85-648"></a>calc_PV_for <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>) {</span>
+<span id="cb85-649"><a href="#cb85-649"></a>    PV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="co"># 初期投資額なのでマイナスの値</span></span>
+<span id="cb85-650"><a href="#cb85-650"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CF)) { <span class="co"># iは2からCFの要素数まで</span></span>
+<span id="cb85-651"><a href="#cb85-651"></a>        PV <span class="ot">&lt;-</span> PV <span class="sc">+</span> CF[i] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>(i <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 現在価値</span></span>
+<span id="cb85-652"><a href="#cb85-652"></a>    }</span>
+<span id="cb85-653"><a href="#cb85-653"></a>    <span class="fu">return</span>(PV) <span class="co"># 現在価値を返す</span></span>
+<span id="cb85-654"><a href="#cb85-654"></a>}</span>
+<span id="cb85-655"><a href="#cb85-655"></a><span class="in">```</span></span>
+<span id="cb85-656"><a href="#cb85-656"></a></span>
+<span id="cb85-657"><a href="#cb85-657"></a>プログラムの実行時間を計算するため、<span class="in">`system.time()`</span>関数を使います。</span>
+<span id="cb85-658"><a href="#cb85-658"></a></span>
+<span id="cb85-661"><a href="#cb85-661"></a><span class="in">```{r}</span></span>
+<span id="cb85-662"><a href="#cb85-662"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">50</span>, <span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>))</span>
+<span id="cb85-663"><a href="#cb85-663"></a>(res_for <span class="ot">&lt;-</span> <span class="fu">system.time</span>(<span class="fu">calc_PV_for</span>(CF)))</span>
+<span id="cb85-664"><a href="#cb85-664"></a><span class="in">```</span></span>
+<span id="cb85-665"><a href="#cb85-665"></a></span>
+<span id="cb85-666"><a href="#cb85-666"></a><span class="in">`r res_for[3]`</span> 秒かかりました。 次に、ベクトル化した計算結果を見てみましょう。</span>
+<span id="cb85-667"><a href="#cb85-667"></a></span>
+<span id="cb85-670"><a href="#cb85-670"></a><span class="in">```{r}</span></span>
+<span id="cb85-671"><a href="#cb85-671"></a>calc_PV_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>){</span>
+<span id="cb85-672"><a href="#cb85-672"></a>    year <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span>(<span class="fu">length</span>(CF) <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 年度のベクトル</span></span>
+<span id="cb85-673"><a href="#cb85-673"></a>    PV_CF <span class="ot">&lt;-</span> CF <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span>year <span class="co"># 各期の現在価値を計算</span></span>
+<span id="cb85-674"><a href="#cb85-674"></a>    NPV <span class="ot">&lt;-</span> <span class="fu">sum</span>(PV_CF) <span class="co"># 現在価値の合計</span></span>
+<span id="cb85-675"><a href="#cb85-675"></a>    <span class="fu">return</span>(NPV)</span>
+<span id="cb85-676"><a href="#cb85-676"></a>}</span>
+<span id="cb85-677"><a href="#cb85-677"></a><span class="in">```</span></span>
+<span id="cb85-678"><a href="#cb85-678"></a></span>
+<span id="cb85-679"><a href="#cb85-679"></a>ベクトルから直接現在価値を計算する関数を用いた計算速度を測ってみます。</span>
+<span id="cb85-680"><a href="#cb85-680"></a></span>
+<span id="cb85-683"><a href="#cb85-683"></a><span class="in">```{r}</span></span>
+<span id="cb85-684"><a href="#cb85-684"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">50</span>, <span class="dv">10</span><span class="sc">^</span><span class="dv">6</span>))</span>
+<span id="cb85-685"><a href="#cb85-685"></a>(res_vec <span class="ot">&lt;-</span> <span class="fu">system.time</span>(<span class="fu">calc_PV_vec</span>(CF)))</span>
+<span id="cb85-686"><a href="#cb85-686"></a><span class="in">```</span></span>
+<span id="cb85-687"><a href="#cb85-687"></a></span>
+<span id="cb85-688"><a href="#cb85-688"></a><span class="in">`r res_vec[3]`</span> 秒と、<span class="in">`for`</span>文を使った場合に比べて、約 <span class="in">`r round(res_for[3] / res_vec[3], digits = 2)`</span> 倍高速化されました。これがベクトル化による実行速度の効率化です。 とはいえ、演算に時間がかかるような大規模データや複雑なシミュレーションをするようになるまで、ベクトル化の恩恵はそれほど大きくないので、まずは読みやすく、確実に動くプログラムを書くことを心がけましょう。</span>
+<span id="cb85-689"><a href="#cb85-689"></a></span>
+<span id="cb85-690"><a href="#cb85-690"></a><span class="fu"># まとめ</span></span>
+<span id="cb85-691"><a href="#cb85-691"></a></span>
+<span id="cb85-692"><a href="#cb85-692"></a><span class="ss">-   </span>スカラー変数・ベクトル変数の作り方</span>
+<span id="cb85-693"><a href="#cb85-693"></a><span class="ss">-   </span>変数から任意の値を取り出す方法</span>
+<span id="cb85-694"><a href="#cb85-694"></a><span class="ss">-   </span><span class="in">`plot()`</span>関数による作図</span>
+<span id="cb85-695"><a href="#cb85-695"></a><span class="ss">-   </span><span class="in">`for`</span>文を用いた繰り返し処理</span>
+<span id="cb85-696"><a href="#cb85-696"></a><span class="ss">-   </span><span class="in">`if`</span>文を用いた分岐処理</span>
+<span id="cb85-697"><a href="#cb85-697"></a><span class="ss">-   </span><span class="in">`funciton()`</span>を用いた独自関数</span>
+<span id="cb85-698"><a href="#cb85-698"></a><span class="ss">-   </span>(参考) ベクトル化のすすめ</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025, Soichi Matsuura</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://so-ichi.com/r.html">
+      <i class="bi bi-house" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ma2ura">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/matsuura_rits">
+      <i class="bi bi-twitter" role="img" aria-label="Twitter">
+</i> 
+    </a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+</body></html>

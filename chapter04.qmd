@@ -1,0 +1,688 @@
+## 財務データの取得と可視化
+
+
+```{r setup}
+#| code-fold: true
+pacman:: p_load(
+	tidyverse,
+	ggthemes
+)
+mystyle <- list(
+  theme_economist_white(
+    # gray_bg = FALSE,
+    base_family = "HiraKakuProN-W3"
+    ),
+  scale_colour_economist(),
+  theme(
+    text = element_text(size = 12), # フォントファミリーは上で指定済みなので省略可
+    axis.title = element_text(size = 12)
+  )
+)
+```
+
+## ディスクロージャー制度の概要とデータの入手先
+
+### 法定開示と適時開示
+
+|  | 年次開示 | 四半期開示 | 重要事実 |
+| --- | --- | --- | --- |
+| 法定開示 | 有価証券報告書 | 四半期報告書 | 臨時報告書 |
+| 適時開示 | 決算短信 | 四半期決算短信 | 適時開示 |
+
+### 財務データの入手先
+
+- **EDINET**：金融庁が運営する電子開示システムで，全上場企業の法定開示資料をデータベースとして提供
+- **TDnet**：東京証券取引所が運営する電子開示システムで，上場企業の決算短信をデータベースとして提供
+
+XBRL(eXtensible Business Reporting Language)形式で財務諸表などの主要情報を公開しています。XBRLからデータを読み込むスキルは本書の枠を超えるため，ここでは練習用データで分析しますが、立命館大学では日経NEEDSを利用して財務データを収集します。
+
+## Rを利用した財務データの分析
+
+### tidyverseパッケージの概要
+
+tidyverseとは，R神Wickham氏が基本コンセプトを設定し，**整然データ**(tidy data)に対して一貫した記法でデータを扱えるパッケージ群です。
+インストールと読み込みは以下の通りです。
+
+```{r ch04_01}
+#install.packages("pacman") # 初回だけ
+pacman::p_load(tidyverse) # 読み込み
+```
+
+`tidyverse`パッケージを読み込むことで，次の代表的なパッケージが読み出されます。
+よく使うものは以下のものになります。
+
+
+- `ggplot2` データの可視化　めっちゃ使う
+- `dplyr` データハンドリング　めっちゃ使う
+- `tidyr` tidyデータにもっていく　使う
+- `readr` データを読み込む めっちゃ使う
+- `purrr` 関数型プログラミングで使う　慣れてくると使う
+- `tibble` data.frameではなくtibbleにする　あまり使わない
+- `stringr` 文字列の加工・操作　ちょいちょい使う
+- `forcats` ファクター型変数の操作　そんなに使わない
+
+### 財務データの読み込み
+
+サポートサイトにある練習用のデータセット`ch04_financial_data.csv`をダウンロードして，作業ディレクトリに置きます。
+
+:::{.column-margin}
+作業ディレクトリの場所を確認するには`getwd()`を使います。
+作業ディレクトリを変更するときは，`setwd()`で作業ディレクトリを絶対パスで指定するとよいでしょう。
+:::
+
+いままではcsvデータを読み込むために，基本関数の`read.csv()`を使ってきましたが、より高速かつオプション指定が柔軟なtidyverse関数群の1つである`readr`パッケージの`read_csv()`関数を使います。
+readとcsvの間がピリオド`.`からアンダースコア`_`に変わっているので注意してください。
+`readr`パッケージの`read_csv()`関数は，
+
+1. データの読み込みが高速かつ型の推論が柔軟
+2. 基本の`data.frame`ではなく，その拡張版である`tibble`で返す
+3. 列名を勝手に変換しない。
+4. 文字列を勝手にファクター型にしない(`read.csv()`だと勝手にファクターになる)。
+
+という利点があります。
+
+```{r ch04_02, filename = "データの読み込み"}
+financial_data <- read_csv("data/ch04_financial_data.csv")
+nrow(financial_data) # 行数
+ncol(financial_data) # 列数
+head(financial_data, 5) # 最初の5行
+```
+
+この`financial_data`には、11個の変数に観測値が7920個あることがわかります。
+
+- `year` : 年度
+- `firm_ID` : 企業ID
+- `industry_ID` : 産業ID
+- `sales` : 売上高
+- `OX` : 事業利益(operating income)
+- `NFE` : 純金融費用(net financial expenses)
+- `X` : 当期純利益(net income)
+- `OA` : 事業資産(operating assets)
+- `OL` : 事業負債(operating liabilities)
+- `FE` : 金融資産(financial assets)
+- `FO` : 金融負債(financial obligations)
+
+このデータフレームの構造を確認します。
+
+```{r}
+glimpse(financial_data)
+```
+
+変数はすべて数値型`double`になっていますが、`firm_ID`と`industry_ID`はカテゴリーを表す変数ですので、数値型ではなくファクター型に変換します。ついでに`year`は年度という時間を尺度なので、数値型ではなく`factor`型に変換します。ここで重要なのは、`year`はただのファクター型ではなく、順序のあるファクター型とすることです。
+
+ここでは`as.factor()`を使います。
+
+```{r ch04_03}
+# firm_IDとindustry_IDをfactor型に変換
+financial_data <- financial_data |>
+  mutate(
+	year = as.factor(year),
+	firm_ID = as.factor(firm_ID),
+	industry_ID = as.factor(industry_ID)
+  )
+# 確認
+glimpse(financial_data)
+```
+
+## 探索的データ分析
+
+### データセットの概要確認
+
+データセットを操作するまえに，データの概要を大まかにつかむ必要があり，この作業を探索的データ分析(exploratory data analysis)といいます。
+仮説などを持たず，とりあえず特徴や構造を理解するための方法です。
+データセットの概要を確認するために，`skimr`パッケージの`skim()`関数を用います。
+
+:::{.callout-tips}
+引数の型に応じて自動的に最適な結果を返す機能を**多態性** (polymorphism)といい，多態性をもつ関数を**総称関数**(generic function)という。
+:::
+
+```{r ch04_05}
+skimr::skim(financial_data)
+```
+
+さらに，データセットのある変数に含まれる固有な要素を抽出するには，`unique()`関数を用います。
+
+```{r ch04_06}
+unique(financial_data$year) # financial_dataのyear変数に含まれる固有要素
+# 2015, 2016, 2017, 2018, 2019, 2020
+```
+
+固有要素の数を確認するには，`unique()`関数で取り出した要素の数を`length()`関数で返します。
+企業-年の企業数と年度数を確認するには次のようにします。
+```{r ch04_07, filename = "企業数と産業数の確認"}
+sort(unique(financial_data$year))
+
+financial_data$firm_ID |> n_distinct()
+financial_data$industry_ID |> n_distinct()
+```
+よってこのデータには10の産業、1515の企業があることが分かります。
+
+## 4.3.2 欠損データの処理
+
+ほとんどのデータセットには，欠損値(`NA`)が含まれているため，この欠損値の処理は非常に重要になります。
+欠損値の有無を確認するためには，`complete.cases()`関数を用いるのが便利です。
+欠損値が含まれていると`FALSE`を返し，欠損値がないと`TRUE`を返します。
+
+```{r ch04_08}
+head(complete.cases(financial_data)) # 最初の６行の結果を表示
+```
+`sum()`関数で，`TRUE`の個数を数え上げることもできます。
+
+```{r ch04_09}
+sum(complete.cases(financial_data)) # TRUE/FALSEを1/0に置き換えて合計
+```
+欠損値の出現に何らかの傾向がある場合，欠損値の削除が**生存者バイアス**(survivorship bias)をもたらす可能性があります。
+たとえば，過去20年間にわたって連結財務諸表データに欠損値が含まれていない上場企業ばかりを分析すると，途中で倒産したり上場したりした企業は削除され，20年間経営し続けている優良企業しかデータに残らない生存者バイアスが発生します。
+
+このようなバイアスを考慮しなくても良いなら，欠損値をもつ個体(unit)のデータ(行)を削除するのが単純な処理となります。
+このとき，`tidyr`パッケージに含まれる`drop_na()`関数を用いると簡単に欠損値を含む行を削除できます。
+基本関数の`na.omit()`でもよいですが，`tidyr::drop_na()`の方がオプションが豊富なのでおすすめです。
+
+```{r ch04_10}
+nrow(financial_data) # 欠損行を削除する前の行数
+nrow(drop_na(financial_data)) # 欠損行を削除した場合の行数
+
+financial_data <- drop_na(financial_data) # 欠損行を削除した上でデータを上書き
+# この作業には注意が必要である。オリジナルデータはそのまま残しておいたほうが良い
+```
+
+欠損値を含む行を削除するのではなく，欠損値に適切な推定値を代入することでサンプルサイズを減らさない方法も開発されていますが，欠損値の出現を説明する確率モデルを仮定し，その推定値を求める必要があります。
+
+::: {.callout-note}
+詳しくは髙橋・渡辺 (2019) [欠損データ処理：Rによる単一代入法と多重代入法](https://www.amazon.co.jp/%E6%AC%A0%E6%B8%AC%E3%83%87%E3%83%BC%E3%82%BF%E5%87%A6%E7%90%86-R%E3%81%AB%E3%82%88%E3%82%8B%E5%8D%98%E4%B8%80%E4%BB%A3%E5%85%A5%E6%B3%95%E3%81%A8%E5%A4%9A%E9%87%8D%E4%BB%A3%E5%85%A5%E6%B3%95-%E7%B5%B1%E8%A8%88%E5%AD%A6One-%E9%AB%98%E6%A9%8B-%E5%B0%86%E5%AE%9C/dp/4320112563/ref=rw_dp_pbnx_fo_thb_5)
+を参照してください。
+
+さらに欠損値についての議論では，[星野・岡田 (2016)「欠測データの統計科学―医学と社会科学への応用」](https://www.amazon.co.jp/gp/product/400029847X/ref=dbs_a_def_rwt_bibl_vppi_i3)岩波書店がめちゃめちゃ有用です。
+:::
+
+# 4.4 データの抽出とヒストグラムによる可視化
+
+## 4.4.1 条件にあうデータの抽出方法
+
+教科書では複数の方法が紹介されているが，このメモではtidyverseパッケージを用いた方法だけ取り上げます。具体的には，データベース操作のパッケージである`dplyr`の中の`filter()`関数について説明します。
+さらに`magrittr`を用いたパイプ演算子`%>%`を用いたデータの受け渡しの記法を活用して，可読性の高いソースコードを書くことも紹介します。
+ここでは`dplyr`パッケージの`filter()`関数であることを明示的に示すため、`dplyr::filter()`と書いていますが、`dplyr`パッケージを読み込んでいる場合は`filter()`と書いても同じです。
+
+```{r ch04-13}
+financial_data_2015 <- financial_data %>%
+	dplyr::filter(year == 2015) # year変数が2015のデータを抽出
+```
+
+`filter()`で条件を満たすデータのみを取り出し，それを`financial_data_2015`に代入している。
+
+パイプ演算子%>%は**左のオブジェクトを右の関数の第1引数に代入**する，という処理を行います。
+つまり，`x %>% filter(year == 2015)`は，`filter(x, year == 2015)`と同じ意味になります。
+パイプ演算子を使うことで，データが次の処理に受け渡されていくプロセスが読みやすくなります。たとえば、
+
+1. 欠損値を除去して，
+2. 2015年のデータを抽出し，
+3. ROEを計算して，
+4. 産業ごとに平均値を出す
+
+というよく使いそうな処理を行いたい場合，tidyverseなら次のように書きます。
+
+```{r, eval = FALSE}
+financial_data %>%
+	drop_na() %>% # 欠損値を除去し，
+	filter(year == 2015) %>% # 2015年のデータを抽出し，
+	mutate(ROE = earnings / equity) %>% # ROEを計算し，
+	group_by(industry) %>% # 業種コードごとに
+	summarise(mean_ROE = mean(ROE)) # mean()で平均値を計算
+```
+
+基本関数の場合は、
+
+```{r eval = FALSE}
+financial_data <- na.omit(financial_data)
+financial_data_2015 <- financial_data[financial_data$year == 2015, ]
+financial_data_2015$ROE <- financial_data_2015$earnings / financial_data_2015$equity
+mean_ROE_by_industry <- aggregate(financial_data_2015$ROE,
+		by = list(financial_data_2015$industry),
+		FUN = mean)
+```
+
+となりますので、上の方が読みやすいことがわかります。
+
+## 4.4.2 ヒストグラムによる売上高の可視化
+
+### ヒストグラム
+
+ヒストグラム(histogram)は，データの分布を可視化するためのグラフです。
+ヒストグラムは，連続データを区間に分けて，区間ごとのデータの個数を棒グラフで表現したものです。したがってヒストグラムの棒の高さは、その区間に含まれるデータの個数を表します。
+
+たとえば、例として生徒100人の身長データがあるとします。
+この身長データをRで生成するには，`rnorm()`関数を使います。
+
+```{r}
+# 平均170cm，標準偏差5cmの正規分布から100個のデータを生成
+height <- rnorm(100, mean = 170, sd = 5)
+print(height)
+```
+100個のデータを眺めていても、なかなか特徴をつかめませんよね。そこでこの身長という連続データを5センチごとの区間に分けます。たとえば、165cm以上、170cm未満の区間には何人の生徒がいるのか、170cm以上、175cm未満の区間には何人の生徒がいるのか、というように区間ごとのデータの個数を数えます。
+このとき、区間の幅を5cmにするか、10cmにするか、20cmにするか、ということは、データの特徴をつかむ上で重要なことです。区間の幅を大きくすると、データの特徴がざっくりとしかつかめません。一方、区間の幅を小さくすると、データの特徴が細かくつかめますが、データの個数が少ない区間が多くなり、データの特徴をつかむのに時間がかかります。
+やってみましょう。
+
+
+```{r}
+hist(height, breaks=seq(150,190,by=5)) # 区間の幅を5cmにする
+hist(height, breaks=seq(150,190,by=10)) # 区間の幅を10cmにする
+hist(height, breaks=seq(150,190,by=1)) # 区間の幅を1cmにする
+```
+どのヒストグラムがデータの特徴を最も良く表しているのか、を考えて区間幅を設定しましょう。
+
+### ggplotでヒストグラム
+
+ヒストグラムを書くためには，基本関数の`hist()`が最も簡単ですが，より高性能な`ggplot2`を用いたヒストグラムの書き方を説明します。
+ここでは、上で作成した2015年のデータ`financial_data_2015`を使って、売上高のヒストグラムを書きます。
+
+`ggplot2`の書き方は少し特殊ですが、慣れてくると非常に便利です。
+`ggplot2`ではレイヤー(階層)を上から重ねていくようにグラフを作っていきます。
+まず`ggplot()`関数でグラフの土台を作ります。`ggplot()`に入れるデータの型は`data.frame`でなければならないので注意しましょう。
+
+```{r}
+g <- ggplot(data = financial_data_2015)
+print(g)
+```
+真っ白で何も出力されていませんが、`financial_data_2015`というデータフレームを指定して、グラフの土台を作りました。
+
+次に軸の設定をします。ヒストグラムは1変数のグラフなのでx軸のみを設定します。`aes()`関数で変数を指定します。
+
+```{r}
+g <- g + aes(x = sales)
+print(g)
+```
+横軸が表示されました。
+この上に、ヒストグラムを書くために`geom_histogram()`関数を追加します。
+`ggplot2`パッケージでは、`geom_***`の形でグラフを指定します。例えば、
+
+- `geom_bar` 棒グラフ
+- `geom_point` 散布図
+- `geom_line` 折れ線グラフ
+- `geom_boxplot` 箱ひげ図
+- `geom_histogram` ヒストグラム
+
+あたりがよく使われるグラフです。
+
+```{r}
+g <- g + geom_histogram() # グラフはヒストグラム
+print(g)
+```
+ここでコンソールに，
+
+> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+>
+
+というメッセージが出ますが、これは「何も指定されなかったので，ヒストグラムのビンの数を30にして作図したけど，オプションのstat_bin()で適切な区間幅をbinwidthで設定してね」ということです。無視しても大丈夫です。
+
+x軸が指数表記となっていて見づらいので，`scales()`関数を使って表記を変更します。
+
+```{r}
+g <- g + scale_x_continuous(label = scales::label_comma()) # 3桁ごとにコンマで区切った数値で表示
+print(g)
+```
+
+横軸の数値が変化したことが分かります。
+
+また、小数ながら非常に大きな売上高をもつ企業があるため，ヒストグラムの形が左側に集まるように歪んでいます。
+そこで売上高を自然対数に変換して，分布の歪みを修整したヒストグラムを書いてみます。
+データを変更するので、最初から全部書きます。
+
+```{r ch04_16}
+g <- ggplot(financial_data_2015) +
+  aes(x = log(sales)) + # log()で自然対数変換
+  geom_histogram()
+print(g)
+```
+
+うまくいきました。
+
+# 4.5 データの集計と折れ線グラフによる可視化
+
+## 4.5.3 dplyrを用いた集計
+
+もっとデータを加工して、データの特徴をつかむグラフを作成してみます。
+データを加工するために、非常に便利なパッケージであるtidyverseの`dplyr`を用いたデータ加工を説明します。`dplyr`でよく使う関数に、
+
+- `group_by()`
+- `summarise()`
+- `mutate()`
+- `filter()`
+
+があります。これらの関数を組み合わせることで、データの加工が非常に簡単にできます。たとえば、`financial_data`に含まれる売上高を年度ごとに集計してみましょう。`dplyr`の`group_by()`関数を使うと、変数を指定してデータをグループ化することができます。たとえば、`year`を指定すると、年度ごとにデータをグループ化します。
+`group_by()`でグループ化したあとに、`summarise()`関数を使って平均や分散などの統計量を計算します。
+
+```{r ch04_17}
+N_firms_by_year <- financial_data %>%
+	group_by(year) %>% # 年度ごとにグループ化
+	summarize( # 以下の統計量を計算
+		N_firms = n(), # データ個数 n()
+		mean_sales = mean(sales) # 売上高の年度平均 mean()
+)
+```
+
+これで`N_firms_by_year`というオブジェクトに、`financial_data`を年度ごとにグループ化して、年度ごとの企業数`N_firms`と平均売上高`mean_sale`を計算したデータが入っています。
+2015年から2020年の6年間のデータがあるので、6行のデータが入っているはずです。
+中身を確認しておきましょう。
+
+```{r ch04_18}
+glimpse(N_firms_by_year)
+```
+
+以下の変数について6個のデータが入っていることがわかります。
+
+- `year` : 年度 (`ord`)
+- `N_firms` : 企業数 (`int`)
+- `mean_sales` : 平均売上高 (`dbl`)
+
+::: {.callout-note}
+
+関数型プログラミング(functional programming)は，現代的なプログラミング・パラダイムの1種であり，定義された関数を用いて各データに対して行いたい処理を切り分ける。Rでは`apply`系関数として，様々な関数が用意されている。`tidyverse`群では，`purrr`がある。ちょっと難しいですがpurrr超便利
+:::
+
+## 4.5.4 折れ線グラフによる上場企業数の可視化
+
+データの成形が終わったので，折れ線グラフを作っていきます。
+ここではx軸(横軸)を年度`year`，y軸(縦軸)を上場企業数`N_firms`とする折れ線グラフを作ってみます。
+折れ線グラフを作るには`geom_line()`関数を使います。
+
+```{r ch04_25}
+g <- ggplot(N_firms_by_year) +
+	aes(x = year, y = N_firms, group=1) +
+	geom_line()
+g <- g + labs(x = "Year", y = "Number of Firms") # 軸ラベル
+print(g)
+```
+
+ここで突然現れた`group = 1`という`aes()`のオプションですが、これはすべてのデータが同じグループに属していることを指定しています。
+x軸にファクター型を指定する場合、`group = 1`を指定しないと、x軸の値ごとに別のグループとして認識されてしまい、折れ線グラフがうまく描けません。
+
+# 4.6 変数の作成とヒストグラムによる可視化
+
+`tidyverse`の`dplyr`パッケージの`mutate()`関数を用いれば，パイプ演算子`%>%`を用いて可読性の高いシンプルな書き方で、新しい変数を作成することができます。
+
+::: {.callout-tips}
+## キーボードショートカット
+
+Macなら`command + shift + m`でパイプ演算子が入力できます。
+Windowsなら`ctrl + shift + m`です。
+:::
+
+ここでは，ROE(Return on Equity)を計算してみます。
+ROEの定義は，
+
+$$
+ROE_t = \frac{X_t}{BE_{t-1}}
+$$
+
+となります。
+分子の$X_t$はt期の当期純利益，分母の$BE_{t-1}$は$t$期首の株主資本です。
+練習用データである`financial_date.csv`には，当期純利益は`X`という列名で収録されていますが、株主資本の列はありません。
+よってデータから株主資本は次のように計算します。
+
+$$
+BE_t = \underbrace{(OA_t - OL_t)}_{NOA_t} - \underbrace{(FO_t - FA_t)}_{NFO_t}
+$$
+
+この計算を行い，新しい変数`BE`をデータフレームに加えるには，`dplyr::mutate()`を使います。
+
+```{r ch04_27}
+financial_data <- financial_data %>%
+	mutate(
+		BE = (OA - OL) - (FO - FA) # 新たなBE変数が加わる
+	)
+```
+
+分母の株主資本は期首，つまり前期末の数値を用いる必要があります。
+1期前の値を参照するには，`lab()`関数を用います。
+ただ，クロスセクションのデータで普通に`lag()`関数を用いると，次のように別の企業のデータを参照してしまいます。
+
+```{r}
+financial_data <- financial_data %>%
+	mutate(
+		lag_BE = lag(BE),
+		ROE = X / lag_BE # これはダメ
+	)
+
+head(financial_data, 10)[,c("firm_ID", "year", "BE","lag_BE","ROE")]
+```
+
+結果の`firm_ID`が2の企業の2015年のROEを計算するには，1期前の企業1の2014年の株主資本を参照する必要があるけれど，2014年のデータは存在しないため、企業2の2015年度のROEは欠損値`NA`になっている必要があるのに、`lag()`関数が1つ前の企業1の2020年の株主資本を参照してしまっています。
+ROEを企業ごとに計算するために，`dplyr::group_by()`を使って，計算を企業群ごとに行うことで、この問題を解決できます。
+
+```{r}
+financial_data <- financial_data %>%
+	group_by(firm_ID) %>% # firm_IDごとに以下の処理を繰り返す
+	mutate(
+		lagged_BE = lag(BE), # lag関数で前期の値を取り出す
+		ROE = X / lagged_BE # これはOK
+	) %>%
+	ungroup() # group化を解除
+head(financial_data, 10)[,c("firm_ID", "year", "BE","lagged_BE","ROE")]
+```
+
+2015年のROEが欠損値になっており、正しい計算ができています。
+クロスセクション分析における`lag()`関数の問題点を分かりやすくするために、上のように`lagged_BE`変数と`ROE`変数を別々に作成しましたが、通常は次のように書きます。
+```{r ch04_29}
+financial_data <- financial_data %>%
+	group_by(firm_ID) %>% # firm_IDごとに以下の処理を繰り返す
+	mutate(
+		ROE = X / lag(BE) # これで一気に計算する方がOK
+	) %>%
+	ungroup() # group化を解除
+```
+
+これでROEの計算ができので、次にROEのヒストグラムを作ってみます。
+
+```{r ch04_30}
+g <- ggplot(financial_data) + # データの選択
+	aes(x = ROE) + geom_histogram()
+g <- g + scale_x_continuous(limits = c(-0.3, 0.5)) # x軸の範囲を調整
+print(g)
+```
+
+ROEの分布が分かりました。赤字企業が分かりやすいように、ROEがゼロのところに縦線を引いてみます。
+縦線を引くには`geom_vline()`を使い、横線を引くには`geom_hline()`を使います。
+
+```{r}
+g <- g + geom_vline(xintercept = 0, color = "red") # x軸に縦線を引く
+print(g)
+```
+
+# 4.7 グループごとの集計とランク付け
+
+## 4.7.1 産業ごとのROE平均値と棒グラフによる可視化
+
+グループごとに平均値を出すといった処理は，`dplyr`の`group_by()`と`summarise()`を用いることで簡単にできます。
+
+ここでは、産業ごとにROEの平均値と標準偏差を求めてみます。ROEには欠損値が含まれているため、`mean()`関数を使うと`NA`が返ってきます。`NA`を無視して平均値を計算するには、`mean()`関数のオプション`na.rm = TRUE`を指定します。
+
+```{r ch04_31}
+df_ind <- financial_data %>%
+	group_by(industry_ID) %>% # 集計したいグループを指定
+	summarize(
+		mean_ROE = mean(ROE, na.rm = TRUE), # 産業平均
+		sd_ROE = sd(ROE, na.rm = TRUE)　# 産業標準偏差
+	)
+glimpse(df_ind)
+```
+10の産業ごとに統計量を計算したので、10行のデータが返ってきました。
+このデータを用いて産業ごとのROE平均の棒グラフを作成してみます。
+
+```{r ch04_32}
+# 作図
+ggplot(df_ind) + # データフレームを指定
+	aes(x = industry_ID, y = mean_ROE) + # 変数を2つ指定
+	geom_col() + # 棒グラフ geom_bar()もあるけどこっち
+	labs(x = "industry ID", y = "Industry Average ROE") + # ラベル設定
+	scale_y_continuous(expand = c(0,0)) # グラフの原点0,0に設定
+```
+
+教科書では，パイプ処理で直接ggplot()にデータフレームを渡していますが，個人的に可読性が低くなりオススメできないので，上の例ではデータ操作と作図を分けて書きました。
+
+次に、2020年度の産業別ROEランキングを作ってみます。
+ROEを大きい順にならべて、一番大きい企業に1、2番目の企業に2、という風にランキングを表す変数を作成するには、`rank(desc())`を使います。`desc()`は降順に並べ替える関数です。
+
+下のソースコードでは、前半のまとまりで、以下の処理を行ったデータを新しいデータフレーム`ROE_rank_data`に代入しています。
+
+1. `financial_data`の中から2020年度のデータを抽出し、
+2. 必要な変数として`firm_ID`、`industry_ID`、`ROE`の3つを選択し、
+3. `industry_ID`ごとにグループ化して、
+4. `mutate()`関数で`ROE_rank`変数を作成し,
+5. `ungroup()`関数でグループ化を解除しています。
+
+後半のまとまりでは、上で作成した`ROE_rank_data`に対して、
+
+1. 産業ごとのROEランキング第1位の企業を抽出し、
+2. ROEが大きい順に並べ替えて、
+3. それを`knitr::kable()`関数で表として出力
+
+という処理をしています。
+
+```{r}
+# 2020年度の産業内のROEランキングの変数を作成
+ROE_rank_data <- financial_data %>%
+	filter(year == 2020) %>% # 2020年度データを抽出
+	select(firm_ID, industry_ID, ROE) %>% # 必要な変数を選択
+	group_by(industry_ID) %>% # 産業コードごとに以下の処理を実行
+	mutate(
+		ROE_rank = rank(desc(ROE)) # ROE_rank変数を降順で作成
+	) %>%
+	ungroup()# グループ化を解除
+
+ROE_rank_data %>%
+	filter(ROE_rank == 1) %>% # 各産業のランク1のものを抽出
+	arrange(desc(ROE)) %>%  # ROEが大きい順
+	knitr::kable(booktabs = TRUE, # ここから下は表の装飾
+		caption = "2020年度産業別ROEランキング第1位企業",
+		position = "h!" # 表示場所はここに
+		)
+```
+
+
+
+# 4.8 上級デュポン・モデルによるROEの分析とその可視化
+
+上級デュポン・モデルとは，次式で表されるROEの分解式です。
+
+$$
+\begin{aligned}
+ROE_t := \frac{X_t}{BE_{t-1}} &= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t} + \underbrace{\frac{NFO_{t-1}}{BE_{t-1}}}_{FLEV_{t-1}} \times \left[ \frac{OX_t}{NOA_{t-1}} - \frac{NFE_t}{NFO_{t-1}} \right]
+\end{aligned}
+$$
+
+各変数の意味は以下の通りです。
+- `X` : 当期純利益(net income)
+- `BE` : 株主資本(book of equity)
+- `OX` : 事業利益(operating income)
+- `NOA` : 純事業資産(net operating assets)
+- `NFO` : 純金融負債(net financial obligations)
+- `NFE` : 純金融費用(net financial expenses)
+
+
+$RNOA_t$は，$ATO_t$と$PM_t$とに分割できます。
+
+$$
+\underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t} = \underbrace{\frac{sales_t}{NOA_{t-1}}}_{ATO_t} \times \underbrace{\frac{OX_t}{sales_t}}_{PM_t}
+$$
+
+いくつかの変数は，元のデータには含まれていないので，与えられたデータから計算する必要があります。
+`dplyr::mutate()`関数を用いて新しい変数を作成し，データフレームに追加します。
+`lag()`で前期末(つまり当期首)の値を取得するため，`group_by()`関数で企業ごとにグループ化しています。
+
+```{r}
+financial_data <- financial_data %>%
+	group_by(firm_ID) %>% # 企業IDごとに以下の計算を行う。
+	mutate(
+		NOA = OA - OL, # 純事業資産 = 事業資産 - 事業負債
+		RNOA = OX / lag(NOA), # 会計上の事業リターン
+		PM = OX / sales, # 利ざや profit margin
+		ATO = sales / lag(NOA), # 純事業資産回転率
+		NFO = FO - FA, # 純金融負債 = 金融負債 - 金融資産
+		lagged_FLEV = lag(NFO) / lagged_BE, #期首財務レバレッジ
+		NBC = NFE / lag(NFO), # 債権者のリターン net borrowing cost
+		ROE_DuPont = RNOA + lagged_FLEV * (RNOA - NBC) # 上級デュポン・モデルによるROE
+	) %>%
+	ungroup()
+```
+
+ROEの分解式が合っているかどうかを確認するため，`all.equal()`関数を使って，第1引数と第2引数が等しいかどうかを判定してみます。
+普通に計算した`ROE`と上級デュポン・モデルの分解したものから計算した`ROE_DuPoint`との比較しています。
+
+```{r}
+all.equal(financial_data$ROE, financial_data$ROE_DuPont)
+```
+
+となり，差の平均は$4.396878 \times 10^{-6}$となり，ほぼ0となっていることから，上級デュポン・モデルの分解式が正しいことが確認できます。
+完全にゼロにならない理由は計算の過程で生じる丸め誤差によるものです。
+
+
+## 4.8.2 箱ひげ図による産業別比較
+
+産業別で利ざや`PM`がどのように分布しているのかを調べるために，箱ひげ図(box plot)を作ってみます。
+箱ひげ図は，データの分布を可視化するためのグラフで，第1四分位点，中央値，第3四分位点，(異常値をのぞく)最大値，(異常値をのぞく)最小値を表現できる，非常に情報量の多いグラフです。
+
+`ggplot2`パッケージの`geom_boxplot()`関数を用いることで，データフレームから箱ひげ図を作図できます。
+
+先に作成したデータフレーム`financial_data`を用いて，`PM`の箱ひげ図を作成してみましょう。
+あまり多くの箱ひげ図を作っても見づらくなるので，最終年度のデータ で，産業IDが2〜6までの企業に限定します。
+
+```{r}
+df_2020 <- financial_data %>%
+	filter(
+		year == 2020, # 最終年度
+		industry_ID %in% 2:6 # 産業コードが2から6
+	)
+g <- ggplot(df_2020) +
+  aes(x = industry_ID, y = PM, fill = industry_ID) + geom_boxplot() # 箱ひげ図
+g <- g + labs(x = "Industry ID")
+print(g)
+```
+
+箱ひげ図から，産業ごとに利ざやの分布が異なることがわかります。とりわけ産業3は利ざやの散らばりが大きく，産業4は非常に散らばりが小さいことが分かります。
+
+## 4.8.3 散布図による産業別比較
+
+次に産業ごとに `ATO`(純事業資産回転率)と `PM`(売上高事業利益率)がどう分布しているか散布図を書いてみます。
+ここでは異常値の影響を受けにくい統計量である中央値(median)を計算し，散布図を作成してみます。
+```{r}
+df_ind_median <- financial_data %>%
+	group_by(industry_ID) %>%
+	summarise(
+		median_ATO = median(ATO, na.rm = TRUE), # ATOの中央値
+		median_PM = median(PM, na.rm = TRUE) # PMの中央値
+	)
+
+g <- ggplot(df_ind_median) +
+	aes(x = median_ATO, y = median_PM, label = industry_ID) + # 散布図
+	geom_point() + # 散布図
+	geom_text(vjust=-1) # ラベル
+print(g)
+```
+
+この産業ごとに計算された中央値のデータを用いて，線形回帰直線を引いて，`ATO`と`PM`の関係を見てみます。
+
+```{r}
+g <- g + geom_smooth(method = "lm", se = FALSE) # 線形回帰直線を追加
+print(g)
+```
+いい感じですが，会計学入門(1.3.4節)で学習した$ATO \times RM = RNOA$という関係のとおり，データからも`ATO`と`PM`との間にトレードオフの関係があることが予想されています。
+もし理論どおりの関係であればデータは$ATO = RNOA / PM$といった反比例の関係になるはずです。これを示すため，RNOAを一定としたときの`ATO`と`PM`の関係，つまりを図に書き込んでみます。
+関数をグラフとして図に追加するために`stat_function()`関数を用います。
+
+::: {.callout-tips}
+`stat_function()`関数の引数は，`fun = function(x)` xの関数系, `linetype = “スタイル”`とします。
+ここでは，function(x)でxの関数であることを指定し，`median_RNOA / x`としてます。
+:::
+
+```{r}
+median_RNOA <- median(financial_data$RNOA, na.rm = TRUE) # 全データから計算したRNOAの中央値
+
+g <- g + stat_function(
+	fun = function(x) median_RNOA / x,
+	linetype = "longdash",
+	color = "red") # 反比例の関数を追加
+print(g)
+```
+
+かなりあてはまりが良さそうな線が引けました。
+このように，データを可視化することで，理論とデータの整合性を確認することができます。
