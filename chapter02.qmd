@@ -1,0 +1,1234 @@
+## ファイナンス入門
+
+```{r setup}
+#| code-fold: true
+pacman::p_load(
+  tidyverse,
+  ggthemes,
+  ggpubr,
+  plotly,
+  patchwork,
+  Rsolnp
+)
+
+mystyle <- list(
+  # 1. ggthemes 自体の引数でフォントを指定します
+  theme_economist_white(
+    # gray_bg = FALSE,
+    base_family = "HiraKakuProN-W3"
+    ),
+  scale_colour_economist(),
+
+  # theme_calc(base_family = "HiraKakuProN-W3"),
+  # scale_colour_calc(),
+
+  # 3. その他の微調整（フォントサイズなど）
+  theme(
+    text = element_text(size = 12), # フォントファミリーは上で指定済みなので省略可
+    # 必要であれば個別の要素を調整
+    # plot.title = element_text(hjust = 0.5),
+    axis.title = element_text(size = 12)
+  )
+)
+```
+
+## 割引率
+
+**ファイナンス**(finance)の大事な概念に**割引率**(discount rate)があります。
+これは、<span class="markp">ある財の今の価値と将来の価値は異なっており、将来の価値を現在の価値(これを**現在価値**(present value)という)に変換するための係数</span>です。
+
+たとえば，今の100万円が来年110万円になる世界において，
+
+$$
+100 = f(110)
+$$
+
+と表せる関数$f$が存在するとします。このとき，110万円を現在価値に変換するための係数が割引率です。
+具体的に，
+
+$$
+f(110) = \frac{110}{1 + r}
+$$
+
+と表せるとき，$r$が割引率です。
+
+$$
+\begin{aligned}
+100 &= \frac{110}{1 + r}\\
+r &= \frac{110}{100} - 1 = 0.1
+\end{aligned}
+$$
+
+この場合，割引率$r$は0.1(10%)となります。
+割引率10%の世界において，今の100万円は1年後の110万円と同じ価値をもつ，ということを意味しています。
+
+### 確実なキャッシュ・フローに対する割引率
+
+- **現在価値** ：将来に発生するキャッシュフローの現時点における価値
+- **時間価値** ：将来と現在の価値の違い
+- **無リスク金利** (risk-free rate) ：安全資産へと投資したときのリターンで，投資時点でリターンの額が確定します。
+  無リスク金利は**確率変数ではなく定数**(parameter)です。
+
+上の式を年を$T$という記号で表して一般的に表現します。
+$T$年後に**確実に**獲得できるキャッシュフローを$CF_T$で表し、無リスク割引率を$R_F$で表します[^1]。
+このとき現在価値 $PV$ は以下のように計算されます。
+
+[^1]: 無リスク割引率は無リスク金利と同義で，全くリスクのない確実に手に入れられる利息のようなものです。
+
+$$
+PV = \frac{CF_T}{(1 + R_F)^T}
+$$
+
+::: {.column-margin}
+現時点で$CF_0$を1年間貯金する。利息$r$は$0.1$とする。
+1年後に受け取れるキャッシュフロー$CF_1$は、貯金した元本$CF_0$と利息$CF_0 \times 0.1$となる。つまり、$CF_0 + CF_0 \times 0.1 = (1+0.1)CF_0$である。
+
+逆に、来年$CF_1$受け取るためには、今いくら貯金するかを考える。必要な貯金額を$X$とすると、$X \times (1 + 0.1) = CF_1$となる。つまり$X = CF_1/ (1.1)$となる。
+これが現在価値である。
+:::
+
+将来の確実なキャッシュ・フロー$CF_T$の現在価値は、割引率$R_F$と将来受け取る時点である$T$に依存している。$CF_T = 100$の場合、$R_F$と$T$の変化に応じて現在価値がどのように変化するのか確認する。
+
+$T=1$として、横軸を割引率、縦軸を現在価値としたグラフが以下のものである。
+割引率が大きくなるにつれて現在価値が小さくなることが分かる。
+```{r pv_rf, filename = "現在価値と割引率"}
+T = 1 # 1年後に固定
+R_F <- c(0.01, seq(0.1, 1, by = 0.01)) # 無リスク利子率
+PV <- 100 / (1 + R_F)^T # 現在価値の計算
+df <- data.frame(R_F, PV) # データフレーム作成
+# 作図
+df |>
+  ggplot() + aes(x = R_F, y = PV) +
+  geom_line(color = "blue") +
+  xlab("割引率") + ylab("現在価値") + mystyle
+```
+
+次に、$R_F = 0.1$ に固定して、横軸を年 $T$ 、縦軸を現在価値 $PV$ としてグラフが以下のものです。
+図を見ると，キャッシュ・フローを受け取る時点が遠くなるほど、現在価値が小さくなることがわかります。
+1年後に受け取れる100万円と，10年後に受け取れる100万円では，後者の方が価値が低い，というのは直観的ですよね。
+
+```{r pv_T, filename = "現在価値と期間"}
+R_F <- 0.1 # 無リスク利子率
+T <- c(seq(0, 10, by = 0.1)) # 将来受け取る時点
+PV <- 100 / (1 + R_F)^T # 現在価値の計算
+df <- data.frame(T, PV) # データフレーム作成
+# 作図
+df |>
+  ggplot() +
+  aes(x = T, y = PV) +
+  geom_line(color = "red") +
+  xlab("T年後") + ylab("現在価値") + mystyle
+```
+
+### 不確実なキャッシュ・フローに対する割引率
+
+<span class="marky">モデルに投資家の**リスクプレミアム**(risk premium; RP)を反映させることが割引率の2つ目の役割</span>です。
+通常、将来キャッシュ・フローがいくらになるのか分からないのが普通であり、$CF$は様々な要因で変化する**確率変数**(random variable)であるため、現時点における**期待値**(expected value)で評価されます。
+
+たとえば，1年後に確実に150万円もらえる投資Aと，確率50%で200万円，確率50%で100万円もらえる投資Bがあるとします。
+期待値で評価すると，投資Aの期待キャッシュフローは150万円，投資Bの期待キャッシュフローは$0.5 \times 200 + 0.5 \times 100 = 150$万円となり，同じ期待キャッシュフローをもつことになります。
+しかし，直観的に投資Bは100万円しか生み出さないリスクがある分，2つの投資の価値を現在の価値で比較すると，投資Aの方が価値が高いと思いませんか？
+
+このリスクのある資産Bの割引率を$\tilde{R}$と表すと，2つの投資の現在価値は，次のようになります。
+
+
+$$
+\frac{150}{1 + R_F} \quad > \quad \frac{200 \times 0.5 + 100 \times 0.5}{1 + \tilde{R}}
+$$
+となるなら，
+$$
+R_F < \tilde{R}
+$$
+
+となります。この$R_F$と$\tilde{R}$の差が**リスクプレミアム**(risk premium: RP)です。リスクプレミアムは、リスクのある資産に投資することに対する追加的な見返りを意味します。
+
+$$
+\begin{aligned}
+RP \equiv \tilde{R} - R_F\\
+R_F + RP = \tilde{R}
+\end{aligned}
+$$
+
+
+::: {.column-margin}
+ここで、期待値をとる演算子(operator)を$\mathbb{E}$で表し、期待値をとる時点を添え字で表す。ここでは現時点$t=0$における期待値を$\mathbb{E}_0$と表現している。
+たとえば，現時点を$t=0$として，1期先に起こりうる結果$X$が$100$か$200$であることが分かっていて，それぞれの発生確率が50%であったとする。この将来に起こりうる結果を現時点での情報を基に期待値をとる，ということは，
+$$
+\mathbb{E}[X] = 0.5 \times 100 + 0.5 \times 200 = 150
+$$
+となる。このように起こりうる結果と発生確率を掛けて足したものを**期待値**という。
+:::
+
+リスクプレミアムは割引率の調整で定量化されます。
+
+$$
+\begin{aligned}
+PV_0 & = \frac{\mathbb{E_0}[CF_1]}{1 + R_F + \underbrace{(\tilde{R} - R_F)}_{\text{RP}}}\\
+     & =\frac{\mathbb{E_0}[CF_1]}{\underbrace{1+\tilde{R}}_{\text{リスク調整済み割引率}}}
+\end{aligned}
+$$
+
+割引率は時間価値やリスクプレミアムに関する定量的な情報を含むので、タイミングやリスクの異なるキャッシュフローを現在価値という同一の尺度で評価できます。
+
+### NPV法
+
+先ほど学習した割引現在価値を判断の基準に，投資意思決定を行う方法を**NPV法**(Net Present Value Method)といいます。
+いま，投資するかどうかを決めるタイミングを時点0($t=0$)とします。
+キャッシュフローは$CF_t$で表し，マイナスなら支出，プラスなら収入を意味します。
+将来キャッシュフローは不確実であるため，現時点での期待値$\mathbb{E_0}[CF_t]$で評価します。
+ちなみに$CF_0$は時点0での投資なので，マイナスとなります。
+
+投資時点からT年間にわたって毎年$\mathbb{E}[CF_t],\quad t = 1,\dots ,T$の期待キャッシュフローが生み出されるなら、それらを割引率$1 + \tilde{R}$で現在価値に直して足し合わせた値(つまりNPV)が、現時点で評価したプロジェクトの成果となります。
+
+NPVはそのプロジェクトから発生するすべてのキャッシュフローの現在価値として解釈できます。
+コーポレートファイナンスでは，
+
+- NPVがゼロ以上のプロジェクトは投資を実行
+- NPVが負のプロジェクトは投資を見送る
+
+ことを推奨しています。
+NPV法を一般的に表現すると次のようになります(p.48)。
+$$
+\begin{aligned}
+NPV_0 &= \frac{CF_0}{(1+\tilde{R})^0} + \frac{\mathbb{E}[CF_1]}{(1+\tilde{R})^1} + \cdots + \frac{\mathbb{E}[CF_T]}{(1+\tilde{R})^T}\\
+&= CF_0 + \sum_{t=1}^T\frac{\mathbb{E}[CF_t]}{(1+\tilde{R})^t}
+\end{aligned}
+$$
+
+::: {.column-margin}
+$x^0 = 1$ であることに注意してください。
+:::
+
+### 配当割引モデル
+
+NPV法の考え方を株式投資に適用することもできます。
+株式の保有期間を$T$年とし、時点$t$における株価を$P_t$で表します。
+株式から生み出される将来キャッシュ・フローは、
+
+- 一株当たり配当と，
+- 売却時点での売却損益
+
+であり、$t$時点の一株当たり配当を$D_t$，売却時点での一株当たり売却損益を$P_T - P_{T-1}$と表します。
+将来配当や将来売却損益は確率変数であるため期待値で考え、それを割引率$\tilde{R}$で割り引くことで、一株当たりの株式価値を求めます。
+
+$$
+\begin{aligned}
+P_0^* &= \frac{\mathbb{E_0}[D_1]}{1 + \tilde R} + \frac{\mathbb{E_0}[D_2]}{(1 + \tilde R)^2} + \cdots + \frac{\mathbb{E_0}[D_{\infty}]}{(1 + \tilde R)^{T}} + \frac{\mathbb{E_0}[P_T] - P_0}{(1+\tilde{R})^T}\\
+&= \sum^{T}_{t=1} \frac{\mathbb{E_0}[D_t]}{(1+\tilde{R})^t} + \frac{\mathbb{E_0}[P_T] - P_0}{(1+\tilde{R})^T}
+\end{aligned}
+$$
+
+十分長い期間$T \rightarrow \infty$を考えると，売却損益の現在価値はゼロに近づくため，株式の理論価値$P_0^*$は以下のように表せます。
+
+$$
+P_0^* = \sum^{\infty}_{t=1} \frac{\mathbb{E_0}[D_t]}{(1+\tilde{R})^t}
+$$
+
+これが**配当割引モデル**(Dividend Discount Model: DDM)です。
+将来配当の予測値データがあれば，現時点における理論上の株価を計算することができます。
+
+### ゴードン成長モデル
+
+配当割引モデルは理論上は正しいのですが、将来の配当を無限に予測することは現実的ではありません。
+そこで、<span class="markp">将来の配当が一定の割合で成長していくという仮定を置くこと</span>で、将来配当の予測を簡略化する方法があります。
+より具体的に，期待一株当たり配当が**一定の割合で成長**していくと仮定した割引配当モデルを**ゴードン成長モデル**という。
+
+直近の実現した一株当たり配当を$D_0$と置き、将来にわたってこの配当の期待値が一定割合$G$%で成長していくと仮定する。
+つまり1時点先の配当額$D_1$が$(1 + G)D_0$となる、と仮定する。
+すると、$t$ 時点先の配当額 $\mathbb{E}[D_t]$ は、成長率$G$を用いた複利計算により、
+$$
+D_t = (1+G)^t D_0
+$$
+で表すことができます。
+一定割合で配当額が成長する株式の理論価値$P_0$を配当割引モデルで計算すると，
+$$
+\begin{aligned}
+P_0 &= \frac{(1 + G) D_0}{(1+\tilde{R})} +
+  \frac{(1+G)^2 D_0}{(1+\tilde{R})^3} +
+  \frac{(1+G)^3 D_0}{(1+\tilde{R})^3} + \cdots \\
+    &= \sum^{\infty}_{t = 1}\frac{(1 + G)^t D_0}{(1 + \tilde{R})^t}\\
+    &=\frac{(1+G)D_0}{\tilde{R}-G}
+\end{aligned}
+$$
+
+2本目の式から3本目の式への計算で、**等比級数の和の公式**を利用している。
+
+::: {.callout-tip}
+初項$a$，公比$r$の等比数列
+$$
+a, ar, ar^2, ar^3, \dots , ar^{n-1},ar^n , \dots
+$$
+がある。この等比数列の和を$S_n$で表す。
+$$
+S_n = a + ar + ar^2 + \cdots + ar^{n-1} + \cdots
+$$
+両辺に$r$を乗じると，
+$$
+rS_n =  ar + ar^2 + \cdots + ar^{n-1} + ar^{n} + \cdots
+$$
+となる。そして，$S_n - rS_n$を計算すると，
+$$
+\begin{aligned}
+S_n - r S_n &= a\\
+(1-r)S_n &= a\\
+S_n &= \frac{a}{1-r}
+\end{aligned}
+$$
+上のゴードン成長モデルの初項は$(1+G)D_0/(1+\tilde R)$，公比は$(1 +G)/(1+\tilde R)$なので，
+$$
+\begin{aligned}
+S_n
+%P_0^* &= \frac{(1+G)D_0}{1+ \tilde R} + \frac{(1+G)^2 D_0}{(1+ \tilde R)^2} + \frac{(1+G)^3 D_0}{(1+ \tilde R)^3} + \cdots \\
+&= \displaystyle  \frac{\frac{(1+G)D_0}{(1 + \tilde R)}}{1 - \frac{1+G}{1+\tilde R}}\\
+&= \displaystyle  \frac{\frac{(1+G)}{(1 + \tilde R)}D_0}{\frac{(1+ \tilde R) - (1+G)}{1+\tilde R}}\\
+%&= \displaystyle  \frac{\frac{(1+G)}{(1 + \tilde R)}D_0}{\frac{\tilde R - G}{1+\tilde R}}\\
+&= \displaystyle  \frac{1+G}{\tilde R - G}D_0\\
+\end{aligned}
+$$
+ただし，$\tilde{R} \not = G$の場合のみである。
+:::
+
+
+
+### 割引率と期待リターンの関係
+
+割引率$R$は投資家が将来キャッシュフローを購入するにあたって最低限要求する期待リターン(**要求収益率**)とも解釈できます。
+これくらいリスクのある投資をするのだから，リスクのない資産への投資よりも高いリターンを要求する，という考えを反映しています。
+
+
+
+
+
+## 平均分散アプローチ入門
+
+個々の投資家にとって<span class="markp">最適となる証券の組み合わせの比率を決めることを**最適ポートフォリオ選択**</span>といいます。
+<span class="markp">ポートフォリオの価値をリターンの期待値と分散で評価する</span>考え方を**平均・分散アプローチ**といいます。
+
+### ポートフォリオのリスクとリターン
+
+1. 投資対象が銘柄Aと銘柄Bの2銘柄のみが投資対象であるケース
+2. 各銘柄への投資割合を$w_A$と$w_B$
+3. $w_A + w_B = 1$
+
+記号の定義は以下の通りです。
+
+- 元本 $X$
+- 投資銘柄Aのリターン $1 + R_A$
+- 投資銘柄Bのリターン $1 + R_B$
+
+
+::: {.callout-note}
+リターンの定義$(P_t - P_{t-1})/P_{t-1} = P_t/P_{t-1} -1$は**ネット・リターン**(net return)と呼ばれるものである。
+これにたいして，元本も含めたリターン$1 + R_t = P_t/P_{t-1}$は**グロス・リターン**(gross return)という。
+:::
+
+元本$X$のうち$w_A$分だけ銘柄Aに投資すると、1年後に期待値で$\mathbb{E}[X \times w_A \times (1+R_A)]$になります。
+手元現金全額を銘柄AとBに振り分けると、
+$$
+\begin{aligned}
+(1 + R_A) w_A X + ( 1 + R_B) w_B X
+&= w_A X + w_A R_A X + w_B X + w_B R_B X\\
+&= \left [\underbrace{(w_A+w_B)}_{\text{定義より} = 1}+(w_AR_A+w_BR_B) \right ]X\\
+&= (1 + w_A R_A + w_B R_B)X
+\end{aligned}
+$$
+となります。
+この**1年後の価値と初期投資額の比**としてこのポートフォリオのリターン$1 + R_P$を計算します。
+$$
+\begin{aligned}
+1 + R_P &= \frac{\overbrace{(1 + w_A R_A + w_B R_B)X}^{将来時点の評価額}}{\underbrace{X}_{初期投資}}\\
+        &= 1 + w_A R_A + w_B R_B\\
+        &= 1 + w_A R_A + w_B R_B\\
+R_P     &= w_A R_A + w_B R_B
+\end{aligned}
+$$
+
+
+<span class="markp">ポートフォリオ構築時には、各銘柄の実現リターンはわからない</span>ので(つまり確率変数)、かわりに期待値や分散を評価します。
+銘柄Aと銘柄Bのネット・リターンをそれぞれ$R_A$と$R_B$で表すと，期待値，分散，標準偏差は次のようになります。
+
+- 期待値 $\mathbb{E}[R_A] = \mu _A$，$\mathbb{E}[R_B] = \mu_B$
+- 分散 $\mathbb{V}[R_A] = \sigma^2_A$，$\mathbb{V}[R_B] = \sigma^2_B$
+- 共分散 $\mathbb{Cov}[R_A, R_B] = \sigma_{AB}$
+- 相関係数 $\rho = \frac{\sigma_{AB}}{\sigma_A \sigma_B}$
+
+$$
+\begin{aligned}
+% \rho &= \frac{\mathbb{E}[(R_A - \bar R_A)(R_B - \bar R_B)]}{\mathbb{E}[(R_A - \bar R_A)^2]}
+\rho &= \frac{\sigma _{AB}}{\sigma _A \times \sigma _B} \\
+\sigma_{AB} & = \rho\sigma_A\sigma_B
+\end{aligned}
+$$
+
+と表せます。
+
+上の式より、ポートフォリオのリターンは$R_P = w_A R_A + w_B R_B$ なので、
+ポートフォリオのリターンの期待値 $\mathbb{E}[R_P] = \mu_P$ も各銘柄の期待リターンの加重平均となります。
+ここで投資割合$w_A$と$w_B$は定数であり，$R_A, R_B$は確率変数です。
+$$
+\begin{aligned}
+\mathbb{E}[R_p] = \mu_P &= \mathbb{E}[w_A R_A + w_B R_B]\\
+&= w_A \mathbb{E}[R_A] + w_B \mathbb{E}[R_B]\\
+&=w_A\mu_A+w_B\mu_B
+\end{aligned}
+$$
+
+つぎに，ポートフォリオのリターン$R_P$の分散$\mathbb{V}[R_P] = \sigma^2_P$は各銘柄の分散及び相関係数を用いて計算できます。
+
+$$
+\begin{aligned}
+\mathbb{V}[R_P] = \sigma_P^2 &= \mathbb{V}[w_A R_A + w_B R_B]\\
+&= w_A^2 \mathbb{V}[R_A] + w_B^2 \mathbb{V}[R_B] + 2 w_A w_B \mathbb{Cov}[R_A,R_B]\\
+&= w_A^2 \sigma_A^2 + w_B^2 \sigma_B^2 + 2w_A w_B \sigma _{AB}\\
+&= w^2_A \sigma^2_A + w^2_B \sigma^2_B +
+\underbrace{2 w_A w_B \rho \sigma_A \sigma_B}_{ここの\rho の符号が重要}
+\end{aligned}
+$$
+
+:::{.callout-tip}
+## 確率変数の分散
+
+確率変数$X$と$Y$の線形結合$aX + bY$の分散は次のように計算できます。
+$$
+\begin{aligned}
+\mathbb{V}(aX + bY) &= \mathbb{E}\left[ \{ (aX + bY) - \mathbb{E}[aX + bY] \}^2 \right] \\
+&= \mathbb{E}\left[ \{ (aX + bY) - (a\mu_X + b\mu_Y) \}^2 \right] \\
+&= \mathbb{E}\left[ \{ a(X - \mu_X) + b(Y - \mu_Y) \}^2 \right] \\
+&= \mathbb{E}\left[ a^2(X - \mu_X)^2 + 2ab(X - \mu_X)(Y - \mu_Y) + b^2(Y - \mu_Y)^2 \right] \\
+&= a^2 \mathbb{E}\left[ (X - \mu_X)^2 \right] + 2ab \mathbb{E}\left[ (X - \mu_X)(Y - \mu_Y) \right] + b^2 \mathbb{E}\left[ (Y - \mu_Y)^2 \right] \\
+&= a^2 \mathbb{V}(X)  + b^2 \mathbb{V}(Y) + 2ab \mathrm{Cov}(X, Y)
+\end{aligned}
+$$
+:::
+
+ポートフォリオPの分散 $\mathbb{V}(R_P)$ は，各銘柄の分散に投資割合の二乗を乗じたものに，各銘柄のリターンの相関関係部分を加えたものとなっていることが分かります。
+つまり，この2銘柄のリターンの相関係数$\rho$に応じて，ポートフォリオPの分散が大きくなるかどうかが決まる，ということです。
+
+
+### 分散投資のメリット
+
+保有比率$(w_A, w_B)$を変化させたときのポートフォリオの$\mu_P$と$\sigma_P$がどのように変化するかを確認しましょう。
+分散は非負の値をとることに注意してください。
+
+$$
+\begin{aligned}
+\mathbb{V}[R_P] = \sigma_P^2 &= w^2_A \sigma^2_A + w^2_B \sigma^2_B + 2\rho{w_Aw_B\sigma_A\sigma_B}\\
+&= (w_A \sigma_A + w_B \sigma_B)^2 - 2w_A  w_B \sigma _A \sigma_B + 2\rho{w_Aw_B\sigma_A\sigma_B}\\
+% &= (w_A \sigma_A + w_B \sigma_B)^2 - (2 + 2\rho ) w_A w_B\sigma_A\sigma_B\\
+&=\underbrace{(w_{A} \sigma_{A} + w_{B}\sigma_{B})^{2}}_{>0} - \underbrace{2(1-\rho )w_{A}w_{B} \sigma_{A}\sigma_{B}}_{ここ重要}
+\end{aligned}
+$$
+
+$0 \leq w_{A} \leq 1$ かつ $0 \leq w_{B} \leq 1$ ，$w_A + w_B = 1$ のとき、
+
+$$
+2 ( 1- \rho ) w_A w_B \sigma _A \sigma _B \geq 0
+$$
+
+となります。
+$\rho = 1$のときのみ等号で成立します。
+したがって、$-1 \leq \rho < 1$ のとき、$( 1- \rho ) w_A w_B \sigma _A \sigma _B > 0$ となり，次の不等式が成立します。
+$$
+\begin{aligned}
+\sigma_P^2 &= (w_{A}\sigma_{A}+w_{B}\sigma_{B})^{2} - \underbrace{2(1-\rho )w_{A}w_{B} \sigma_{A}\sigma_{B}}_{> 0}\\
+\Longleftrightarrow \sigma _P^2 &\leq (w_A \sigma _A + w_B \sigma _B)^2 \\
+\Longleftrightarrow \sigma_{P} & \leq
+\underbrace{w_{A}\sigma_{A}+w_{B}\sigma_{B}}_{リスクの加重平均}
+\end{aligned}
+$$
+となり，ポートフォリオのリスクを表す標準偏差$\sigma_P$が銘柄AとBの標準偏差の加重平均$w_{A}\sigma_{A} + w_{B} \sigma_{B}$以下になることがわかります。
+これを**分散投資効果**という。
+
+```{r diversified_investment, filename="分散投資効果 p.65"}
+#| code-fold: true
+# 設定
+rho = 0.2
+mu_A <- 0.1
+sigma_A <- 0.2
+mu_B <- 0.2
+sigma_B <- 0.3
+# 保有費率
+wa <- seq(0,1,by = 0.01)
+wb <- 1 - wa
+
+df <- tibble(
+  mu_p = wa * mu_A + wb * mu_B,
+  sigma_p = sqrt(wa^2 * sigma_A^2 + wb^2 * sigma_B^2 + 2 * rho * wa * wb * sigma_A * sigma_B),
+  label= c(
+  "0,1", rep("", 9),
+  "0.1,0.9",rep("", 9),
+  "0.2,0.8",rep("", 9),
+  "0.3,0.7",rep("", 9),
+  "0.4,0.6",rep("", 9),
+  "0.5,0.5",rep("", 9),
+  "0.6,0.4",rep("", 9),
+  "0.7,0.3",rep("", 9),
+  "0.8,0.2",rep("", 9),
+  "0.9,0.1",rep("", 9),
+  "1,0")
+  )
+
+ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
+
+```
+
+完全な負の相関$(\rho=-1)$であるの場合、$\sigma^{2}_{P}=0$のポートフォリオを構築できる。
+確認のため、2銘柄の価格が完全な負の相関$\rho = -1$をもつとき、ポートフォリオPのリスク$\sigma_P$は
+$$
+\begin{aligned}
+\mathbb{V}[R_P] = \sigma ^2_P &=(w_{A}\sigma_{A}+w_{B}\sigma_{B})^{2}-2(1- (-1))w_{A}w_{B} \sigma_{A}\sigma_{B}\\
+&= (w_{A}\sigma_{A}+w_{B}\sigma_{B})^{2} -4w_{A}w_{B} \sigma_{A}\sigma_{B}\\
+&= w_A ^2 \sigma _A^2 + w_B^2\sigma _B^2 + 2w_A w_B \sigma_A \sigma_B -4w_{A}w_{B} \sigma_{A}\sigma_{B}\\
+&= w_A ^2 \sigma _A^2 - 2w_{A}w_{B} \sigma_{A}\sigma_{B} + w_B^2\sigma _B^2 \\
+&= (w_{A}\sigma_{A} - w_{B}\sigma_{B})^{2}\\
+\sigma _P &= | w_{A}\sigma_{A} - w_{B}\sigma_{B}|
+\end{aligned}
+$$
+
+以下のように，$w_A \sigma _A = w_B \sigma_B$となるように$w_A$と$w_B$を選べば、$\sigma _P = 0$となるポートフォリオを作れる。
+
+```{r, filename="完全な負の相関の分散投資効果 p.65"}
+#| code-fold: true
+mu_A <- 0.1
+sigma_A <- 0.2
+mu_B <- 0.2
+sigma_B <- 0.3
+
+wa <- seq(0,1,by = 0.01)
+wb <- 1 - wa
+
+
+df <- tibble(
+  mu_p = wa * mu_A + wb*mu_B,
+  sigma_p = abs(wa*sigma_A - wb*sigma_B),
+  label= c(
+  "0,1", rep("", 9),
+  "0.1,0.9",rep("", 9),
+  "0.2,0.8",rep("", 9),
+  "0.3,0.7",rep("", 9),
+  "0.4,0.6",rep("", 9),
+  "0.5,0.5",rep("", 9),
+  "0.6,0.4",rep("", 9),
+  "0.7,0.3",rep("", 9),
+  "0.8,0.2",rep("", 9),
+  "0.9,0.1",rep("", 9),
+  "1,0")
+)
+ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
+```
+このケースでは、$\sigma_A = 0.2$、$\sigma_B = 0.3$となっているため、$0.2w_A = 0.3w_B$となる保有割合を考える。
+$$
+\begin{aligned}
+0.2 w_A &= 0.3w_B\\
+0.2 w_A &= 0.3(1-w_A)\\
+0.2 w_A &= 0.3 - 0.3w_A\\
+0.5 w_A &= 0.3\\
+w_A &= 0.6
+\end{aligned}
+$$
+となるため、銘柄Aに60％、銘柄Bに40%を投資することで、リスクゼロで期待リターン$0.6\times0.1 + 0.4 \times 0.2 = 0.14$を獲得することができる。
+
+### 空売りの効果
+
+空売り(short sale)とは、
+1. 保有していない証券を誰か(普通は証券会社)から借りてきて売却し、
+2. 一定期間後に買い戻して元の持ち主に返却する
+取引をいい、**値下がりから利益を得る**。
+空売りを行う投資家をショートセラー(short seller)という。
+
+いままでは、$0 \leq w_A,w_B \geq 1$＄という制約を置いていたが、この制約をはずして、
+$w_A + w_B = 1$のみを課す。つまり$w_A<0$や$w_B<0$が空売りを表す。
+
+```{r}
+rho = 0.2
+mu_A <- 0.1
+sigma_A <- 0.2
+mu_B <- 0.2
+sigma_B <- 0.3
+# 保有費率
+wa <- seq(-1,2,by = 0.01)
+wb <- 1 - wa
+
+df <- tibble(
+  mu_p = wa * mu_A + wb*mu_B,
+  sigma_p = sqrt(wa^2 * sigma_A^2 + wb^2 * sigma_B^2 + 2 * rho * wa * wb * sigma_A * sigma_B),
+  label= c(
+  rep("",100),
+  "0,1", rep("", 9),
+  "0.1,0.9",rep("", 9),
+  "0.2,0.8",rep("", 9),
+  "0.3,0.7",rep("", 9),
+  "0.4,0.6",rep("", 9),
+  "0.5,0.5",rep("", 9),
+  "0.6,0.4",rep("", 9),
+  "0.7,0.3",rep("", 9),
+  "0.8,0.2",rep("", 9),
+  "0.9,0.1",rep("", 9),
+  "1,0" , rep("",100)
+  )
+)
+ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
+```
+### 安全資産の導入
+
+**安全資産の購入**についても考える。
+
+安全資産Fのリターンを$R_F$、
+ポートフォリオPの保有比率を$w_F$とおく（安全資産のリターンは確実に実現する成果なので，確率変数を表すチルダをつけてない）。
+以降は，確率変数にはなるべくチルダをつける。銘柄Aと銘柄Bと安全資産の投資割合をそれぞれ$w_A, w_B, w_F$で表す。
+
+まず銘柄Aと安全資産の2資産からなるポートフォリオを考える。
+つまり各資産への投資割合を$w_A + w_F = 1,\quad  w_B = 0$ とする場合を考える。
+この安全資産と銘柄AからなるポートフォリオPの(ネット)リターン$\tilde R_P$は，
+$$
+\tilde R_{P} = w_{F} R_{F} + w_{A} \tilde R_{A}
+$$
+となり，このポートフォリオの期待値は，
+$$
+\begin{aligned}
+\mu_{P} =\mathbb{E}[R_P] &=\mathbb{E}[ w_F R_{F} + w_{A} \tilde{R_A} ]\\
+&=w_F R_{F}+w_{A} \mathbb{E}[\tilde{R_A}]\\
+&=w_F R_{F}+w_{A} \mu_{A}\\
+&=(1-w_A) R_{F}+w_{A} \mu_{A}\\
+&=R_{F} - w_{A}R_F + w_A\mu_A\\
+&=R_{F} + w_A(\underbrace{\mu_A - R_F}_{\tiny リスクプレミアム})
+\end{aligned}
+$$
+
+となる。もちろん安全資産のリターンは確率変数でないので，期待値をとってもそのままである。
+$\mu_{A}-R_{F}$ はリスク資産である銘柄Aの**リスクプレミアム**を表している。通常，リスクのある資産の期待リターンは安全資産のリターンより大きいため，リスクプレミアムは正の値となる。したがって，リスク資産への投資割合$w_A$を1単位増加させれば，$\mathbb{E}[R_P]$はリスクプレミアム分増加する
+
+つぎに，ポートフォリオのリスクを表す標準偏差$\sigma _P$とリターンの関係は次式で表せる。まず安全資産のリスクはゼロであるため，リスク資産の銘柄Ａを保有する分だけリスクが生じる。
+
+つぎに，ポートフォリオのリスクを表す標準偏差$\sigma _P$とリターンの関係は次式で表せる。まず安全資産のリスクはゼロであるため，リスク資産の銘柄Ａを保有する分だけリスクが生じる。
+
+$$
+\begin{aligned}
+\sigma_P^2 = \mathbb{V}[R_P]  &= \mathbb{V}[w_FR_F + w_A R_A]\\
+&= \mathbb{V}[w_A R_A]\\
+&= w_A^2 \mathbb{V}[R_A]\\
+&= w_A^2 \sigma _A^2 \\
+\sigma _P & = |w_A| \sigma_A
+\end{aligned}
+$$
+
+空売りを想定する場合$w_A < 0$となるため，標準偏差を求める際に絶対値をとっている。空売りはない状況（つまり，$w_A>0$）を想定すると，
+
+$$
+\begin{aligned}
+\sigma _P = w_A \sigma _A\\
+w_A = \frac{\sigma_P}{\sigma _A}
+\end{aligned}
+$$
+
+のように，リスク資産である銘柄Aへの投資割合$w_A$が，ポートフォリオPとリスク資産Aのリスクの割合で決定されることがわかる。これを，ポートフォリオの期待リターン$\mu_P$に代入すると，
+
+$$
+\begin{aligned}
+\mu_{P} &= R_F + w_A(\mu_A - R_F)\\
+& = R_F + \frac{\sigma_P}{\sigma _A}(\mu_A - R_F) \\
+&= R_{F}+\frac{\mu_{A}-R_{F}}{\sigma_{A}}\sigma_{P}
+\end{aligned}
+$$
+
+となり，期待リターン$\mu_P$は，切片が$R_F$，傾きが$(\mu_A - R_F)/\sigma_A$とする$\sigma_P$の線形関数となる。
+
+
+```{r graph_02}
+#| fig-width: 10
+#| fig-height: 6
+R_F = 0.01
+mu_A <- 0.1
+sigma_A <- 0.2
+mu_B <- 0.2
+sigma_B <- 0.3
+# 保有費率
+wa <- seq(-1,2,by = 0.01)
+wb <- 1 - wa
+
+df <- tibble(
+  mu_p = R_F + wa*(mu_A - R_F),
+  sigma_p = abs(wa)*sigma_A,
+  label= c(
+  rep("",100),
+  "0,1", rep("", 9),
+  "0.1,0.9",rep("", 9),
+  "0.2,0.8",rep("", 9),
+  "0.3,0.7",rep("", 9),
+  "0.4,0.6",rep("", 9),
+  "0.5,0.5",rep("", 9),
+  "0.6,0.4",rep("", 9),
+  "0.7,0.3",rep("", 9),
+  "0.8,0.2",rep("", 9),
+  "0.9,0.1",rep("", 9),
+  "1,0" , rep("",100)
+  )
+)
+ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
+```
+
+### 3資産のポートフォリオ
+
+リスク資産AとB，安全資産Fの3資産に投資するポートフォリオを考える。
+ここで，$w_A + w_B > 0$を仮定し，少なくとも少しはリスク資産を保有するケースを考える。
+当然だけれど，$w_A = w_B =0$のケースでは，安全資産のみを保有するケースとなり，リスクも無く，リターンも確定している。
+
+3資産A,B,Fへの投資割合をそれぞれ$w_A$，$w_B$,$w_F$とすると，
+3資産からなるポートフォリオの期待リターンは次のように計算できる。
+$$
+\begin{aligned}
+\mathbb{E}[R_{P}] &= w_FR_F + w_A \mathbb{E} [\tilde R_A] + w_B \mathbb{E}[ \tilde R_B] \\
+& =
+w_{F} R_{F} + (w_{A} + w_{B}) \left(\frac{w_{A}}{w_{A}+w_{B}} \mathbb{E} [\tilde R_{A}] + \frac{w_{B}}{w_{A}+w_{B}} \mathbb{E}[ \tilde R_{B} ]\right)
+\end{aligned}
+$$
+安全資産への投資割合$w_F$とリスク資産への投資割合$w_C = w_A + w_B$とまとめて，式を変形させる。
+安全資産への投資以外の資金で構築したリスク資産AとBからなるポートフォリオを$P_C$を考えると，$P_C$の期待リターン$R_C$は次のように計算できる。
+$$
+\begin{aligned}
+R_{C} &= \frac{w_{A}}{w_{A}+w_{B}} \mathbb{E}[\tilde R_{A}] + \frac{w_{B}}{w_{A}+w_{B}}\mathbb{E}[ \tilde R_{B}]\\
+\end{aligned}
+$$
+
+安全資産FとポートフォリオCを保有した場合の期待リターンは次式となる。
+
+$$
+\begin{aligned}
+\mu_{P} & = \mathbb{E}[w_F R_F + w_A R_A + w_B R_B]\\
+&= w_FR_F + w_A \mathbb{E}[R_A] + w_B \mathbb{E}[R_B]\\
+&= w_FR_F + (w_A + w_B) \underbrace{ \left( \frac{w_A}{w_A + w_B} \mathbb{E}[R_A] + \frac{w_B}{w_A + w_B} \mathbb{E}[R_B] \right )}_{=w_C\text{とおく}}\\
+&= w_F R_F + w_{C}\mu_C
+\end{aligned}
+$$
+
+安全資産と2つのリスク資産からなるポートフォリオの期待リターンは，安全資産の期待リターンとリスク資産の期待リターンの和となる。
+
+安全資産と2つのリスク資産に投資可能な場合，$(\mu_P, \sigma _P)$の取りうる値を図示できる。テキストの数値例を用いてRで図示してみる。
+
+- リスク資産Aの期待リターン 0.1，標準偏差 0.2
+- リスク資産Bの期待リターン 0.2，標準偏差 0.3
+- 安全資産の期待リターンを 0.01
+- リスク資産AとBの間の相関係数は0.2
+- 安全資産，銘柄A，銘柄Bへの投資割合を0.2，0.3，0.5とするポートフォリオを考える。このポートフォリオの期待リターン$\mu_P$と標準偏差$\sigma_P$は次のようになる。
+
+## 最適ポートフォリオ問題
+
+「どのようなポートフォリオが投資家にとって望ましいか」
+
+一般に、投資家はリスクが小さい一方でリターンが大きいポートフォリオを好む。
+ここでは，リターンをポートフォリオの期待リターン$\mu_P$，リスクをポートフォリオの標準偏差$\sigma _P$で表し，この2つの変数から更正される平面$(\mu_P, \sigma_P)$上で最適ポートフォリオ問題を分析する。
+
+### 効率的フロンティア
+
+リスク資産Aと資産Bにのみ投資可能であり，それぞれに異なる割合で投資したポートフォリオDとＥを比較する(以下の図）
+
+-   標準偏差はともに0.25 $\sigma _D = \sigma _E = 0.25$
+-   Dの方がEよりも期待リターンが大きい，$\mu _D > \mu _E$
+
+つまり，同じリスク（標準偏差）ならリターン（期待リターン）が高いポートフォリオに投資したほうがよい。よってリスク・リターンのトレードオフの意味でDの方がEよりも望ましい。
+以下のグラフでいうと、同じリスク(緑のライン上)なら、リターンの高いポートフォリオが望ましい。そのため赤い実線が効率的フロンティアとなり、青い点線は選択されないポートフォリオになる。
+
+```{r graph_efficient_frontier, filename="効率的フロンティア"}
+#| code-fold: true
+# --- 1. パラメータ設定 ---
+mu_a    <- 0.1  # 株式Aの期待収益率
+sigma_a <- 0.2  # 株式Aの標準偏差
+mu_b    <- 0.2  # 株式Bの期待収益率
+sigma_b <- 0.3  # 株式Bの標準偏差
+rho     <- 0.2  # 相関係数
+
+# --- 2. 最小分散ポートフォリオ (MVP) の算出 ---
+# 効率的フロンティアと非効率部を分ける頂点を正確に計算します
+# 分散共分散
+cov_ab <- rho * sigma_a * sigma_b
+var_a  <- sigma_a^2
+var_b  <- sigma_b^2
+
+# MVPにおける資産Aのウェイト w_mvp
+# 公式: w = (Var(B) - Cov(A,B)) / (Var(A) + Var(B) - 2Cov(A,B))
+w_mvp <- (var_b - cov_ab) / (var_a + var_b - 2 * cov_ab)
+
+# MVPのリターンとリスク
+mu_mvp    <- w_mvp * mu_a + (1 - w_mvp) * mu_b
+sigma_mvp <- sqrt(w_mvp^2 * var_a + (1 - w_mvp)^2 * var_b + 2 * w_mvp * (1 - w_mvp) * cov_ab)
+
+# --- 3. プロット用データの作成 ---
+# ウェイトを広めにとる
+w <- seq(-1, 2, by = 0.001)
+
+# リターンとリスクを計算
+mu_p    <- w * mu_a + (1 - w) * mu_b
+sigma_p <- sqrt((w * sigma_a)^2 + ((1 - w) * sigma_b)^2 + 2 * w * (1 - w) * rho * sigma_a * sigma_b)
+
+# データフレーム化し、MVPよりリターンが高いかどうかでフラグ立て
+df_plot <- data.frame(w, mu_p, sigma_p) %>%
+  mutate(frontier_type = ifelse(mu_p >= mu_mvp, "Efficient (Upper)", "Inefficient (Lower)"))
+
+# --- 4. プロット作成 ---
+ggplot() +
+  # A. フロンティアの描画 (実線と破線で色分け)
+  geom_path(data = df_plot, aes(x = sigma_p, y = mu_p, color = frontier_type, linetype = frontier_type), size = 1) +
+
+  # B. ポイントの描画
+  # 資産A (緑)
+  geom_point(aes(x = sigma_a, y = mu_a), color = "green", size = 4) +
+  geom_text(aes(x = sigma_a, y = mu_a, label = "A"), vjust = -1.5, fontface = "bold") +
+
+  # 資産B (オレンジ)
+  geom_point(aes(x = sigma_b, y = mu_b), color = "orange", size = 4) +
+  geom_text(aes(x = sigma_b, y = mu_b, label = "B"), vjust = -1.5, fontface = "bold") +
+
+  # 最小分散ポートフォリオ MVP (黒)
+  geom_point(aes(x = sigma_mvp, y = mu_mvp), color = "black", size = 4) +
+  # geom_text(aes(x = sigma_mvp, y = mu_mvp, label = "MVP"), vjust = 1.5, fontface = "bold") +
+
+  # C. 見た目の調整
+  scale_color_manual(values = c("Efficient (Upper)" = "red", "Inefficient (Lower)" = "blue")) +
+  scale_linetype_manual(values = c("Efficient (Upper)" = "solid", "Inefficient (Lower)" = "dashed")) +
+
+  labs(title = "効率的フロンティア(2資産)",
+       x = "リスク (標準偏差)",
+       y = "期待リターン",
+       color = "", linetype = "") +
+  theme_bw() +
+  theme(legend.position = "bottom",
+        text = element_text(size = 12)) + mystyle +
+  xlim(0.0, 0.6) + ylim(0.0, 0.3)  # 見やすいように範囲を適宜調整
+```
+
+```{r graph_optimal_portofolio}
+#| echo: false
+#| eval: false
+#w<- seq(0, 1, by = 0.01) # 所有ウェイト
+w <- seq(-1,2,by = 0.01)
+
+mu_a    <- 0.1 # 株式Aの期待収益率
+sigma_a <- 0.2 # 株式Aの分散
+mu_b    <- 0.2 # 株式Bの期待収益率
+sigma_b <- 0.3 # 株式Bの分散
+rho     <- 0.2 # 相関係数
+mu_p    <-  w * mu_a + (1 - w) * mu_b # ポートフォリオの期待リターン
+sigma_p <- sqrt((w * sigma_a + (1 - w) * sigma_b)^2 - 2*(1 - rho)*w*(1 - w)*sigma_a*sigma_b) # ポートフォリオの分散
+df_plot <- data.frame(mu_p, sigma_p)
+df_plot <- df_plot %>% dplyr::mutate(plus_dummy = as.factor(ifelse(mu_p >= 0.126, 1, 0)))
+ggplot(df_plot) + aes(y = sigma_p, x = mu_p, color = plus_dummy, linetype = plus_dummy) +
+scale_linetype_manual(values = c("dashed", "solid")) + geom_path() +
+geom_hline(yintercept = 0.25, color = "green") + coord_flip() + mystyle
+```
+
+リスク資産AとBに加え、安全資産Fにも投資可能な場合、効率的フロンティアは**直線**になる。
+この場合、効率的フロンティアは**資本市場線**(Capital Market Line; CML)とも呼ばれる。
+傾きは、この金融市場におけるリスクとリターンのトレードオフを表す。
+
+```{r graph_cml, filename="効率的フロンティアと資本市場線"}
+#| code-fold: true
+
+# --- 1. パラメータ設定 (講義資料より) ---
+# を参照
+mu_a    <- 0.1  # 株式Aの期待収益率
+sigma_a <- 0.2  # 株式Aの標準偏差
+mu_b    <- 0.2  # 株式Bの期待収益率
+sigma_b <- 0.3  # 株式Bの標準偏差
+rho     <- 0.2  # 相関係数
+R_F     <- 0.01 # 無リスク利子率
+
+# --- 2. 効率的フロンティアのデータ作成 ---
+# ウェイト(w)を変化させる (-100% から 200% まで)
+w <- seq(-1, 2, by = 0.001)
+
+# ポートフォリオの期待リターン(mu_p)とリスク(sigma_p)を計算
+# 公式: mu_p = w*mu_A + (1-w)*mu_B
+mu_p <- w * mu_a + (1 - w) * mu_b
+
+# 公式: sigma_p = sqrt(w^2*sigma_A^2 + (1-w)^2*sigma_B^2 + 2w(1-w)*rho*sigma_A*sigma_B)
+sigma_p <- sqrt((w * sigma_a)^2 + ((1 - w) * sigma_b)^2 + 2 * w * (1 - w) * rho * sigma_a * sigma_b)
+
+# データフレームにまとめる
+df_frontier <- data.frame(w, mu_p, sigma_p)
+
+# --- 3. 接点ポートフォリオ(Tangency Portfolio)の導出 ---
+# シャープレシオ (リスク単位あたりの超過リターン) を計算
+df_frontier <- df_frontier %>%
+  mutate(sharpe_ratio = (mu_p - R_F) / sigma_p)
+
+# シャープレシオが最大になる点（=接点ポートフォリオ）を取得
+tangency_port <- df_frontier %>%
+  filter(sharpe_ratio == max(sharpe_ratio))
+
+# 最大シャープレシオ（これが資本市場線の傾きになる）
+max_sharpe <- tangency_port$sharpe_ratio
+
+# --- 4. 資本市場線(CML)のデータ作成 ---
+# リスク 0 から 0.6 までの範囲で直線のデータを生成
+# CMLの式: mu = R_F + (Sharpe Ratio) * sigma
+cml_sigma <- seq(0, 0.6, by = 0.01)
+cml_mu    <- R_F + max_sharpe * cml_sigma
+df_cml    <- data.frame(sigma_p = cml_sigma, mu_p = cml_mu)
+
+# --- 5. プロット作成 (ggplot2) ---
+ggplot() +
+  # A. 資本市場線 (CML) - 赤色の実線
+  geom_line(data = df_cml, aes(x = sigma_p, y = mu_p, color = "Capital Market Line"), size = 1) +
+
+  # B. 効率的フロンティア - 青色の破線
+  geom_path(data = df_frontier, aes(x = sigma_p, y = mu_p, color = "Efficient Frontier"), size = 1, linetype = "dashed") +
+
+  # C. 各資産のポイント描画
+  # 資産A (緑)
+  geom_point(aes(x = sigma_a, y = mu_a), color = "green", size = 4) +
+  geom_text(aes(x = sigma_a, y = mu_a, label = "A"), vjust = -1.5, fontface = "bold") +
+
+  # 資産B (オレンジ)
+  geom_point(aes(x = sigma_b, y = mu_b), color = "orange", size = 4) +
+  geom_text(aes(x = sigma_b, y = mu_b, label = "B"), vjust = -1.5, fontface = "bold") +
+
+  # 接点ポートフォリオ (黒い星印)
+  geom_point(data = tangency_port, aes(x = sigma_p, y = mu_p), color = "black", shape = 8, size = 5) +
+  geom_text(data = tangency_port, aes(x = sigma_p, y = mu_p, label = paste0("Tangency\n(w=", round(tangency_port$w, 2), ")")), vjust = 1.5, lineheight = 0.8) +
+
+  # 無リスク資産 (紫)
+  geom_point(aes(x = 0, y = R_F), color = "purple", size = 4) +
+  geom_text(aes(x = 0, y = R_F, label = "Risk Free"), hjust = -0.2, fontface = "bold") +
+
+  # D. 見た目の調整
+  scale_color_manual(name = "", values = c("Capital Market Line" = "red", "Efficient Frontier" = "blue")) +
+  labs(title = "資本市場線 (CML) と効率的フロンティア",
+       subtitle = "リスク(標準偏差) と 期待リターン の関係",
+       x = "リスク (標準偏差)",
+       y = "期待リターン") +
+  theme_bw() + # シンプルなテーマ
+  theme(legend.position = "bottom", # 凡例を下に
+        text = element_text(size = 12)) +
+  xlim(0, 0.6) + ylim(0, 0.3) + mystyle# 軸の範囲指定
+
+```
+
+```{r capital_market_line}
+#| echo: false
+#| eval: false
+#w<- seq(0, 1, by = 0.01) # 所有ウェイト
+w <- seq(-1,2,by = 0.01)
+
+mu_a    <- 0.1 # 株式Aの期待収益率
+sigma_a <- 0.2 # 株式Aの分散
+mu_b    <- 0.2 # 株式Bの期待収益率
+sigma_b <- 0.3 # 株式Bの分散
+rho     <- 0.2 # 相関係数
+R_F     <- 0.01 # 無リスク利子率
+
+mu_p    <-  w * mu_a + (1 - w) * mu_b # ポートフォリオの期待リターン
+sigma_p <- sqrt((w * sigma_a + (1 - w) * sigma_b)^2 - 2*(1 - rho)*w*(1 - w)*sigma_a*sigma_b) # ポートフォリオの分散
+df_plot <- data.frame(mu_p, sigma_p)
+df_plot <- df_plot %>% dplyr::mutate(plus_dummy = as.factor(ifelse(mu_p >= 0.126, 1, 0)))
+
+ggplot(df_plot) + aes(y = sigma_p, x = mu_p, color = plus_dummy, linetype = plus_dummy) +
+  scale_linetype_manual(values = c("dashed", "solid")) + geom_path() + ylim(0,0.6) +
+  geom_hline(yintercept = 0.25, color = "green") + coord_flip() + mystyle
+
+
+# 保有費率
+wa <- seq(-1,2,by = 0.01)
+wb <- 1 - wa
+
+df <- tibble(
+  mu_p = R_F + wa*(mu_A - R_F),
+  sigma_p = abs(wa) * sigma_A
+)
+ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line()  + coord_flip()
+
+
+```
+
+### 投資家のリスク回避度と最適ポートフォリオ
+
+効率的フロンティアのうち、どの点が投資家の最適ポートフォリオになるのか，について考える。
+そのためには投資家のリスク・リターンのトレードオフに関する**選好(preference)**の特徴，つまり**リスクの回避度**の情報が必要となる。
+$(\mu_P,\rho_p)$平面上でそれを描く方法の一つが**無差別曲線**(indifference curve)である。
+**無差別曲線**とは，投資家の効用(utility)が**一定**となるリスクとリターンの組み合わせを描いた曲線をいう。つまり同じ効用水準を達成できるリスクとリターンの組み合わせを表現した曲線である。
+
+#### 効用関数の例
+
+以下では，財$x$と$y$を消費したときの効用$U$を図示している。この消費者の効用関数は$U(x,y) = x^{\frac 25} \times y^{\frac 35}$としている。
+```{r utility_function}
+library(Rsolnp)
+x <- 1:50
+y <- 1:50
+u <- function(x, y) {x^(2/5) * y^(3/5)} #効用関数を定義
+U <- outer(x, y, u) #outer()はx_1,x_2に対応したf(x_1,x_2)の値を行列で返す
+persp(x, y, U,
+      theta = 30, # 横回転の角度
+      phi = 30, # 縦回転の角度
+      ticktype = "simple", # 線の種類
+      lwd = 0.5, # 線の太さ
+      col = F,
+      border = 8)
+```
+
+```{r}
+# 必要なライブラリ
+library(plotly)
+
+# データ作成
+x <- 1:50
+y <- 1:50
+u <- function(x, y) {x^(2/5) * y^(3/5)}
+U <- outer(x, y, u)
+
+# 色の準備（高さに応じて色を変える処理）
+nrz <- nrow(U)
+ncz <- ncol(U)
+# グラデーションパレットを作成 (青→緑→黄)
+jet.colors <- colorRampPalette(c("blue", "green", "yellow", "orange", "red"))
+nbcol <- 100
+color <- jet.colors(nbcol)
+# 高さ(z)を色のインデックスに変換
+zfacet <- U[-1, -1] + U[-1, -ncz] + U[-nrz, -1] + U[-nrz, -ncz]
+facetcol <- cut(zfacet, nbcol)
+
+# 描画
+persp(x, y, U,
+      theta = 45, phi = 30,
+      col = color[facetcol], # 計算した色を指定
+      shade = 0.2,           # 陰影
+      border = NA,           # 枠線なしで滑らかに
+      ticktype = "detailed",
+      xlab = "財 x", ylab = "財 y", zlab = "効用 U",
+      main = "効用関数の3Dプロット")
+```
+
+この立体図を等高線を使って表現したものが以下の図である。
+青いラインは予算制約であり、予算の範囲内で購入可能な財の組み合わせを意味している。つまり、この予算制約と無差別曲線が接する点が、予算内で達成可能な最も高い効用水準を表している。
+
+無リスク利子率が10%で，リスクプレミアムが5％，βが1.2の場合の期待リターンは，$R_F + \beta \times (R_M - R_F) = 0.1 + 1.2 \times 0.05 = 0.16$となる。このときの無差別曲線は，$U = 0.16$となるような点を結んだ曲線となる。
+
+```{r indifference_curve}
+#| fig-cap: "無差別曲線と消費可能集合"
+#| fig-aligned: center
+#| fig-width: 6
+#| fig-height: 6
+contour(x, y, U, method = "edge", labcex = 1,lwd = 2)
+abline(a = 100/6, b = -4/6, lwd = 2, col = "blue") #予算制約線
+points(x = 10, y = 10, lwd = 3, col = "darkblue", pch = 16) #最適消費点
+```
+
+リスクとリターンの無差別曲線
+
+![無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定](img/KM_fig_2-12.jpg)
+
+複数ポートフォリオを比べるとき，この図の左上のものほど高リターン低リスクに対応するので、より高い効用水準が実現する。
+また無差別曲線の**局所的な傾き**は、その投資家が追加的なリスクを引き受けるうえで要求するリスクプレミアムを表す。
+リスク回避的な投資家ほど，リスクを1単位負担する際に，より大きなリスクプレミアムを要求するので、傾きは大きくなる。
+つまり，1単位リスクを負担する代わりに欲しいリターンの額が大きくなるほど，傾きが大きくなる。
+
+無差別曲線と効率的フロンティアが接する点が、この投資家にとっての最適ポートフォリオとなる。
+投資可能なポートフォリオの範囲で、最も左上の無差別曲線を実現するのが接点となる。
+どの点が最適ポートフォリオとして選ばれるかは個々の投資家の無差別曲線の形状(リスク回避度)に依存する。最適ポートフォリオにおいて、無差別曲線と効率的フロンティアの局所的な傾きは一致(接線だから当然)するため、その投資家が要求するリスクプレミアムがちょうど実現されている。
+
+上図の場合，この投資家の最適ポートフォリオは$(w_F,w_{tan})\approx(0.29,0.71)$の比率で構成される。
+
+接点ポートフォリオは銘柄Aに47％、銘柄Bに53％投資するポートフォリオだったので、最適保有比率は、$(w_F,w_A,w_B)\approx(0.29,0.33,0.38)$と書き換えられる。
+
+### トービンの分離定理
+
+安全資産が投資可能な場合の最適ポートフォリオ問題を考える。
+
+1. 接点ポートフォリオを求め、リスク資産同士の相対的な保有比率を求める。
+2. 投資家ごとのリスク回避度に応じて安全資産と接点ポートフォリオの最適保有比率の決定
+
+1は各投資家で共通している。
+いったん接点ポートフォリオを求めてしまえば、他の投資家はその情報を用いて2を考えればよい。
+
+最適ポートフォリオ問題を2段階に分離できるという命題は、**トービンの分離定理**(又は二基金文理定理)と呼ばれている。
+
+## CAPM
+
+ここでは，資産価格モデルの1つである資本資産価格モデル(Capital Asset Pricing Model)について議論する。まずは各投資家の最適ポートフォリオ問題を所与として、金融市場全体の均衡に関して議論する。
+
+### 仮定の確認
+
+- **選好** : 全ての投資家はポートフォリオを期待値と標準偏差の基準で評価する
+- **取引コスト** : 取引に際して手数料や税金が存在せず、空売りが自由に可能
+- **流動性** : どれだけ売買しても証券の価格は変化しない
+- **情報集合** : 全ての投資家は同じ情報を共有している
+
+上記の仮定を満たす金融市場のことを、一般に**完全資本市場**(完全市場: perfect market)と呼ぶ。
+これは「取引を行う上で完全に摩擦のない市場」というものであり，理論上の設定である。
+
+厳密にいうと、上記の仮定のうち**いずれも現実には成立しない**。
+しかし、単純で分析が容易なモデルから出発し、その含意が仮定にどう依存するか議論を深めていくというのが経済理論の標準的なアプローチである。
+実際、以降で導出するCAPMに関してこれらの仮定を緩めた理論が数多く提唱されている。
+
+### CAPMの第一命題
+
+以上の仮定を受け入れると安全資産が投資可能なとき，全ての投資家の最適ポートフォリオ問題に対してトービンの分離定理を応用することができる。
+全ての投資家は安全資産と接点ポートフォリオに投資し、危険資産に限定すれば同質的なポートフォリオを保有する。
+金融市場全体の均衡を議論するうえで、市場にその資産が供給されている以上、誰かがその最適ポートフォリオの一部として保有しているという、需要と供給の一致がポイントである。
+
+::: {.callout-tip}
+## 例
+
+- 市場に参加している投資家3名
+- 市場に供給されている危険資産が銘柄XとYだけ
+- 時価総額は$X$が800億円、$Y$が200億円　
+
+この市場には合計1000億円の危険資産が存在するとする。
+全ての投資家が保有するリスク資産の合計額も1000億円に一致するはず。
+リスク資産に限定すれば，全ての(合理的な)投資家は接点ポートフォリオと同じ比率でリスク資産を保有しているので，銘柄XとYの保有比率は時価総額と同じ比率8:2になっていなければならない。
+
+|         | 銘柄$X$ | 銘柄$Y$ | 合計 |
+|---------|:------:|:------:|:------:|
+|         | $w_X=0.8$ | $w_Y=0.2$	| $w_X+w_Y=1$ |
+|投資家A | 480 | 120 | 600 |
+|投資家B | 240 | 60 | 300 |
+|投資家C | 80 | 20 | 100 |
+|合計    | 800 | 200 | 1000 |
+
+:::
+
+以上の議論をよりフォーマルに述べるために、市場ポートフォリオを導入する。
+
+::: {.callout-important}
+## 市場ポートフォリオ
+
+市場ポートフォリオ (market portfolio)とは，市場に存在する全ての危険資産を時価総額比率で保有したポートフォリオをいう。厳密には，リスク資産には株式や債券に代表される金融資産の他、不動産や貴金属などの実物資産も含まれるが、実用上はTOPIXやS&P500といった株価指数と同一視されることが多い。
+:::
+
+
+::: {.callout-important}
+## CAPMの第一命題
+
+市場ポートフォリオは接点ポートフォリオと一致し、効率的フロンティア(資本市場線)上に位置する。
+:::
+
+
+投資家は市場ポートフォリオに投資するとき、$\sigma_M$のリスクを背負う見返りとして$R_F$に加えて$\mu_M-R_F$だけ追加的な報酬を期待する。
+この追加的な報酬を**市場リスクプレミアム**(market risk premium)という。したがってこの命題の下では、資本市場線を市場リスクプレミアム$(\mu_M-R_F$)を利用して、以下のように表せる。
+
+$$
+\mu_P = R_F + \frac{\mu_M - R_F}{\sigma_M} \sigma_P
+$$
+
+![CAPM](img/KM_fig_2-13.png)
+
+今までのパラメータをそのまま用いる。
+接点ポートフォリオの保有比率は概ね47%を銘柄Aに、 53%を銘柄Bに投資するポートフォリオになった。CAPMの第一命題によると、この市場における銘柄AとBの時価総額比率は約0.47対0.53になっていなければならない。
+この命題によると、各銘柄の期待リターンや分散から接点ポートフォリオを計算する必要はなく、単に時価総額加重で市場ポートフォリオを保有すればよい。
+
+- **パッシブ運用：**幅広い銘柄に分散投資し、市場平均と同じようなパフォーマンスを目指す運用手法
+- **アクティブ運用：**市場平均を上回るパフォーマンスを目指し、投資銘柄を絞ったり、投資比率を工夫したりする運用方法
+
+任意のポートフォリオの収益性を測る指標として、**シャープ・レシオ**が提唱されている。シャープ・レシオは追加的なリスク・テイクによってどれだけリスクプレミアムを改善できるのかを表す指標。CAPMの第一命題によると、市場ポートフォリオはシャープ・レシオを最大化するという意味で最も効率的なポートフォリオであり、資本市場線の傾き$\frac{\mu_M - R_P}{\sigma_M}$は市場ポートフォリオのシャープ・レシオと一致する。
+
+$$
+\frac{\mu_P-R_F}{\sigma_P}
+$$
+
+### CAPMの第二命題
+
+第二命題は個々の資産のリスクとリターンのトレードオフを数式で表現したもの。
+ある証券に投資するときのリスクと、その証券に投資するときの期待リターンとの関係を知ることができるようになる。各投資家が証券$i$を追加的に保有する際、重要となるのは市場ポートフォリオとの相関。分散が大きい資産であっても、市場ポートフォリオと負に相関していれば、その資産を追加的に保有することでポートフォリオ全体のリスクは低減される。CAPMの第二命題は、この相関を以下の**マーケット・ベータ**として定量化する。
+※$R_i$は証券$i$のリターン、$R_M$は市場ポートフォリオのリターン
+
+この$\beta_i$は市場ポートフォリオのリスクを1としてベンチマーク化し、その証券のリスクがベンチマークの1を上回るか下回るかを測るもの。$\beta_i$が大きいほど証券$i$は投資家にとってリスクが大きいことを意味する。証券iのリスクはその証券のリターンの標準偏差ではなく、この$\beta_i$によって測られる。
+$$
+\beta_i = \frac{\mathbb{Cov}[R_i, R_M]}{\mathbb{Var}[R_M]}
+$$
+
+金融市場全体が均衡しているには，リスクの高い証券はその分だけ期待リターンも高くなければならない。
+$\beta_i$が低いにもかかわらず期待リターンが高い証券があるなら、投資家は市場ポートフォリオから離れてその証券をさらに買い増しするインセンティブを持つ。
+その結果、市場価格が上がり、期待リターンが下がるため、$\beta_i$に応じた期待リターンが均衡で実現される。
+CAPMの第二命題はこの均衡におけるリスクとリターンのトレードオフの関係を記述した式である。
+
+これまでは市場リスクプレミアムを$\mu_M - R_F$と表記していたが、以後ではより一般的な$\mathbb{E}[R_M] - R_F$と表記する。
+
+::: {.callout-important}
+## CAPMの第二命題
+
+各証券のリスクプレミアムは、その証券のマーケット・ベータに比例する。
+この式は、証券$i$のリスクプレミアム$\mathbb{E}[R_i]-R_F$を、$\beta_i$と市場リスクプレミアム$\mathbb{E}[R_M]-R_F$に分解している。
+:::
+
+第二項の$\mathbb{E}[R_M]-R_F$は個々の証券には依存しない定数である。
+
+$$
+\begin{aligned}
+\mathbb{E}[R_i]-R_F = \beta_i (\mathbb{E}[R_M] - R_F)\\
+\text{ただし、 } \beta = \frac{Cov[R_i,R_M]}{Var[R_M]}
+\end{aligned}
+$$
+
+通常、市場リスクプレミアムは正の値をとるので、CAPMの第二命題によると、個々の証券のリスクプレミアムは$\beta_i$に関して線形に増加する。
+$\beta_i$はあくまで市場ポートフォリオとの相関でリスクを定量化しているのがポイント。
+いくら個々の証券のリスクが大きくても、それが市場ポートフォリオと相関しない固有リスクであれば、リスクプレミアムには反映されない。
+期待値をとる前の$R_i$を分解して確認する。
+
+$$
+R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
+$$
+
+ここで$\varepsilon_i$は期待値ゼロで$R_M$と相関しない誤差項である。
+
+$$
+\mathbb{E}[\varepsilon_i] = 0, \qquad \mathbb{Cov}[\varepsilon_i, R_M] = 0
+$$
+
+$$
+\begin{aligned}
+Var[R_i] &= \mathbb{Var}[\beta_i R_M + \varepsilon_i]\\
+& = \beta_i^2 \mathbb{Var}[R_M] + \mathbb{Var}[\varepsilon_i] + \underbrace{\mathbb{Cov}[\beta_i R_M, \varepsilon_i]}_{\tiny =0}\\
+& = \underbrace{\beta_i^2 \mathbb{Var}[R_M]}_{\tiny 市場ポートフォリオとの相関による寄与分} + \underbrace{\mathbb{Var}[\varepsilon_i]}_{\tiny 誤差項による寄与分}
+\end{aligned}
+$$
+
+$R_i$の分散を計算すると、市場ポートフォリオとの相関による寄与分と誤差項による寄与分に分解できる。
+誤差項の分散が大きければその分だけ$R_i$の分散も大きくなるが、証券$i$のリスクプレミアムは$\mathbb{E}[R_M]-R_F$のままで変化はない。
+
+### 証券市場線
+
+安全資産と複数の危険資産が投資可能な場合、投資家の最適ポートフォリオは各人のリスク回避度に応じて図2.14の左図の資本市場線の1点となる。CAPMの第二命題が示唆するように、各証券のリスクとリターンとの関係は図2.14の右図になる。縦軸に各証券の期待リターン、横軸に各証券のリスクを表すマーケット・ベータをとると、CAPMが完全に成立する世界では全ての資産が一直線上に並ぶ。この直線を**証券市場線**(Securities Market Line; SML)と呼ぶ。
+現実は、必ずしもCAPMの第二命題は成立しておらず、CAPMが予測するリターン(証券市場線)からの縦方向からの乖離(これを**アルファ**と呼ぶ)が見られる。
+
+図2.14挿入
+
+定義通り$\beta$を計算すると銘柄Aは約$0.63$，銘柄Bは約$1.33$となる。
+両者の期待リターン、および$\beta$を図示すると証券市場線に乗っており、この仮想的な市場ではCAPMが成立していることがわかる。
+CAPMはアクティブ運用の賛同者から激しい批判を浴びてきたが、歴史的にみるとパッシブ運用を採用する機関投資家は増え続けており、ファイナンス理論及び投資実務の双方に多大な影響を与えてきたと言って過言ではない。
+
+### N資産が投資可能な場合への拡張
+
+今までは，リスク資産が銘柄AとBの二つしかない場合を分析してきたが，現実は多くのリスク資産が存在し、海外株式や債券、REIT(不動産投資信託)といったその他の投資可能な金融資産を含めればその数は飛躍的に増加する。
+本節での平均分散アプローチやCAPMは危険資産の数が任意の$N$個であっても成立する。
+ただしその場合は**行列での表記**が必須となる(第7章やサポートサイト4.5節参照)。
+
+一般に，平均分散の意味で効率的なポートフォリオ(**平均分散ポートフォリオ**)を計算するには、目標期待リターンを所与として、それを実現するポートフォリオの中でリスクを最小化するものを求める。
+得られた期待リターンとリスクのペアを一点として、目標期待リターンを動かすとリスク・リターン平面上に双曲線が描ける。
+この双曲線を**平均分散フロンティア**と呼び、効率的フロンティアはその上半分の領域である(確認済み)。
+
+一般に投資可能な資産の数が増えると、平均分散フロンティアは左上に移動し、投資家はより望ましいポートフォリオが実現できるようになる。
+リスク資産$A$と$B$に加えて$C$が投資可能な状況を考えると投資可能な資産が増えたからと言って必ずしもその資産に投資する必要はない。$w_C=0$とすれば、投資家は危険資産$A$と$B$のみに投資可能だった場合と同じ投資機会集合を実現できる。
+新しい危険資産が既存資産の組み合わせによって完全に再現できるような極端な例を除けば分散投資のメリットが生じるため、投資家はより望ましいリスク・リターンのトレードオフを実現できる。
+
+
+統計学における分散の定義は，$N$個の確率変数$R_1,R_2,\cdots,R_N$の共分散行列$\Sigma$の対角成分の和である。
+$$
+\begin{align*}
+\sigma^2=\sum_{i=1}^N\sum_{j=1}^N\sigma_{ij}=\sum_{i=1}^N\sigma_{ii}
+\end{align*}
+$$
+ここで，$\sigma_{ij}$は$R_i$と$R_j$の共分散であり，$\sigma_{ii}$は$R_i$の分散である。
+共分散行列$\Sigma$は対称行列であり，対角成分は分散を表す。
+また，$R_i$と$R_j$の共分散は$\sigma_{ij}=\sigma_{ji}$である。
+共分散行列の対角成分以外の成分は共分散を表す。
+$$
+\begin{align*}
+\Sigma=
+\begin{bmatrix}
+\sigma_{11} & \sigma_{12} & \cdots & \sigma_{1N} \\
+\sigma_{21} & \sigma_{22} & \cdots & \sigma_{2N} \\
+\vdots & \vdots & \ddots & \vdots \\
+\sigma_{N1} & \sigma_{N2} & \cdots & \sigma_{NN} \\
+\end{bmatrix}
+\end{align*}
+$$
+
+上のは，$N$個の確率変数の共分散行列の定義である。Copilotで作成しました。
