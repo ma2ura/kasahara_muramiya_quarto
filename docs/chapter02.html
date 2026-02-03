@@ -388,8 +388,26 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./chapter03_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./chapter04.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">株式データの取得と可視化</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">ファクターモデルの導入</span></span></a>
   </div>
 </li>
     </ul>
@@ -1341,10 +1359,7 @@ R_{C} &amp;= \frac{w_{A}}{w_{A}+w_{B}} \mathbb{E}[\tilde R_{A}] + \frac{w_{B}}{w
 </div>
 </div>
 <p>リスクとリターンの無差別曲線</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="img/KM_fig_2-12.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定"><img src="img/KM_fig_2-12.jpg" class="img-fluid figure-img" alt="無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定"></a></p>
-<figcaption>無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定</figcaption></figure>
-</div>
+<!-- ![無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定](img/KM_fig_2-12.jpg) -->
 <p>複数ポートフォリオを比べるとき，この図の左上のものほど高リターン低リスクに対応するので、より高い効用水準が実現する。 また無差別曲線の<strong>局所的な傾き</strong>は、その投資家が追加的なリスクを引き受けるうえで要求するリスクプレミアムを表す。 リスク回避的な投資家ほど，リスクを1単位負担する際に，より大きなリスクプレミアムを要求するので、傾きは大きくなる。 つまり，1単位リスクを負担する代わりに欲しいリターンの額が大きくなるほど，傾きが大きくなる。</p>
 <p>無差別曲線と効率的フロンティアが接する点が、この投資家にとっての最適ポートフォリオとなる。 投資可能なポートフォリオの範囲で、最も左上の無差別曲線を実現するのが接点となる。 どの点が最適ポートフォリオとして選ばれるかは個々の投資家の無差別曲線の形状(リスク回避度)に依存する。最適ポートフォリオにおいて、無差別曲線と効率的フロンティアの局所的な傾きは一致(接線だから当然)するため、その投資家が要求するリスクプレミアムがちょうど実現されている。</p>
 <p>上図の場合，この投資家の最適ポートフォリオは<span class="math inline">(w_F,w_{tan})\approx(0.29,0.71)</span>の比率で構成される。</p>
@@ -1409,7 +1424,8 @@ R_{C} &amp;= \frac{w_{A}}{w_{A}+w_{B}} \mathbb{E}[\tilde R_{A}] + \frac{w_{B}}{w
 <p><span class="math display">
 \mu_P = R_F + \frac{\mu_M - R_F}{\sigma_M} \sigma_P
 </span></p>
-<p><img src="img/KM_fig_2-13.png" class="img-fluid" alt="CAPM"> 前の章で用いたパラメータをそのまま考えます。 接点ポートフォリオの保有比率は概ね47%を銘柄Aに、53%を銘柄Bに投資する結果となりました。CAPMの第一命題によると、均衡した市場における銘柄AとBの時価総額比率は約0.47対0.53になっていなければなりません。 この命題に従えば、投資家は各銘柄の期待リターンや分散から接点ポートフォリオを計算する必要はなく、単に時価総額加重で市場ポートフォリオを保有すればよいことになります。</p>
+<!-- ![CAPM](img/KM_fig_2-13.png) -->
+<p>前の章で用いたパラメータをそのまま考えます。 接点ポートフォリオの保有比率は概ね47%を銘柄Aに、53%を銘柄Bに投資する結果となりました。CAPMの第一命題によると、均衡した市場における銘柄AとBの時価総額比率は約0.47対0.53になっていなければなりません。 この命題に従えば、投資家は各銘柄の期待リターンや分散から接点ポートフォリオを計算する必要はなく、単に時価総額加重で市場ポートフォリオを保有すればよいことになります。</p>
 <ul>
 <li>
 <strong>パッシブ運用：</strong> 幅広い銘柄に分散投資し、市場平均と同じようなパフォーマンスを目指す運用手法。</li>
@@ -1544,10 +1560,10 @@ R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
 <span id="cb13-71"><a href="#cb13-71"></a><span class="co"># --- 左図: 資本市場線 (CML) ---</span></span>
 <span id="cb13-72"><a href="#cb13-72"></a>p_cml <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb13-73"><a href="#cb13-73"></a>  <span class="co"># 効率的フロンティア（双曲線）</span></span>
-<span id="cb13-74"><a href="#cb13-74"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> frontier_data, <span class="fu">aes</span>(<span class="at">x =</span> Sigma, <span class="at">y =</span> Mu), </span>
+<span id="cb13-74"><a href="#cb13-74"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> frontier_data, <span class="fu">aes</span>(<span class="at">x =</span> Sigma, <span class="at">y =</span> Mu),</span>
 <span id="cb13-75"><a href="#cb13-75"></a>            <span class="at">color =</span> <span class="st">"gray70"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
 <span id="cb13-76"><a href="#cb13-76"></a>  <span class="co"># 資本市場線 (CML): 切片Rf, 接点を通る直線</span></span>
-<span id="cb13-77"><a href="#cb13-77"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf) <span class="sc">/</span> sig_M, </span>
+<span id="cb13-77"><a href="#cb13-77"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf) <span class="sc">/</span> sig_M,</span>
 <span id="cb13-78"><a href="#cb13-78"></a>              <span class="at">color =</span> <span class="st">"darkblue"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
 <span id="cb13-79"><a href="#cb13-79"></a>  <span class="co"># 各資産のポイント</span></span>
 <span id="cb13-80"><a href="#cb13-80"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> assets, <span class="fu">aes</span>(<span class="at">x =</span> Sigma, <span class="at">y =</span> Mu, <span class="at">color =</span> Asset), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
@@ -1565,12 +1581,12 @@ R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
 <span id="cb13-92"><a href="#cb13-92"></a><span class="co"># --- 右図: 証券市場線 (SML) ---</span></span>
 <span id="cb13-93"><a href="#cb13-93"></a>p_sml <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb13-94"><a href="#cb13-94"></a>  <span class="co"># 証券市場線 (SML): 切片Rf, 傾き(Rm-Rf)</span></span>
-<span id="cb13-95"><a href="#cb13-95"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf), </span>
+<span id="cb13-95"><a href="#cb13-95"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf),</span>
 <span id="cb13-96"><a href="#cb13-96"></a>              <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
 <span id="cb13-97"><a href="#cb13-97"></a>  <span class="co"># 各資産のポイント</span></span>
 <span id="cb13-98"><a href="#cb13-98"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> assets, <span class="fu">aes</span>(<span class="at">x =</span> Beta, <span class="at">y =</span> Mu, <span class="at">color =</span> Asset), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
 <span id="cb13-99"><a href="#cb13-99"></a>  <span class="co"># 補助線 (市場PFのベータ=1を示す線)</span></span>
-<span id="cb13-100"><a href="#cb13-100"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> mu_M), </span>
+<span id="cb13-100"><a href="#cb13-100"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> mu_M),</span>
 <span id="cb13-101"><a href="#cb13-101"></a>               <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
 <span id="cb13-102"><a href="#cb13-102"></a>  <span class="co"># Rfの点</span></span>
 <span id="cb13-103"><a href="#cb13-103"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> Rf), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
@@ -1588,7 +1604,7 @@ R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
 <span id="cb13-115"><a href="#cb13-115"></a>p_combined</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="chapter02_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="chapter02_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+<figure class="figure"><p><a href="chapter02_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="chapter02_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
 </figure>
 </div>
 </div>
@@ -1599,11 +1615,11 @@ R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
 <p>一般に，平均分散の意味で効率的なポートフォリオ(<strong>平均分散ポートフォリオ</strong>)を計算するには、目標期待リターンを所与として、それを実現するポートフォリオの中でリスクを最小化するものを求める。 得られた期待リターンとリスクのペアを一点として、目標期待リターンを動かすとリスク・リターン平面上に双曲線が描ける。 この双曲線を<strong>平均分散フロンティア</strong>と呼び、効率的フロンティアはその上半分の領域である(確認済み)。</p>
 <p>一般に投資可能な資産の数が増えると、平均分散フロンティアは左上に移動し、投資家はより望ましいポートフォリオが実現できるようになる。 リスク資産<span class="math inline">A</span>と<span class="math inline">B</span>に加えて<span class="math inline">C</span>が投資可能な状況を考えると投資可能な資産が増えたからと言って必ずしもその資産に投資する必要はない。<span class="math inline">w_C=0</span>とすれば、投資家は危険資産<span class="math inline">A</span>と<span class="math inline">B</span>のみに投資可能だった場合と同じ投資機会集合を実現できる。 新しい危険資産が既存資産の組み合わせによって完全に再現できるような極端な例を除けば分散投資のメリットが生じるため、投資家はより望ましいリスク・リターンのトレードオフを実現できる。</p>
 <p>統計学における分散の定義は，<span class="math inline">N</span>個の確率変数<span class="math inline">R_1,R_2,\cdots,R_N</span>の共分散行列<span class="math inline">\Sigma</span>の対角成分の和である。 <span class="math display">
-\begin{align*}
+\begin{aligned}
 \sigma^2=\sum_{i=1}^N\sum_{j=1}^N\sigma_{ij}=\sum_{i=1}^N\sigma_{ii}
-\end{align*}
+\end{aligned}
 </span> ここで，<span class="math inline">\sigma_{ij}</span>は<span class="math inline">R_i</span>と<span class="math inline">R_j</span>の共分散であり，<span class="math inline">\sigma_{ii}</span>は<span class="math inline">R_i</span>の分散である。 共分散行列<span class="math inline">\Sigma</span>は対称行列であり，対角成分は分散を表す。 また，<span class="math inline">R_i</span>と<span class="math inline">R_j</span>の共分散は<span class="math inline">\sigma_{ij}=\sigma_{ji}</span>である。 共分散行列の対角成分以外の成分は共分散を表す。 <span class="math display">
-\begin{align*}
+\begin{aligned}
 \Sigma=
 \begin{bmatrix}
 \sigma_{11} &amp; \sigma_{12} &amp; \cdots &amp; \sigma_{1N} \\
@@ -1611,7 +1627,7 @@ R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
 \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
 \sigma_{N1} &amp; \sigma_{N2} &amp; \cdots &amp; \sigma_{NN} \\
 \end{bmatrix}
-\end{align*}
+\end{aligned}
 </span></p>
 <p>上のは，<span class="math inline">N</span>個の確率変数の共分散行列の定義である。Copilotで作成しました。</p>
 
@@ -3112,7 +3128,7 @@ R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
 <span id="cb14-1017"><a href="#cb14-1017"></a></span>
 <span id="cb14-1018"><a href="#cb14-1018"></a>リスクとリターンの無差別曲線</span>
 <span id="cb14-1019"><a href="#cb14-1019"></a></span>
-<span id="cb14-1020"><a href="#cb14-1020"></a><span class="al">![無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定](img/KM_fig_2-12.jpg)</span></span>
+<span id="cb14-1020"><a href="#cb14-1020"></a><span class="co">&lt;!-- ![無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定](img/KM_fig_2-12.jpg) --&gt;</span></span>
 <span id="cb14-1021"><a href="#cb14-1021"></a></span>
 <span id="cb14-1022"><a href="#cb14-1022"></a>複数ポートフォリオを比べるとき，この図の左上のものほど高リターン低リスクに対応するので、より高い効用水準が実現する。</span>
 <span id="cb14-1023"><a href="#cb14-1023"></a>また無差別曲線の**局所的な傾き**は、その投資家が追加的なリスクを引き受けるうえで要求するリスクプレミアムを表す。</span>
@@ -3184,249 +3200,250 @@ R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i
 <span id="cb14-1089"><a href="#cb14-1089"></a>\mu_P = R_F + \frac{\mu_M - R_F}{\sigma_M} \sigma_P</span>
 <span id="cb14-1090"><a href="#cb14-1090"></a>$$</span>
 <span id="cb14-1091"><a href="#cb14-1091"></a></span>
-<span id="cb14-1092"><a href="#cb14-1092"></a><span class="al">![CAPM](img/KM_fig_2-13.png)</span></span>
-<span id="cb14-1093"><a href="#cb14-1093"></a>前の章で用いたパラメータをそのまま考えます。</span>
-<span id="cb14-1094"><a href="#cb14-1094"></a>接点ポートフォリオの保有比率は概ね47%を銘柄Aに、53%を銘柄Bに投資する結果となりました。CAPMの第一命題によると、均衡した市場における銘柄AとBの時価総額比率は約0.47対0.53になっていなければなりません。</span>
-<span id="cb14-1095"><a href="#cb14-1095"></a>この命題に従えば、投資家は各銘柄の期待リターンや分散から接点ポートフォリオを計算する必要はなく、単に時価総額加重で市場ポートフォリオを保有すればよいことになります。</span>
-<span id="cb14-1096"><a href="#cb14-1096"></a></span>
-<span id="cb14-1097"><a href="#cb14-1097"></a><span class="ss">- </span>**パッシブ運用：** 幅広い銘柄に分散投資し、市場平均と同じようなパフォーマンスを目指す運用手法。</span>
-<span id="cb14-1098"><a href="#cb14-1098"></a><span class="ss">- </span>**アクティブ運用：** 市場平均を上回るパフォーマンスを目指し、投資銘柄を絞ったり、投資比率を工夫したりする運用方法。</span>
-<span id="cb14-1099"><a href="#cb14-1099"></a></span>
-<span id="cb14-1100"><a href="#cb14-1100"></a>任意のポートフォリオの収益性を測る指標として、**シャープ・レシオ**が提唱されています。シャープ・レシオは追加的なリスク・テイクによってどれだけリスクプレミアムを改善できるのかを表す指標です。CAPMの第一命題によると、市場ポートフォリオはシャープ・レシオを最大化するという意味で最も効率的なポートフォリオであり、資本市場線の傾き $\frac{\mu_M - R_F}{\sigma_M}$ は市場ポートフォリオのシャープ・レシオと一致します。</span>
-<span id="cb14-1101"><a href="#cb14-1101"></a></span>
-<span id="cb14-1102"><a href="#cb14-1102"></a>$$</span>
-<span id="cb14-1103"><a href="#cb14-1103"></a>\text{Sharpe Ratio} = \frac{\mu_P-R_F}{\sigma_P}</span>
-<span id="cb14-1104"><a href="#cb14-1104"></a>$$</span>
-<span id="cb14-1105"><a href="#cb14-1105"></a></span>
+<span id="cb14-1092"><a href="#cb14-1092"></a><span class="co">&lt;!-- ![CAPM](img/KM_fig_2-13.png) --&gt;</span></span>
+<span id="cb14-1093"><a href="#cb14-1093"></a></span>
+<span id="cb14-1094"><a href="#cb14-1094"></a>前の章で用いたパラメータをそのまま考えます。</span>
+<span id="cb14-1095"><a href="#cb14-1095"></a>接点ポートフォリオの保有比率は概ね47%を銘柄Aに、53%を銘柄Bに投資する結果となりました。CAPMの第一命題によると、均衡した市場における銘柄AとBの時価総額比率は約0.47対0.53になっていなければなりません。</span>
+<span id="cb14-1096"><a href="#cb14-1096"></a>この命題に従えば、投資家は各銘柄の期待リターンや分散から接点ポートフォリオを計算する必要はなく、単に時価総額加重で市場ポートフォリオを保有すればよいことになります。</span>
+<span id="cb14-1097"><a href="#cb14-1097"></a></span>
+<span id="cb14-1098"><a href="#cb14-1098"></a><span class="ss">- </span>**パッシブ運用：** 幅広い銘柄に分散投資し、市場平均と同じようなパフォーマンスを目指す運用手法。</span>
+<span id="cb14-1099"><a href="#cb14-1099"></a><span class="ss">- </span>**アクティブ運用：** 市場平均を上回るパフォーマンスを目指し、投資銘柄を絞ったり、投資比率を工夫したりする運用方法。</span>
+<span id="cb14-1100"><a href="#cb14-1100"></a></span>
+<span id="cb14-1101"><a href="#cb14-1101"></a>任意のポートフォリオの収益性を測る指標として、**シャープ・レシオ**が提唱されています。シャープ・レシオは追加的なリスク・テイクによってどれだけリスクプレミアムを改善できるのかを表す指標です。CAPMの第一命題によると、市場ポートフォリオはシャープ・レシオを最大化するという意味で最も効率的なポートフォリオであり、資本市場線の傾き $\frac{\mu_M - R_F}{\sigma_M}$ は市場ポートフォリオのシャープ・レシオと一致します。</span>
+<span id="cb14-1102"><a href="#cb14-1102"></a></span>
+<span id="cb14-1103"><a href="#cb14-1103"></a>$$</span>
+<span id="cb14-1104"><a href="#cb14-1104"></a>\text{Sharpe Ratio} = \frac{\mu_P-R_F}{\sigma_P}</span>
+<span id="cb14-1105"><a href="#cb14-1105"></a>$$</span>
 <span id="cb14-1106"><a href="#cb14-1106"></a></span>
-<span id="cb14-1107"><a href="#cb14-1107"></a><span class="fu">### CAPMの第二命題</span></span>
-<span id="cb14-1108"><a href="#cb14-1108"></a></span>
-<span id="cb14-1109"><a href="#cb14-1109"></a>第二命題は個々の資産のリスクとリターンのトレードオフを数式で表現したものです。</span>
-<span id="cb14-1110"><a href="#cb14-1110"></a>ある証券に投資するときのリスクと、その証券に投資するときの期待リターンとの関係を知ることができるようになります。</span>
-<span id="cb14-1111"><a href="#cb14-1111"></a></span>
-<span id="cb14-1112"><a href="#cb14-1112"></a>各投資家が証券 $i$ を追加的に保有する際、重要となるのは市場ポートフォリオとの相関です。分散が大きい資産であっても、市場ポートフォリオと負に相関していれば、その資産を追加的に保有することでポートフォリオ全体のリスクは低減されます。CAPMの第二命題は、この相関を以下の**マーケット・ベータ**として定量化します。</span>
-<span id="cb14-1113"><a href="#cb14-1113"></a>（※ $R_i$ は証券 $i$ のリターン、$R_M$ は市場ポートフォリオのリターン）</span>
-<span id="cb14-1114"><a href="#cb14-1114"></a></span>
-<span id="cb14-1115"><a href="#cb14-1115"></a>この $\beta_i$ は市場ポートフォリオのリスクを1としてベンチマーク化し、その証券のリスクがベンチマークの1を上回るか下回るかを測るものです。$\beta_i$ が大きいほど証券 $i$ は投資家にとってリスク（システマティック・リスク）が大きいことを意味します。CAPMの世界では、証券 $i$ のリスクはその証券のリターンの標準偏差ではなく、この $\beta_i$ によって測られます。</span>
-<span id="cb14-1116"><a href="#cb14-1116"></a></span>
-<span id="cb14-1117"><a href="#cb14-1117"></a>$$</span>
-<span id="cb14-1118"><a href="#cb14-1118"></a>\beta_i = \frac{\mathbb{Cov}<span class="co">[</span><span class="ot">R_i, R_M</span><span class="co">]</span>}{\mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>}</span>
-<span id="cb14-1119"><a href="#cb14-1119"></a>$$</span>
-<span id="cb14-1120"><a href="#cb14-1120"></a></span>
-<span id="cb14-1121"><a href="#cb14-1121"></a>金融市場全体が均衡しているには、リスクの高い証券はその分だけ期待リターンも高くなければなりません。</span>
-<span id="cb14-1122"><a href="#cb14-1122"></a>もし $\beta_i$ が低いにもかかわらず期待リターンが高い証券があるなら、投資家は市場ポートフォリオから離れてその証券をさらに買い増しするインセンティブを持ちます。</span>
-<span id="cb14-1123"><a href="#cb14-1123"></a>その結果、市場価格が上がり、期待リターンが下がるため、最終的に $\beta_i$ に応じた期待リターンが均衡で実現されます。</span>
-<span id="cb14-1124"><a href="#cb14-1124"></a></span>
-<span id="cb14-1125"><a href="#cb14-1125"></a>これまでは市場リスクプレミアムを $\mu_M - R_F$ と表記していましたが、以後ではより一般的な $\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span> - R_F$ と表記します。</span>
-<span id="cb14-1126"><a href="#cb14-1126"></a></span>
-<span id="cb14-1127"><a href="#cb14-1127"></a>::: {.callout-important}</span>
-<span id="cb14-1128"><a href="#cb14-1128"></a><span class="fu">## CAPMの第二命題</span></span>
-<span id="cb14-1129"><a href="#cb14-1129"></a></span>
-<span id="cb14-1130"><a href="#cb14-1130"></a>各証券のリスクプレミアムは、その証券のマーケット・ベータに比例する。</span>
-<span id="cb14-1131"><a href="#cb14-1131"></a>この式は、証券 $i$ のリスクプレミアム $\mathbb{E}<span class="co">[</span><span class="ot">R_i</span><span class="co">]</span>-R_F$ を、$\beta_i$ と市場リスクプレミアム $\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>-R_F$ に分解している。</span>
-<span id="cb14-1132"><a href="#cb14-1132"></a>:::</span>
-<span id="cb14-1133"><a href="#cb14-1133"></a></span>
-<span id="cb14-1134"><a href="#cb14-1134"></a>$$</span>
-<span id="cb14-1135"><a href="#cb14-1135"></a>\begin{aligned}</span>
-<span id="cb14-1136"><a href="#cb14-1136"></a>\mathbb{E}<span class="co">[</span><span class="ot">R_i</span><span class="co">]</span>-R_F = \beta_i (\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span> - R_F)<span class="sc">\\</span></span>
-<span id="cb14-1137"><a href="#cb14-1137"></a>\text{ただし、 } \beta_i = \frac{\mathbb{Cov}<span class="co">[</span><span class="ot">R_i,R_M</span><span class="co">]</span>}{\mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>}</span>
-<span id="cb14-1138"><a href="#cb14-1138"></a>\end{aligned}</span>
-<span id="cb14-1139"><a href="#cb14-1139"></a>$$</span>
-<span id="cb14-1140"><a href="#cb14-1140"></a></span>
-<span id="cb14-1141"><a href="#cb14-1141"></a>通常、市場リスクプレミアムは正の値をとるので、CAPMの第二命題によると、個々の証券のリスクプレミアムは $\beta_i$ に関して線形に増加します。</span>
-<span id="cb14-1142"><a href="#cb14-1142"></a>$\beta_i$ はあくまで市場ポートフォリオとの相関でリスクを定量化しているのがポイントです。</span>
-<span id="cb14-1143"><a href="#cb14-1143"></a>いくら個々の証券の分散（リスク）が大きくても、それが市場ポートフォリオと相関しない固有リスクであれば、リスクプレミアムには反映されません。</span>
-<span id="cb14-1144"><a href="#cb14-1144"></a>期待値をとる前の $R_i$ を分解して確認します。</span>
-<span id="cb14-1145"><a href="#cb14-1145"></a></span>
-<span id="cb14-1146"><a href="#cb14-1146"></a>$$</span>
-<span id="cb14-1147"><a href="#cb14-1147"></a>R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i</span>
-<span id="cb14-1148"><a href="#cb14-1148"></a>$$</span>
-<span id="cb14-1149"><a href="#cb14-1149"></a></span>
-<span id="cb14-1150"><a href="#cb14-1150"></a>ここで $\varepsilon_i$ は期待値ゼロで $R_M$ と相関しない誤差項です。</span>
-<span id="cb14-1151"><a href="#cb14-1151"></a></span>
-<span id="cb14-1152"><a href="#cb14-1152"></a>$$</span>
-<span id="cb14-1153"><a href="#cb14-1153"></a>\mathbb{E}<span class="co">[</span><span class="ot">\varepsilon_i</span><span class="co">]</span> = 0, \qquad \mathbb{Cov}<span class="co">[</span><span class="ot">\varepsilon_i, R_M</span><span class="co">]</span> = 0</span>
-<span id="cb14-1154"><a href="#cb14-1154"></a>$$</span>
-<span id="cb14-1155"><a href="#cb14-1155"></a></span>
-<span id="cb14-1156"><a href="#cb14-1156"></a>分散を計算すると以下のようになります。</span>
-<span id="cb14-1157"><a href="#cb14-1157"></a></span>
-<span id="cb14-1158"><a href="#cb14-1158"></a>$$</span>
-<span id="cb14-1159"><a href="#cb14-1159"></a>\begin{aligned}</span>
-<span id="cb14-1160"><a href="#cb14-1160"></a>\mathbb{Var}<span class="co">[</span><span class="ot">R_i</span><span class="co">]</span> &amp;= \mathbb{Var}<span class="co">[</span><span class="ot">\beta_i R_M + \varepsilon_i</span><span class="co">]</span><span class="sc">\\</span></span>
-<span id="cb14-1161"><a href="#cb14-1161"></a>&amp; = \beta_i^2 \mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span> + \mathbb{Var}<span class="co">[</span><span class="ot">\varepsilon_i</span><span class="co">]</span> + \underbrace{2\mathbb{Cov}<span class="co">[</span><span class="ot">\beta_i R_M, \varepsilon_i</span><span class="co">]</span>}_{\tiny =0}<span class="sc">\\</span></span>
-<span id="cb14-1162"><a href="#cb14-1162"></a>&amp; = \underbrace{\beta_i^2 \mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>}_{\tiny 市場ポートフォリオとの相関による寄与分} + \underbrace{\mathbb{Var}[\varepsilon_i]}_{\tiny 誤差項による寄与分}</span>
-<span id="cb14-1163"><a href="#cb14-1163"></a>\end{aligned}</span>
-<span id="cb14-1164"><a href="#cb14-1164"></a>$$</span>
-<span id="cb14-1165"><a href="#cb14-1165"></a></span>
-<span id="cb14-1166"><a href="#cb14-1166"></a>$R_i$ の分散は、市場ポートフォリオとの相関による寄与分（システマティック・リスク）と誤差項による寄与分（固有リスク）に分解できます。</span>
-<span id="cb14-1167"><a href="#cb14-1167"></a>誤差項の分散が大きければその分だけ $R_i$ の分散も大きくなりますが、証券 $i$ のリスクプレミアムは $\beta_i(\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>-R_F)$ のままで変化はありません。つまり、分散投資によって消去可能な固有リスクに対しては、市場は報酬（プレミアム）を与えないのです。</span>
-<span id="cb14-1168"><a href="#cb14-1168"></a></span>
-<span id="cb14-1169"><a href="#cb14-1169"></a><span class="fu">### 証券市場線</span></span>
-<span id="cb14-1170"><a href="#cb14-1170"></a></span>
-<span id="cb14-1171"><a href="#cb14-1171"></a>安全資産と複数の危険資産が投資可能な場合、投資家の最適ポートフォリオは資本市場線上の1点となります（図2.14 左図）。</span>
-<span id="cb14-1172"><a href="#cb14-1172"></a>一方、CAPMの第二命題が示唆するように、各証券のリスク（ベータ）とリターンとの関係は、右上がりの直線となります（図2.14 右図）。</span>
-<span id="cb14-1173"><a href="#cb14-1173"></a>縦軸に各証券の期待リターン、横軸に各証券のリスクを表すマーケット・ベータをとると、CAPMが完全に成立する世界では全ての資産が一直線上に並びます。この直線を**証券市場線** (Securities Market Line; SML) と呼びます。</span>
-<span id="cb14-1174"><a href="#cb14-1174"></a></span>
-<span id="cb14-1175"><a href="#cb14-1175"></a>定義通り $\beta$ を計算すると銘柄Aは約 $0.63$、銘柄Bは約 $1.33$ となります。</span>
-<span id="cb14-1176"><a href="#cb14-1176"></a>両者の期待リターンおよび $\beta$ を図示すると証券市場線に乗っており、この仮想的な市場ではCAPMが成立していることがわかります。</span>
-<span id="cb14-1177"><a href="#cb14-1177"></a></span>
-<span id="cb14-1180"><a href="#cb14-1180"></a><span class="in">```{r}</span></span>
-<span id="cb14-1181"><a href="#cb14-1181"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb14-1182"><a href="#cb14-1182"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb14-1183"><a href="#cb14-1183"></a></span>
-<span id="cb14-1184"><a href="#cb14-1184"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1185"><a href="#cb14-1185"></a><span class="co"># 1. パラメータ設定 (本文の記述と整合するように調整した数値)</span></span>
-<span id="cb14-1186"><a href="#cb14-1186"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1187"><a href="#cb14-1187"></a><span class="co"># ※ ユーザーの手元に前の章のデータがある場合はそれを読み込んでください。</span></span>
-<span id="cb14-1188"><a href="#cb14-1188"></a><span class="co"># ここでは本文中の「A:47%, B:53%」「Beta A:0.63, Beta B:1.33」</span></span>
-<span id="cb14-1189"><a href="#cb14-1189"></a><span class="co"># と概ね一致するパラメータを設定します。</span></span>
-<span id="cb14-1190"><a href="#cb14-1190"></a></span>
-<span id="cb14-1191"><a href="#cb14-1191"></a>mu_A <span class="ot">&lt;-</span> <span class="fl">0.05</span>      <span class="co"># 銘柄Aの期待リターン</span></span>
-<span id="cb14-1192"><a href="#cb14-1192"></a>sig_A <span class="ot">&lt;-</span> <span class="fl">0.10</span>     <span class="co"># 銘柄Aの標準偏差</span></span>
-<span id="cb14-1193"><a href="#cb14-1193"></a>mu_B <span class="ot">&lt;-</span> <span class="fl">0.12</span>      <span class="co"># 銘柄Bの期待リターン</span></span>
-<span id="cb14-1194"><a href="#cb14-1194"></a>sig_B <span class="ot">&lt;-</span> <span class="fl">0.20</span>     <span class="co"># 銘柄Bの標準偏差</span></span>
-<span id="cb14-1195"><a href="#cb14-1195"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.2</span>        <span class="co"># 相関係数</span></span>
-<span id="cb14-1196"><a href="#cb14-1196"></a>Rf <span class="ot">&lt;-</span> <span class="fl">0.01</span>        <span class="co"># 安全利子率</span></span>
-<span id="cb14-1197"><a href="#cb14-1197"></a></span>
-<span id="cb14-1198"><a href="#cb14-1198"></a><span class="co"># 共分散</span></span>
-<span id="cb14-1199"><a href="#cb14-1199"></a>cov_AB <span class="ot">&lt;-</span> rho <span class="sc">*</span> sig_A <span class="sc">*</span> sig_B</span>
-<span id="cb14-1200"><a href="#cb14-1200"></a></span>
-<span id="cb14-1201"><a href="#cb14-1201"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1202"><a href="#cb14-1202"></a><span class="co"># 2. 接点ポートフォリオ(市場ポートフォリオ)の計算</span></span>
-<span id="cb14-1203"><a href="#cb14-1203"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1204"><a href="#cb14-1204"></a><span class="co"># 過剰リターンベクトル</span></span>
-<span id="cb14-1205"><a href="#cb14-1205"></a>R_excess <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_A <span class="sc">-</span> Rf, mu_B <span class="sc">-</span> Rf)</span>
-<span id="cb14-1206"><a href="#cb14-1206"></a><span class="co"># 分散共分散行列</span></span>
-<span id="cb14-1207"><a href="#cb14-1207"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig_A<span class="sc">^</span><span class="dv">2</span>, cov_AB, cov_AB, sig_B<span class="sc">^</span><span class="dv">2</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
-<span id="cb14-1208"><a href="#cb14-1208"></a></span>
-<span id="cb14-1209"><a href="#cb14-1209"></a><span class="co"># 接点ポートフォリオのウェイト計算 (解析解)</span></span>
-<span id="cb14-1210"><a href="#cb14-1210"></a>Sigma_inv <span class="ot">&lt;-</span> <span class="fu">solve</span>(Sigma)</span>
-<span id="cb14-1211"><a href="#cb14-1211"></a>w_tangency_unscaled <span class="ot">&lt;-</span> Sigma_inv <span class="sc">%*%</span> R_excess</span>
-<span id="cb14-1212"><a href="#cb14-1212"></a>w_M <span class="ot">&lt;-</span> w_tangency_unscaled <span class="sc">/</span> <span class="fu">sum</span>(w_tangency_unscaled) <span class="co"># ウェイトの和を1にする</span></span>
-<span id="cb14-1213"><a href="#cb14-1213"></a></span>
-<span id="cb14-1214"><a href="#cb14-1214"></a><span class="co"># 市場ポートフォリオの期待リターンとリスク</span></span>
-<span id="cb14-1215"><a href="#cb14-1215"></a>mu_M <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">t</span>(w_M) <span class="sc">%*%</span> <span class="fu">c</span>(mu_A, mu_B))</span>
-<span id="cb14-1216"><a href="#cb14-1216"></a>sig_M <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sqrt</span>(<span class="fu">t</span>(w_M) <span class="sc">%*%</span> Sigma <span class="sc">%*%</span> w_M))</span>
-<span id="cb14-1217"><a href="#cb14-1217"></a></span>
-<span id="cb14-1218"><a href="#cb14-1218"></a><span class="co"># Betaの計算: Cov(Ri, RM) / Var(RM)</span></span>
-<span id="cb14-1219"><a href="#cb14-1219"></a><span class="co"># Cov(Ra, Rm) = w_A*Var(A) + w_B*Cov(A,B)</span></span>
-<span id="cb14-1220"><a href="#cb14-1220"></a>cov_AM <span class="ot">&lt;-</span> w_M[<span class="dv">1</span>] <span class="sc">*</span> sig_A<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> w_M[<span class="dv">2</span>] <span class="sc">*</span> cov_AB</span>
-<span id="cb14-1221"><a href="#cb14-1221"></a>cov_BM <span class="ot">&lt;-</span> w_M[<span class="dv">1</span>] <span class="sc">*</span> cov_AB <span class="sc">+</span> w_M[<span class="dv">2</span>] <span class="sc">*</span> sig_B<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb14-1222"><a href="#cb14-1222"></a></span>
-<span id="cb14-1223"><a href="#cb14-1223"></a>beta_A <span class="ot">&lt;-</span> cov_AM <span class="sc">/</span> sig_M<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb14-1224"><a href="#cb14-1224"></a>beta_B <span class="ot">&lt;-</span> cov_BM <span class="sc">/</span> sig_M<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb14-1225"><a href="#cb14-1225"></a></span>
-<span id="cb14-1226"><a href="#cb14-1226"></a><span class="co"># データフレーム化 (プロット用)</span></span>
-<span id="cb14-1227"><a href="#cb14-1227"></a>assets <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb14-1228"><a href="#cb14-1228"></a>  <span class="at">Asset =</span> <span class="fu">c</span>(<span class="st">"銘柄A"</span>, <span class="st">"銘柄B"</span>, <span class="st">"市場PF"</span>),</span>
-<span id="cb14-1229"><a href="#cb14-1229"></a>  <span class="at">Mu =</span> <span class="fu">c</span>(mu_A, mu_B, mu_M),</span>
-<span id="cb14-1230"><a href="#cb14-1230"></a>  <span class="at">Sigma =</span> <span class="fu">c</span>(sig_A, sig_B, sig_M),</span>
-<span id="cb14-1231"><a href="#cb14-1231"></a>  <span class="at">Beta =</span> <span class="fu">c</span>(beta_A, beta_B, <span class="dv">1</span>) <span class="co"># 市場PFのベータは定義上1</span></span>
-<span id="cb14-1232"><a href="#cb14-1232"></a>)</span>
-<span id="cb14-1233"><a href="#cb14-1233"></a></span>
-<span id="cb14-1234"><a href="#cb14-1234"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1235"><a href="#cb14-1235"></a><span class="co"># 3. 効率的フロンティアのデータ生成 (左図用)</span></span>
-<span id="cb14-1236"><a href="#cb14-1236"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1237"><a href="#cb14-1237"></a>w_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="at">length.out =</span> <span class="dv">300</span>)</span>
-<span id="cb14-1238"><a href="#cb14-1238"></a>frontier_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb14-1239"><a href="#cb14-1239"></a>  <span class="at">w_A =</span> w_seq,</span>
-<span id="cb14-1240"><a href="#cb14-1240"></a>  <span class="at">w_B =</span> <span class="dv">1</span> <span class="sc">-</span> w_seq</span>
-<span id="cb14-1241"><a href="#cb14-1241"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb14-1242"><a href="#cb14-1242"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb14-1243"><a href="#cb14-1243"></a>    <span class="at">Mu =</span> w_A <span class="sc">*</span> mu_A <span class="sc">+</span> w_B <span class="sc">*</span> mu_B,</span>
-<span id="cb14-1244"><a href="#cb14-1244"></a>    <span class="at">Sigma =</span> <span class="fu">sqrt</span>(w_A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig_A<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> w_B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig_B<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> w_A <span class="sc">*</span> w_B <span class="sc">*</span> cov_AB)</span>
-<span id="cb14-1245"><a href="#cb14-1245"></a>  )</span>
-<span id="cb14-1246"><a href="#cb14-1246"></a></span>
-<span id="cb14-1247"><a href="#cb14-1247"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1248"><a href="#cb14-1248"></a><span class="co"># 4. 作図 (ggplot2)</span></span>
-<span id="cb14-1249"><a href="#cb14-1249"></a><span class="co"># -------------------------------------------------------</span></span>
-<span id="cb14-1250"><a href="#cb14-1250"></a></span>
-<span id="cb14-1251"><a href="#cb14-1251"></a><span class="co"># --- 左図: 資本市場線 (CML) ---</span></span>
-<span id="cb14-1252"><a href="#cb14-1252"></a>p_cml <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb14-1253"><a href="#cb14-1253"></a>  <span class="co"># 効率的フロンティア（双曲線）</span></span>
-<span id="cb14-1254"><a href="#cb14-1254"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> frontier_data, <span class="fu">aes</span>(<span class="at">x =</span> Sigma, <span class="at">y =</span> Mu), </span>
-<span id="cb14-1255"><a href="#cb14-1255"></a>            <span class="at">color =</span> <span class="st">"gray70"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb14-1256"><a href="#cb14-1256"></a>  <span class="co"># 資本市場線 (CML): 切片Rf, 接点を通る直線</span></span>
-<span id="cb14-1257"><a href="#cb14-1257"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf) <span class="sc">/</span> sig_M, </span>
-<span id="cb14-1258"><a href="#cb14-1258"></a>              <span class="at">color =</span> <span class="st">"darkblue"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb14-1259"><a href="#cb14-1259"></a>  <span class="co"># 各資産のポイント</span></span>
-<span id="cb14-1260"><a href="#cb14-1260"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> assets, <span class="fu">aes</span>(<span class="at">x =</span> Sigma, <span class="at">y =</span> Mu, <span class="at">color =</span> Asset), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb14-1261"><a href="#cb14-1261"></a>  <span class="co"># Rfの点</span></span>
-<span id="cb14-1262"><a href="#cb14-1262"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> Rf), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb14-1263"><a href="#cb14-1263"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.01</span>, <span class="at">y =</span> Rf, <span class="at">label =</span> <span class="st">"Rf"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb14-1264"><a href="#cb14-1264"></a>  <span class="co"># ラベル類</span></span>
-<span id="cb14-1265"><a href="#cb14-1265"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"資本市場線 (CML)"</span>,</span>
-<span id="cb14-1266"><a href="#cb14-1266"></a>       <span class="at">x =</span> <span class="st">"リスク (標準偏差)"</span>, <span class="at">y =</span> <span class="st">"期待リターン"</span>) <span class="sc">+</span></span>
-<span id="cb14-1267"><a href="#cb14-1267"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb14-1268"><a href="#cb14-1268"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(frontier_data<span class="sc">$</span>Sigma)<span class="sc">*</span><span class="fl">1.1</span>)) <span class="sc">+</span></span>
-<span id="cb14-1269"><a href="#cb14-1269"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(frontier_data<span class="sc">$</span>Mu)<span class="sc">*</span><span class="fl">1.1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb14-1270"><a href="#cb14-1270"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="co"># 凡例は右図と共通または省略</span></span>
-<span id="cb14-1271"><a href="#cb14-1271"></a></span>
-<span id="cb14-1272"><a href="#cb14-1272"></a><span class="co"># --- 右図: 証券市場線 (SML) ---</span></span>
-<span id="cb14-1273"><a href="#cb14-1273"></a>p_sml <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb14-1274"><a href="#cb14-1274"></a>  <span class="co"># 証券市場線 (SML): 切片Rf, 傾き(Rm-Rf)</span></span>
-<span id="cb14-1275"><a href="#cb14-1275"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf), </span>
-<span id="cb14-1276"><a href="#cb14-1276"></a>              <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb14-1277"><a href="#cb14-1277"></a>  <span class="co"># 各資産のポイント</span></span>
-<span id="cb14-1278"><a href="#cb14-1278"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> assets, <span class="fu">aes</span>(<span class="at">x =</span> Beta, <span class="at">y =</span> Mu, <span class="at">color =</span> Asset), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb14-1279"><a href="#cb14-1279"></a>  <span class="co"># 補助線 (市場PFのベータ=1を示す線)</span></span>
-<span id="cb14-1280"><a href="#cb14-1280"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> mu_M), </span>
-<span id="cb14-1281"><a href="#cb14-1281"></a>               <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
-<span id="cb14-1282"><a href="#cb14-1282"></a>  <span class="co"># Rfの点</span></span>
-<span id="cb14-1283"><a href="#cb14-1283"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> Rf), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb14-1284"><a href="#cb14-1284"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.1</span>, <span class="at">y =</span> Rf, <span class="at">label =</span> <span class="st">"Rf"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb14-1285"><a href="#cb14-1285"></a>  <span class="co"># ラベル類</span></span>
-<span id="cb14-1286"><a href="#cb14-1286"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"証券市場線 (SML)"</span>,</span>
-<span id="cb14-1287"><a href="#cb14-1287"></a>       <span class="at">x =</span> <span class="st">"ベータ (β)"</span>, <span class="at">y =</span> <span class="st">"期待リターン"</span>) <span class="sc">+</span></span>
-<span id="cb14-1288"><a href="#cb14-1288"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb14-1289"><a href="#cb14-1289"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>)) <span class="sc">+</span></span>
-<span id="cb14-1290"><a href="#cb14-1290"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(frontier_data<span class="sc">$</span>Mu)<span class="sc">*</span><span class="fl">1.1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb14-1291"><a href="#cb14-1291"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
-<span id="cb14-1292"><a href="#cb14-1292"></a></span>
-<span id="cb14-1293"><a href="#cb14-1293"></a><span class="co"># --- 図の結合 ---</span></span>
-<span id="cb14-1294"><a href="#cb14-1294"></a>p_combined <span class="ot">&lt;-</span> p_cml <span class="sc">+</span> p_sml</span>
-<span id="cb14-1295"><a href="#cb14-1295"></a>p_combined</span>
-<span id="cb14-1296"><a href="#cb14-1296"></a><span class="in">```</span></span>
-<span id="cb14-1297"><a href="#cb14-1297"></a></span>
+<span id="cb14-1107"><a href="#cb14-1107"></a></span>
+<span id="cb14-1108"><a href="#cb14-1108"></a><span class="fu">### CAPMの第二命題</span></span>
+<span id="cb14-1109"><a href="#cb14-1109"></a></span>
+<span id="cb14-1110"><a href="#cb14-1110"></a>第二命題は個々の資産のリスクとリターンのトレードオフを数式で表現したものです。</span>
+<span id="cb14-1111"><a href="#cb14-1111"></a>ある証券に投資するときのリスクと、その証券に投資するときの期待リターンとの関係を知ることができるようになります。</span>
+<span id="cb14-1112"><a href="#cb14-1112"></a></span>
+<span id="cb14-1113"><a href="#cb14-1113"></a>各投資家が証券 $i$ を追加的に保有する際、重要となるのは市場ポートフォリオとの相関です。分散が大きい資産であっても、市場ポートフォリオと負に相関していれば、その資産を追加的に保有することでポートフォリオ全体のリスクは低減されます。CAPMの第二命題は、この相関を以下の**マーケット・ベータ**として定量化します。</span>
+<span id="cb14-1114"><a href="#cb14-1114"></a>（※ $R_i$ は証券 $i$ のリターン、$R_M$ は市場ポートフォリオのリターン）</span>
+<span id="cb14-1115"><a href="#cb14-1115"></a></span>
+<span id="cb14-1116"><a href="#cb14-1116"></a>この $\beta_i$ は市場ポートフォリオのリスクを1としてベンチマーク化し、その証券のリスクがベンチマークの1を上回るか下回るかを測るものです。$\beta_i$ が大きいほど証券 $i$ は投資家にとってリスク（システマティック・リスク）が大きいことを意味します。CAPMの世界では、証券 $i$ のリスクはその証券のリターンの標準偏差ではなく、この $\beta_i$ によって測られます。</span>
+<span id="cb14-1117"><a href="#cb14-1117"></a></span>
+<span id="cb14-1118"><a href="#cb14-1118"></a>$$</span>
+<span id="cb14-1119"><a href="#cb14-1119"></a>\beta_i = \frac{\mathbb{Cov}<span class="co">[</span><span class="ot">R_i, R_M</span><span class="co">]</span>}{\mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>}</span>
+<span id="cb14-1120"><a href="#cb14-1120"></a>$$</span>
+<span id="cb14-1121"><a href="#cb14-1121"></a></span>
+<span id="cb14-1122"><a href="#cb14-1122"></a>金融市場全体が均衡しているには、リスクの高い証券はその分だけ期待リターンも高くなければなりません。</span>
+<span id="cb14-1123"><a href="#cb14-1123"></a>もし $\beta_i$ が低いにもかかわらず期待リターンが高い証券があるなら、投資家は市場ポートフォリオから離れてその証券をさらに買い増しするインセンティブを持ちます。</span>
+<span id="cb14-1124"><a href="#cb14-1124"></a>その結果、市場価格が上がり、期待リターンが下がるため、最終的に $\beta_i$ に応じた期待リターンが均衡で実現されます。</span>
+<span id="cb14-1125"><a href="#cb14-1125"></a></span>
+<span id="cb14-1126"><a href="#cb14-1126"></a>これまでは市場リスクプレミアムを $\mu_M - R_F$ と表記していましたが、以後ではより一般的な $\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span> - R_F$ と表記します。</span>
+<span id="cb14-1127"><a href="#cb14-1127"></a></span>
+<span id="cb14-1128"><a href="#cb14-1128"></a>::: {.callout-important}</span>
+<span id="cb14-1129"><a href="#cb14-1129"></a><span class="fu">## CAPMの第二命題</span></span>
+<span id="cb14-1130"><a href="#cb14-1130"></a></span>
+<span id="cb14-1131"><a href="#cb14-1131"></a>各証券のリスクプレミアムは、その証券のマーケット・ベータに比例する。</span>
+<span id="cb14-1132"><a href="#cb14-1132"></a>この式は、証券 $i$ のリスクプレミアム $\mathbb{E}<span class="co">[</span><span class="ot">R_i</span><span class="co">]</span>-R_F$ を、$\beta_i$ と市場リスクプレミアム $\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>-R_F$ に分解している。</span>
+<span id="cb14-1133"><a href="#cb14-1133"></a>:::</span>
+<span id="cb14-1134"><a href="#cb14-1134"></a></span>
+<span id="cb14-1135"><a href="#cb14-1135"></a>$$</span>
+<span id="cb14-1136"><a href="#cb14-1136"></a>\begin{aligned}</span>
+<span id="cb14-1137"><a href="#cb14-1137"></a>\mathbb{E}<span class="co">[</span><span class="ot">R_i</span><span class="co">]</span>-R_F = \beta_i (\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span> - R_F)<span class="sc">\\</span></span>
+<span id="cb14-1138"><a href="#cb14-1138"></a>\text{ただし、 } \beta_i = \frac{\mathbb{Cov}<span class="co">[</span><span class="ot">R_i,R_M</span><span class="co">]</span>}{\mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>}</span>
+<span id="cb14-1139"><a href="#cb14-1139"></a>\end{aligned}</span>
+<span id="cb14-1140"><a href="#cb14-1140"></a>$$</span>
+<span id="cb14-1141"><a href="#cb14-1141"></a></span>
+<span id="cb14-1142"><a href="#cb14-1142"></a>通常、市場リスクプレミアムは正の値をとるので、CAPMの第二命題によると、個々の証券のリスクプレミアムは $\beta_i$ に関して線形に増加します。</span>
+<span id="cb14-1143"><a href="#cb14-1143"></a>$\beta_i$ はあくまで市場ポートフォリオとの相関でリスクを定量化しているのがポイントです。</span>
+<span id="cb14-1144"><a href="#cb14-1144"></a>いくら個々の証券の分散（リスク）が大きくても、それが市場ポートフォリオと相関しない固有リスクであれば、リスクプレミアムには反映されません。</span>
+<span id="cb14-1145"><a href="#cb14-1145"></a>期待値をとる前の $R_i$ を分解して確認します。</span>
+<span id="cb14-1146"><a href="#cb14-1146"></a></span>
+<span id="cb14-1147"><a href="#cb14-1147"></a>$$</span>
+<span id="cb14-1148"><a href="#cb14-1148"></a>R_i = R_F + \beta_i (R_M - R_F) + \varepsilon_i</span>
+<span id="cb14-1149"><a href="#cb14-1149"></a>$$</span>
+<span id="cb14-1150"><a href="#cb14-1150"></a></span>
+<span id="cb14-1151"><a href="#cb14-1151"></a>ここで $\varepsilon_i$ は期待値ゼロで $R_M$ と相関しない誤差項です。</span>
+<span id="cb14-1152"><a href="#cb14-1152"></a></span>
+<span id="cb14-1153"><a href="#cb14-1153"></a>$$</span>
+<span id="cb14-1154"><a href="#cb14-1154"></a>\mathbb{E}<span class="co">[</span><span class="ot">\varepsilon_i</span><span class="co">]</span> = 0, \qquad \mathbb{Cov}<span class="co">[</span><span class="ot">\varepsilon_i, R_M</span><span class="co">]</span> = 0</span>
+<span id="cb14-1155"><a href="#cb14-1155"></a>$$</span>
+<span id="cb14-1156"><a href="#cb14-1156"></a></span>
+<span id="cb14-1157"><a href="#cb14-1157"></a>分散を計算すると以下のようになります。</span>
+<span id="cb14-1158"><a href="#cb14-1158"></a></span>
+<span id="cb14-1159"><a href="#cb14-1159"></a>$$</span>
+<span id="cb14-1160"><a href="#cb14-1160"></a>\begin{aligned}</span>
+<span id="cb14-1161"><a href="#cb14-1161"></a>\mathbb{Var}<span class="co">[</span><span class="ot">R_i</span><span class="co">]</span> &amp;= \mathbb{Var}<span class="co">[</span><span class="ot">\beta_i R_M + \varepsilon_i</span><span class="co">]</span><span class="sc">\\</span></span>
+<span id="cb14-1162"><a href="#cb14-1162"></a>&amp; = \beta_i^2 \mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span> + \mathbb{Var}<span class="co">[</span><span class="ot">\varepsilon_i</span><span class="co">]</span> + \underbrace{2\mathbb{Cov}<span class="co">[</span><span class="ot">\beta_i R_M, \varepsilon_i</span><span class="co">]</span>}_{\tiny =0}<span class="sc">\\</span></span>
+<span id="cb14-1163"><a href="#cb14-1163"></a>&amp; = \underbrace{\beta_i^2 \mathbb{Var}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>}_{\tiny 市場ポートフォリオとの相関による寄与分} + \underbrace{\mathbb{Var}[\varepsilon_i]}_{\tiny 誤差項による寄与分}</span>
+<span id="cb14-1164"><a href="#cb14-1164"></a>\end{aligned}</span>
+<span id="cb14-1165"><a href="#cb14-1165"></a>$$</span>
+<span id="cb14-1166"><a href="#cb14-1166"></a></span>
+<span id="cb14-1167"><a href="#cb14-1167"></a>$R_i$ の分散は、市場ポートフォリオとの相関による寄与分（システマティック・リスク）と誤差項による寄与分（固有リスク）に分解できます。</span>
+<span id="cb14-1168"><a href="#cb14-1168"></a>誤差項の分散が大きければその分だけ $R_i$ の分散も大きくなりますが、証券 $i$ のリスクプレミアムは $\beta_i(\mathbb{E}<span class="co">[</span><span class="ot">R_M</span><span class="co">]</span>-R_F)$ のままで変化はありません。つまり、分散投資によって消去可能な固有リスクに対しては、市場は報酬（プレミアム）を与えないのです。</span>
+<span id="cb14-1169"><a href="#cb14-1169"></a></span>
+<span id="cb14-1170"><a href="#cb14-1170"></a><span class="fu">### 証券市場線</span></span>
+<span id="cb14-1171"><a href="#cb14-1171"></a></span>
+<span id="cb14-1172"><a href="#cb14-1172"></a>安全資産と複数の危険資産が投資可能な場合、投資家の最適ポートフォリオは資本市場線上の1点となります（図2.14 左図）。</span>
+<span id="cb14-1173"><a href="#cb14-1173"></a>一方、CAPMの第二命題が示唆するように、各証券のリスク（ベータ）とリターンとの関係は、右上がりの直線となります（図2.14 右図）。</span>
+<span id="cb14-1174"><a href="#cb14-1174"></a>縦軸に各証券の期待リターン、横軸に各証券のリスクを表すマーケット・ベータをとると、CAPMが完全に成立する世界では全ての資産が一直線上に並びます。この直線を**証券市場線** (Securities Market Line; SML) と呼びます。</span>
+<span id="cb14-1175"><a href="#cb14-1175"></a></span>
+<span id="cb14-1176"><a href="#cb14-1176"></a>定義通り $\beta$ を計算すると銘柄Aは約 $0.63$、銘柄Bは約 $1.33$ となります。</span>
+<span id="cb14-1177"><a href="#cb14-1177"></a>両者の期待リターンおよび $\beta$ を図示すると証券市場線に乗っており、この仮想的な市場ではCAPMが成立していることがわかります。</span>
+<span id="cb14-1178"><a href="#cb14-1178"></a></span>
+<span id="cb14-1181"><a href="#cb14-1181"></a><span class="in">```{r}</span></span>
+<span id="cb14-1182"><a href="#cb14-1182"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb14-1183"><a href="#cb14-1183"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb14-1184"><a href="#cb14-1184"></a></span>
+<span id="cb14-1185"><a href="#cb14-1185"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1186"><a href="#cb14-1186"></a><span class="co"># 1. パラメータ設定 (本文の記述と整合するように調整した数値)</span></span>
+<span id="cb14-1187"><a href="#cb14-1187"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1188"><a href="#cb14-1188"></a><span class="co"># ※ ユーザーの手元に前の章のデータがある場合はそれを読み込んでください。</span></span>
+<span id="cb14-1189"><a href="#cb14-1189"></a><span class="co"># ここでは本文中の「A:47%, B:53%」「Beta A:0.63, Beta B:1.33」</span></span>
+<span id="cb14-1190"><a href="#cb14-1190"></a><span class="co"># と概ね一致するパラメータを設定します。</span></span>
+<span id="cb14-1191"><a href="#cb14-1191"></a></span>
+<span id="cb14-1192"><a href="#cb14-1192"></a>mu_A <span class="ot">&lt;-</span> <span class="fl">0.05</span>      <span class="co"># 銘柄Aの期待リターン</span></span>
+<span id="cb14-1193"><a href="#cb14-1193"></a>sig_A <span class="ot">&lt;-</span> <span class="fl">0.10</span>     <span class="co"># 銘柄Aの標準偏差</span></span>
+<span id="cb14-1194"><a href="#cb14-1194"></a>mu_B <span class="ot">&lt;-</span> <span class="fl">0.12</span>      <span class="co"># 銘柄Bの期待リターン</span></span>
+<span id="cb14-1195"><a href="#cb14-1195"></a>sig_B <span class="ot">&lt;-</span> <span class="fl">0.20</span>     <span class="co"># 銘柄Bの標準偏差</span></span>
+<span id="cb14-1196"><a href="#cb14-1196"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.2</span>        <span class="co"># 相関係数</span></span>
+<span id="cb14-1197"><a href="#cb14-1197"></a>Rf <span class="ot">&lt;-</span> <span class="fl">0.01</span>        <span class="co"># 安全利子率</span></span>
+<span id="cb14-1198"><a href="#cb14-1198"></a></span>
+<span id="cb14-1199"><a href="#cb14-1199"></a><span class="co"># 共分散</span></span>
+<span id="cb14-1200"><a href="#cb14-1200"></a>cov_AB <span class="ot">&lt;-</span> rho <span class="sc">*</span> sig_A <span class="sc">*</span> sig_B</span>
+<span id="cb14-1201"><a href="#cb14-1201"></a></span>
+<span id="cb14-1202"><a href="#cb14-1202"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1203"><a href="#cb14-1203"></a><span class="co"># 2. 接点ポートフォリオ(市場ポートフォリオ)の計算</span></span>
+<span id="cb14-1204"><a href="#cb14-1204"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1205"><a href="#cb14-1205"></a><span class="co"># 過剰リターンベクトル</span></span>
+<span id="cb14-1206"><a href="#cb14-1206"></a>R_excess <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_A <span class="sc">-</span> Rf, mu_B <span class="sc">-</span> Rf)</span>
+<span id="cb14-1207"><a href="#cb14-1207"></a><span class="co"># 分散共分散行列</span></span>
+<span id="cb14-1208"><a href="#cb14-1208"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(sig_A<span class="sc">^</span><span class="dv">2</span>, cov_AB, cov_AB, sig_B<span class="sc">^</span><span class="dv">2</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb14-1209"><a href="#cb14-1209"></a></span>
+<span id="cb14-1210"><a href="#cb14-1210"></a><span class="co"># 接点ポートフォリオのウェイト計算 (解析解)</span></span>
+<span id="cb14-1211"><a href="#cb14-1211"></a>Sigma_inv <span class="ot">&lt;-</span> <span class="fu">solve</span>(Sigma)</span>
+<span id="cb14-1212"><a href="#cb14-1212"></a>w_tangency_unscaled <span class="ot">&lt;-</span> Sigma_inv <span class="sc">%*%</span> R_excess</span>
+<span id="cb14-1213"><a href="#cb14-1213"></a>w_M <span class="ot">&lt;-</span> w_tangency_unscaled <span class="sc">/</span> <span class="fu">sum</span>(w_tangency_unscaled) <span class="co"># ウェイトの和を1にする</span></span>
+<span id="cb14-1214"><a href="#cb14-1214"></a></span>
+<span id="cb14-1215"><a href="#cb14-1215"></a><span class="co"># 市場ポートフォリオの期待リターンとリスク</span></span>
+<span id="cb14-1216"><a href="#cb14-1216"></a>mu_M <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">t</span>(w_M) <span class="sc">%*%</span> <span class="fu">c</span>(mu_A, mu_B))</span>
+<span id="cb14-1217"><a href="#cb14-1217"></a>sig_M <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sqrt</span>(<span class="fu">t</span>(w_M) <span class="sc">%*%</span> Sigma <span class="sc">%*%</span> w_M))</span>
+<span id="cb14-1218"><a href="#cb14-1218"></a></span>
+<span id="cb14-1219"><a href="#cb14-1219"></a><span class="co"># Betaの計算: Cov(Ri, RM) / Var(RM)</span></span>
+<span id="cb14-1220"><a href="#cb14-1220"></a><span class="co"># Cov(Ra, Rm) = w_A*Var(A) + w_B*Cov(A,B)</span></span>
+<span id="cb14-1221"><a href="#cb14-1221"></a>cov_AM <span class="ot">&lt;-</span> w_M[<span class="dv">1</span>] <span class="sc">*</span> sig_A<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> w_M[<span class="dv">2</span>] <span class="sc">*</span> cov_AB</span>
+<span id="cb14-1222"><a href="#cb14-1222"></a>cov_BM <span class="ot">&lt;-</span> w_M[<span class="dv">1</span>] <span class="sc">*</span> cov_AB <span class="sc">+</span> w_M[<span class="dv">2</span>] <span class="sc">*</span> sig_B<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb14-1223"><a href="#cb14-1223"></a></span>
+<span id="cb14-1224"><a href="#cb14-1224"></a>beta_A <span class="ot">&lt;-</span> cov_AM <span class="sc">/</span> sig_M<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb14-1225"><a href="#cb14-1225"></a>beta_B <span class="ot">&lt;-</span> cov_BM <span class="sc">/</span> sig_M<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb14-1226"><a href="#cb14-1226"></a></span>
+<span id="cb14-1227"><a href="#cb14-1227"></a><span class="co"># データフレーム化 (プロット用)</span></span>
+<span id="cb14-1228"><a href="#cb14-1228"></a>assets <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb14-1229"><a href="#cb14-1229"></a>  <span class="at">Asset =</span> <span class="fu">c</span>(<span class="st">"銘柄A"</span>, <span class="st">"銘柄B"</span>, <span class="st">"市場PF"</span>),</span>
+<span id="cb14-1230"><a href="#cb14-1230"></a>  <span class="at">Mu =</span> <span class="fu">c</span>(mu_A, mu_B, mu_M),</span>
+<span id="cb14-1231"><a href="#cb14-1231"></a>  <span class="at">Sigma =</span> <span class="fu">c</span>(sig_A, sig_B, sig_M),</span>
+<span id="cb14-1232"><a href="#cb14-1232"></a>  <span class="at">Beta =</span> <span class="fu">c</span>(beta_A, beta_B, <span class="dv">1</span>) <span class="co"># 市場PFのベータは定義上1</span></span>
+<span id="cb14-1233"><a href="#cb14-1233"></a>)</span>
+<span id="cb14-1234"><a href="#cb14-1234"></a></span>
+<span id="cb14-1235"><a href="#cb14-1235"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1236"><a href="#cb14-1236"></a><span class="co"># 3. 効率的フロンティアのデータ生成 (左図用)</span></span>
+<span id="cb14-1237"><a href="#cb14-1237"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1238"><a href="#cb14-1238"></a>w_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="at">length.out =</span> <span class="dv">300</span>)</span>
+<span id="cb14-1239"><a href="#cb14-1239"></a>frontier_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb14-1240"><a href="#cb14-1240"></a>  <span class="at">w_A =</span> w_seq,</span>
+<span id="cb14-1241"><a href="#cb14-1241"></a>  <span class="at">w_B =</span> <span class="dv">1</span> <span class="sc">-</span> w_seq</span>
+<span id="cb14-1242"><a href="#cb14-1242"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-1243"><a href="#cb14-1243"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-1244"><a href="#cb14-1244"></a>    <span class="at">Mu =</span> w_A <span class="sc">*</span> mu_A <span class="sc">+</span> w_B <span class="sc">*</span> mu_B,</span>
+<span id="cb14-1245"><a href="#cb14-1245"></a>    <span class="at">Sigma =</span> <span class="fu">sqrt</span>(w_A<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig_A<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> w_B<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sig_B<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> w_A <span class="sc">*</span> w_B <span class="sc">*</span> cov_AB)</span>
+<span id="cb14-1246"><a href="#cb14-1246"></a>  )</span>
+<span id="cb14-1247"><a href="#cb14-1247"></a></span>
+<span id="cb14-1248"><a href="#cb14-1248"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1249"><a href="#cb14-1249"></a><span class="co"># 4. 作図 (ggplot2)</span></span>
+<span id="cb14-1250"><a href="#cb14-1250"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb14-1251"><a href="#cb14-1251"></a></span>
+<span id="cb14-1252"><a href="#cb14-1252"></a><span class="co"># --- 左図: 資本市場線 (CML) ---</span></span>
+<span id="cb14-1253"><a href="#cb14-1253"></a>p_cml <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb14-1254"><a href="#cb14-1254"></a>  <span class="co"># 効率的フロンティア（双曲線）</span></span>
+<span id="cb14-1255"><a href="#cb14-1255"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> frontier_data, <span class="fu">aes</span>(<span class="at">x =</span> Sigma, <span class="at">y =</span> Mu),</span>
+<span id="cb14-1256"><a href="#cb14-1256"></a>            <span class="at">color =</span> <span class="st">"gray70"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-1257"><a href="#cb14-1257"></a>  <span class="co"># 資本市場線 (CML): 切片Rf, 接点を通る直線</span></span>
+<span id="cb14-1258"><a href="#cb14-1258"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf) <span class="sc">/</span> sig_M,</span>
+<span id="cb14-1259"><a href="#cb14-1259"></a>              <span class="at">color =</span> <span class="st">"darkblue"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb14-1260"><a href="#cb14-1260"></a>  <span class="co"># 各資産のポイント</span></span>
+<span id="cb14-1261"><a href="#cb14-1261"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> assets, <span class="fu">aes</span>(<span class="at">x =</span> Sigma, <span class="at">y =</span> Mu, <span class="at">color =</span> Asset), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb14-1262"><a href="#cb14-1262"></a>  <span class="co"># Rfの点</span></span>
+<span id="cb14-1263"><a href="#cb14-1263"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> Rf), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb14-1264"><a href="#cb14-1264"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.01</span>, <span class="at">y =</span> Rf, <span class="at">label =</span> <span class="st">"Rf"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-1265"><a href="#cb14-1265"></a>  <span class="co"># ラベル類</span></span>
+<span id="cb14-1266"><a href="#cb14-1266"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"資本市場線 (CML)"</span>,</span>
+<span id="cb14-1267"><a href="#cb14-1267"></a>       <span class="at">x =</span> <span class="st">"リスク (標準偏差)"</span>, <span class="at">y =</span> <span class="st">"期待リターン"</span>) <span class="sc">+</span></span>
+<span id="cb14-1268"><a href="#cb14-1268"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb14-1269"><a href="#cb14-1269"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(frontier_data<span class="sc">$</span>Sigma)<span class="sc">*</span><span class="fl">1.1</span>)) <span class="sc">+</span></span>
+<span id="cb14-1270"><a href="#cb14-1270"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(frontier_data<span class="sc">$</span>Mu)<span class="sc">*</span><span class="fl">1.1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb14-1271"><a href="#cb14-1271"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="co"># 凡例は右図と共通または省略</span></span>
+<span id="cb14-1272"><a href="#cb14-1272"></a></span>
+<span id="cb14-1273"><a href="#cb14-1273"></a><span class="co"># --- 右図: 証券市場線 (SML) ---</span></span>
+<span id="cb14-1274"><a href="#cb14-1274"></a>p_sml <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb14-1275"><a href="#cb14-1275"></a>  <span class="co"># 証券市場線 (SML): 切片Rf, 傾き(Rm-Rf)</span></span>
+<span id="cb14-1276"><a href="#cb14-1276"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> Rf, <span class="at">slope =</span> (mu_M <span class="sc">-</span> Rf),</span>
+<span id="cb14-1277"><a href="#cb14-1277"></a>              <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb14-1278"><a href="#cb14-1278"></a>  <span class="co"># 各資産のポイント</span></span>
+<span id="cb14-1279"><a href="#cb14-1279"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> assets, <span class="fu">aes</span>(<span class="at">x =</span> Beta, <span class="at">y =</span> Mu, <span class="at">color =</span> Asset), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb14-1280"><a href="#cb14-1280"></a>  <span class="co"># 補助線 (市場PFのベータ=1を示す線)</span></span>
+<span id="cb14-1281"><a href="#cb14-1281"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> mu_M),</span>
+<span id="cb14-1282"><a href="#cb14-1282"></a>               <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
+<span id="cb14-1283"><a href="#cb14-1283"></a>  <span class="co"># Rfの点</span></span>
+<span id="cb14-1284"><a href="#cb14-1284"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> Rf), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb14-1285"><a href="#cb14-1285"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.1</span>, <span class="at">y =</span> Rf, <span class="at">label =</span> <span class="st">"Rf"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-1286"><a href="#cb14-1286"></a>  <span class="co"># ラベル類</span></span>
+<span id="cb14-1287"><a href="#cb14-1287"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"証券市場線 (SML)"</span>,</span>
+<span id="cb14-1288"><a href="#cb14-1288"></a>       <span class="at">x =</span> <span class="st">"ベータ (β)"</span>, <span class="at">y =</span> <span class="st">"期待リターン"</span>) <span class="sc">+</span></span>
+<span id="cb14-1289"><a href="#cb14-1289"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb14-1290"><a href="#cb14-1290"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>)) <span class="sc">+</span></span>
+<span id="cb14-1291"><a href="#cb14-1291"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(frontier_data<span class="sc">$</span>Mu)<span class="sc">*</span><span class="fl">1.1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb14-1292"><a href="#cb14-1292"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb14-1293"><a href="#cb14-1293"></a></span>
+<span id="cb14-1294"><a href="#cb14-1294"></a><span class="co"># --- 図の結合 ---</span></span>
+<span id="cb14-1295"><a href="#cb14-1295"></a>p_combined <span class="ot">&lt;-</span> p_cml <span class="sc">+</span> p_sml</span>
+<span id="cb14-1296"><a href="#cb14-1296"></a>p_combined</span>
+<span id="cb14-1297"><a href="#cb14-1297"></a><span class="in">```</span></span>
 <span id="cb14-1298"><a href="#cb14-1298"></a></span>
-<span id="cb14-1299"><a href="#cb14-1299"></a><span class="fu">## N資産が投資可能な場合への拡張</span></span>
-<span id="cb14-1300"><a href="#cb14-1300"></a></span>
-<span id="cb14-1301"><a href="#cb14-1301"></a>今までは，リスク資産が銘柄AとBの二つしかない場合を分析してきたが，現実は多くのリスク資産が存在し、海外株式や債券、REIT(不動産投資信託)といったその他の投資可能な金融資産を含めればその数は飛躍的に増加する。</span>
-<span id="cb14-1302"><a href="#cb14-1302"></a>本節での平均分散アプローチやCAPMは危険資産の数が任意の$N$個であっても成立する。</span>
-<span id="cb14-1303"><a href="#cb14-1303"></a>ただしその場合は**行列での表記**が必須となる(第7章やサポートサイト4.5節参照)。</span>
-<span id="cb14-1304"><a href="#cb14-1304"></a></span>
-<span id="cb14-1305"><a href="#cb14-1305"></a>一般に，平均分散の意味で効率的なポートフォリオ(**平均分散ポートフォリオ**)を計算するには、目標期待リターンを所与として、それを実現するポートフォリオの中でリスクを最小化するものを求める。</span>
-<span id="cb14-1306"><a href="#cb14-1306"></a>得られた期待リターンとリスクのペアを一点として、目標期待リターンを動かすとリスク・リターン平面上に双曲線が描ける。</span>
-<span id="cb14-1307"><a href="#cb14-1307"></a>この双曲線を**平均分散フロンティア**と呼び、効率的フロンティアはその上半分の領域である(確認済み)。</span>
-<span id="cb14-1308"><a href="#cb14-1308"></a></span>
-<span id="cb14-1309"><a href="#cb14-1309"></a>一般に投資可能な資産の数が増えると、平均分散フロンティアは左上に移動し、投資家はより望ましいポートフォリオが実現できるようになる。</span>
-<span id="cb14-1310"><a href="#cb14-1310"></a>リスク資産$A$と$B$に加えて$C$が投資可能な状況を考えると投資可能な資産が増えたからと言って必ずしもその資産に投資する必要はない。$w_C=0$とすれば、投資家は危険資産$A$と$B$のみに投資可能だった場合と同じ投資機会集合を実現できる。</span>
-<span id="cb14-1311"><a href="#cb14-1311"></a>新しい危険資産が既存資産の組み合わせによって完全に再現できるような極端な例を除けば分散投資のメリットが生じるため、投資家はより望ましいリスク・リターンのトレードオフを実現できる。</span>
-<span id="cb14-1312"><a href="#cb14-1312"></a></span>
+<span id="cb14-1299"><a href="#cb14-1299"></a></span>
+<span id="cb14-1300"><a href="#cb14-1300"></a><span class="fu">## N資産が投資可能な場合への拡張</span></span>
+<span id="cb14-1301"><a href="#cb14-1301"></a></span>
+<span id="cb14-1302"><a href="#cb14-1302"></a>今までは，リスク資産が銘柄AとBの二つしかない場合を分析してきたが，現実は多くのリスク資産が存在し、海外株式や債券、REIT(不動産投資信託)といったその他の投資可能な金融資産を含めればその数は飛躍的に増加する。</span>
+<span id="cb14-1303"><a href="#cb14-1303"></a>本節での平均分散アプローチやCAPMは危険資産の数が任意の$N$個であっても成立する。</span>
+<span id="cb14-1304"><a href="#cb14-1304"></a>ただしその場合は**行列での表記**が必須となる(第7章やサポートサイト4.5節参照)。</span>
+<span id="cb14-1305"><a href="#cb14-1305"></a></span>
+<span id="cb14-1306"><a href="#cb14-1306"></a>一般に，平均分散の意味で効率的なポートフォリオ(**平均分散ポートフォリオ**)を計算するには、目標期待リターンを所与として、それを実現するポートフォリオの中でリスクを最小化するものを求める。</span>
+<span id="cb14-1307"><a href="#cb14-1307"></a>得られた期待リターンとリスクのペアを一点として、目標期待リターンを動かすとリスク・リターン平面上に双曲線が描ける。</span>
+<span id="cb14-1308"><a href="#cb14-1308"></a>この双曲線を**平均分散フロンティア**と呼び、効率的フロンティアはその上半分の領域である(確認済み)。</span>
+<span id="cb14-1309"><a href="#cb14-1309"></a></span>
+<span id="cb14-1310"><a href="#cb14-1310"></a>一般に投資可能な資産の数が増えると、平均分散フロンティアは左上に移動し、投資家はより望ましいポートフォリオが実現できるようになる。</span>
+<span id="cb14-1311"><a href="#cb14-1311"></a>リスク資産$A$と$B$に加えて$C$が投資可能な状況を考えると投資可能な資産が増えたからと言って必ずしもその資産に投資する必要はない。$w_C=0$とすれば、投資家は危険資産$A$と$B$のみに投資可能だった場合と同じ投資機会集合を実現できる。</span>
+<span id="cb14-1312"><a href="#cb14-1312"></a>新しい危険資産が既存資産の組み合わせによって完全に再現できるような極端な例を除けば分散投資のメリットが生じるため、投資家はより望ましいリスク・リターンのトレードオフを実現できる。</span>
 <span id="cb14-1313"><a href="#cb14-1313"></a></span>
-<span id="cb14-1314"><a href="#cb14-1314"></a>統計学における分散の定義は，$N$個の確率変数$R_1,R_2,\cdots,R_N$の共分散行列$\Sigma$の対角成分の和である。</span>
-<span id="cb14-1315"><a href="#cb14-1315"></a>$$</span>
-<span id="cb14-1316"><a href="#cb14-1316"></a>\begin{align*}</span>
-<span id="cb14-1317"><a href="#cb14-1317"></a>\sigma^2=\sum_{i=1}^N\sum_{j=1}^N\sigma_{ij}=\sum_{i=1}^N\sigma_{ii}</span>
-<span id="cb14-1318"><a href="#cb14-1318"></a>\end{align*}</span>
-<span id="cb14-1319"><a href="#cb14-1319"></a>$$</span>
-<span id="cb14-1320"><a href="#cb14-1320"></a>ここで，$\sigma_{ij}$は$R_i$と$R_j$の共分散であり，$\sigma_{ii}$は$R_i$の分散である。</span>
-<span id="cb14-1321"><a href="#cb14-1321"></a>共分散行列$\Sigma$は対称行列であり，対角成分は分散を表す。</span>
-<span id="cb14-1322"><a href="#cb14-1322"></a>また，$R_i$と$R_j$の共分散は$\sigma_{ij}=\sigma_{ji}$である。</span>
-<span id="cb14-1323"><a href="#cb14-1323"></a>共分散行列の対角成分以外の成分は共分散を表す。</span>
-<span id="cb14-1324"><a href="#cb14-1324"></a>$$</span>
-<span id="cb14-1325"><a href="#cb14-1325"></a>\begin{align*}</span>
-<span id="cb14-1326"><a href="#cb14-1326"></a>\Sigma=</span>
-<span id="cb14-1327"><a href="#cb14-1327"></a>\begin{bmatrix}</span>
-<span id="cb14-1328"><a href="#cb14-1328"></a>\sigma_{11} &amp; \sigma_{12} &amp; \cdots &amp; \sigma_{1N} <span class="sc">\\</span></span>
-<span id="cb14-1329"><a href="#cb14-1329"></a>\sigma_{21} &amp; \sigma_{22} &amp; \cdots &amp; \sigma_{2N} <span class="sc">\\</span></span>
-<span id="cb14-1330"><a href="#cb14-1330"></a>\vdots &amp; \vdots &amp; \ddots &amp; \vdots <span class="sc">\\</span></span>
-<span id="cb14-1331"><a href="#cb14-1331"></a>\sigma_{N1} &amp; \sigma_{N2} &amp; \cdots &amp; \sigma_{NN} <span class="sc">\\</span></span>
-<span id="cb14-1332"><a href="#cb14-1332"></a>\end{bmatrix}</span>
-<span id="cb14-1333"><a href="#cb14-1333"></a>\end{align*}</span>
-<span id="cb14-1334"><a href="#cb14-1334"></a>$$</span>
-<span id="cb14-1335"><a href="#cb14-1335"></a></span>
-<span id="cb14-1336"><a href="#cb14-1336"></a>上のは，$N$個の確率変数の共分散行列の定義である。Copilotで作成しました。</span>
+<span id="cb14-1314"><a href="#cb14-1314"></a></span>
+<span id="cb14-1315"><a href="#cb14-1315"></a>統計学における分散の定義は，$N$個の確率変数$R_1,R_2,\cdots,R_N$の共分散行列$\Sigma$の対角成分の和である。</span>
+<span id="cb14-1316"><a href="#cb14-1316"></a>$$</span>
+<span id="cb14-1317"><a href="#cb14-1317"></a>\begin{aligned}</span>
+<span id="cb14-1318"><a href="#cb14-1318"></a>\sigma^2=\sum_{i=1}^N\sum_{j=1}^N\sigma_{ij}=\sum_{i=1}^N\sigma_{ii}</span>
+<span id="cb14-1319"><a href="#cb14-1319"></a>\end{aligned}</span>
+<span id="cb14-1320"><a href="#cb14-1320"></a>$$</span>
+<span id="cb14-1321"><a href="#cb14-1321"></a>ここで，$\sigma_{ij}$は$R_i$と$R_j$の共分散であり，$\sigma_{ii}$は$R_i$の分散である。</span>
+<span id="cb14-1322"><a href="#cb14-1322"></a>共分散行列$\Sigma$は対称行列であり，対角成分は分散を表す。</span>
+<span id="cb14-1323"><a href="#cb14-1323"></a>また，$R_i$と$R_j$の共分散は$\sigma_{ij}=\sigma_{ji}$である。</span>
+<span id="cb14-1324"><a href="#cb14-1324"></a>共分散行列の対角成分以外の成分は共分散を表す。</span>
+<span id="cb14-1325"><a href="#cb14-1325"></a>$$</span>
+<span id="cb14-1326"><a href="#cb14-1326"></a>\begin{aligned}</span>
+<span id="cb14-1327"><a href="#cb14-1327"></a>\Sigma=</span>
+<span id="cb14-1328"><a href="#cb14-1328"></a>\begin{bmatrix}</span>
+<span id="cb14-1329"><a href="#cb14-1329"></a>\sigma_{11} &amp; \sigma_{12} &amp; \cdots &amp; \sigma_{1N} <span class="sc">\\</span></span>
+<span id="cb14-1330"><a href="#cb14-1330"></a>\sigma_{21} &amp; \sigma_{22} &amp; \cdots &amp; \sigma_{2N} <span class="sc">\\</span></span>
+<span id="cb14-1331"><a href="#cb14-1331"></a>\vdots &amp; \vdots &amp; \ddots &amp; \vdots <span class="sc">\\</span></span>
+<span id="cb14-1332"><a href="#cb14-1332"></a>\sigma_{N1} &amp; \sigma_{N2} &amp; \cdots &amp; \sigma_{NN} <span class="sc">\\</span></span>
+<span id="cb14-1333"><a href="#cb14-1333"></a>\end{bmatrix}</span>
+<span id="cb14-1334"><a href="#cb14-1334"></a>\end{aligned}</span>
+<span id="cb14-1335"><a href="#cb14-1335"></a>$$</span>
+<span id="cb14-1336"><a href="#cb14-1336"></a></span>
+<span id="cb14-1337"><a href="#cb14-1337"></a>上のは，$N$個の確率変数の共分散行列の定義である。Copilotで作成しました。</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

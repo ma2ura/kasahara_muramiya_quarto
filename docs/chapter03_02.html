@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Soichi Matsuura">
+<title>4&nbsp; R言語入門 後半 – 実証会計・ファイナンスの勉強ノート</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapter04.html" rel="next">
+<link href="./chapter03.html" rel="prev">
+<link href="./img/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-9b98439fbe4ae1eb56616ecad9777bd3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-SFB56VHK63"></script><script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-SFB56VHK63', { 'anonymize_ip': true});
+</script><style>
+.marky {
+  background: linear-gradient(transparent 60%, #FCFFC1 0%);
+}
+.markb {
+  background: linear-gradient(transparent 60%, #88E2EA 0%);
+}
+.markp{
+  background: linear-gradient(transparent 70%, #ffcdd2 0%)
+}
+</style>
+<script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+<meta name="twitter:title" content="4&nbsp; R言語入門 後半 – 実証会計・ファイナンスの勉強ノート">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="chapter03_02_files/figure-html/unnamed-chunk-1-1.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter03_02.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">実証会計・ファイナンスの勉強ノート</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">はじめに</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">ファイナンス入門</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R言語入門</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter03_02.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">株式データの取得と可視化</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">ファクターモデルの導入</span></span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#%E6%BC%94%E7%BF%92irr%E3%81%AE%E8%A8%88%E7%AE%97" id="toc-演習irrの計算" class="nav-link active" data-scroll-target="#%E6%BC%94%E7%BF%92irr%E3%81%AE%E8%A8%88%E7%AE%97"><span class="header-section-number">4.1</span> 演習：IRRの計算</a>
+  <ul class="collapse">
+<li><a href="#irr%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8A%95%E8%B3%87%E5%88%A4%E6%96%AD" id="toc-irrを利用した投資判断" class="nav-link" data-scroll-target="#irr%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E6%8A%95%E8%B3%87%E5%88%A4%E6%96%AD"><span class="header-section-number">4.1.1</span> IRRを利用した投資判断</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#irr%E3%82%92%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B%E7%8B%AC%E8%87%AA%E9%96%A2%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9" id="toc-irrを計算する独自関数の定義" class="nav-link" data-scroll-target="#irr%E3%82%92%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B%E7%8B%AC%E8%87%AA%E9%96%A2%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9"><span class="header-section-number">4.2</span> IRRを計算する独自関数の定義</a>
+  <ul class="collapse">
+<li><a href="#%E5%A4%9A%E9%A0%85%E5%BC%8F%E3%81%AE%E8%A7%A3%E3%82%92%E6%B1%82%E3%82%81%E3%82%8B%E6%96%B9%E6%B3%95%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95" id="toc-多項式の解を求める方法ニュートン法" class="nav-link" data-scroll-target="#%E5%A4%9A%E9%A0%85%E5%BC%8F%E3%81%AE%E8%A7%A3%E3%82%92%E6%B1%82%E3%82%81%E3%82%8B%E6%96%B9%E6%B3%95%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95"><span class="header-section-number">4.2.1</span> 多項式の解を求める方法：ニュートン法</a></li>
+  <li><a href="#irr%E3%81%AE%E8%A8%88%E7%AE%97" id="toc-irrの計算" class="nav-link" data-scroll-target="#irr%E3%81%AE%E8%A8%88%E7%AE%97"><span class="header-section-number">4.2.2</span> IRRの計算</a></li>
+  </ul>
+</li>
+  <li><a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%9E%8B-%E4%BB%98%E9%8C%B2" id="toc-データの型-付録" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%9E%8B-%E4%BB%98%E9%8C%B2"><span class="header-section-number">5</span> データの型 (付録)</a></li>
+  <li>
+<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E5%85%A5%E9%96%80" id="toc-データフレーム入門" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E5%85%A5%E9%96%80"><span class="header-section-number">6</span> データフレーム入門</a>
+  <ul class="collapse">
+<li><a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E3%81%AB%E5%AF%BE%E3%81%99%E3%82%8B%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C" id="toc-データフレームに対する基本操作" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E3%81%AB%E5%AF%BE%E3%81%99%E3%82%8B%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="header-section-number">6.0.1</span> データフレームに対する基本操作</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%BC%E5%9E%8B%E3%81%A8%E6%97%A5%E4%BB%98%E5%9E%8B" id="toc-ファクター型と日付型" class="nav-link" data-scroll-target="#%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%BC%E5%9E%8B%E3%81%A8%E6%97%A5%E4%BB%98%E5%9E%8B"><span class="header-section-number">7</span> ファクター型と日付型</a>
+  <ul class="collapse">
+<li><a href="#%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%BC%E5%9E%8B%E5%85%A5%E9%96%80" id="toc-ファクター型入門" class="nav-link" data-scroll-target="#%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%BC%E5%9E%8B%E5%85%A5%E9%96%80"><span class="header-section-number">7.1</span> ファクター型入門</a></li>
+  <li><a href="#%E6%97%A5%E4%BB%98%E5%9E%8B%E5%85%A5%E9%96%80" id="toc-日付型入門" class="nav-link" data-scroll-target="#%E6%97%A5%E4%BB%98%E5%9E%8B%E5%85%A5%E9%96%80"><span class="header-section-number">7.2</span> 日付型入門</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%E5%A4%96%E9%83%A8%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9" id="toc-外部パッケージの使い方" class="nav-link" data-scroll-target="#%E5%A4%96%E9%83%A8%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9"><span class="header-section-number">8</span> 外部パッケージの使い方</a>
+  <ul class="collapse">
+<li><a href="#%E5%A4%96%E9%83%A8%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" id="toc-外部パッケージのインストール" class="nav-link" data-scroll-target="#%E5%A4%96%E9%83%A8%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="header-section-number">8.1</span> 外部パッケージのインストール</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C" id="toc-練習問題" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C"><span class="header-section-number">9</span> 練習問題</a>
+  <ul class="collapse">
+<li><a href="#%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C1" id="toc-練習問題1" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C1"><span class="header-section-number">9.1</span> 練習問題1</a></li>
+  <li><a href="#%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C2" id="toc-練習問題2" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C2"><span class="header-section-number">9.2</span> 練習問題2</a></li>
+  <li><a href="#%E7%B7%B4%E7%BF%923" id="toc-練習3" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%923"><span class="header-section-number">9.3</span> 練習3</a></li>
+  <li><a href="#%E7%B7%B4%E7%BF%924" id="toc-練習4" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%924"><span class="header-section-number">9.4</span> 練習4*</a></li>
+  <li><a href="#%E7%B7%B4%E7%BF%925" id="toc-練習5" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%925"><span class="header-section-number">9.5</span> 練習5*</a></li>
+  <li><a href="#%E7%B7%B4%E7%BF%926" id="toc-練習6" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%926"><span class="header-section-number">9.6</span> 練習6</a></li>
+  <li><a href="#%E7%B7%B4%E7%BF%927" id="toc-練習7" class="nav-link" data-scroll-target="#%E7%B7%B4%E7%BF%927"><span class="header-section-number">9.7</span> 練習7</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>第3章R言語入門の後半では，内部収益率について学習したあと，内部収益率を計算する独自関数を定義します。 その後，今後の財務分析でよく登場する概念として，整然データ(tidy data)や尺度，データの型について学びます。</p>
+<section id="演習irrの計算" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="演習irrの計算">
+<span class="header-section-number">4.1</span> 演習：IRRの計算</h2>
+<section id="irrを利用した投資判断" class="level3" data-number="4.1.1"><h3 data-number="4.1.1" class="anchored" data-anchor-id="irrを利用した投資判断">
+<span class="header-section-number">4.1.1</span> IRRを利用した投資判断</h3>
+<p>第2章ではNPVを用いた投資判断の解説があったが、ここでは<strong>内部収益率</strong>(Internal Rate of Return: IRR)を用いた投資判断の説明とともに、IRRを計算する関数の作成を行います。</p>
+<p>IRRは、投資の収益性を測る指標の一つで、投資の現在価値と、投資にかかる費用の現在価値が等しくなる(つまりNPVがゼロとなる)割引率のことです。IRRが高いほど、投資の収益性が高いと言えます。数式で書くと次のようになります。</p>
+<p><span class="math display">
+\sum_{t =0}^{T} \frac{\mathbb{E}[CF_t]}{(1 + y)^t} = 0
+</span></p>
+<p>この式の<span class="math inline">y</span>がIRRを表しており、この<span class="math inline">y</span>を求めることがIRRの計算になります。 この<span class="math inline">y</span>を計算するために、まずキャッシュ・フローのベクトルを既知として、<span class="math inline">y</span>を計算します。 このIRRが，このプロジェクトXのリスクに応じた割引率<span class="math inline">\tilde{R}_X</span>より大きいか否かで，プロジェクトを実行するかどうかを判断する。</p>
+<p>例えば，以下のようなプロジェクトを考える。</p>
+<ul>
+<li>初期投資 <span class="math inline">-100</span>，</li>
+<li>第1期のキャッシュ・フロー <span class="math inline">40</span>
+</li>
+<li>第2期のキャッシュ・フロー <span class="math inline">50</span>
+</li>
+<li>第3期のキャッシュ・フロー <span class="math inline">60</span>
+</li>
+</ul>
+<p>このプロジェクトXのNPVは，</p>
+<p><span class="math display">
+PV = -100 + \frac{40}{(1+y)} + \frac{50}{(1+y)^2}+ \frac{60}{(1+y)^3}
+</span></p>
+<p>となります。グラフにすると</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="chapter03_02_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>NPVがゼロになる場合の<span class="math inline">y</span>を求める。解く方程式は次のようになる。</p>
+<p><span class="math display">
+-100 + \frac{40}{(1+y)} + \frac{50}{(1+y)^2}+ \frac{60}{(1+y)^3} = 0
+</span></p>
+<p>ここで，<span class="math inline">(1+y) =Y</span>とおいて式を変形していく。 <span class="math display">
+\begin{aligned}
+-100 + \frac{40}{Y} + \frac{50}{Y^2}+ \frac{60}{Y^3} &amp;= 0\\
+\Longleftrightarrow  -100Y^3 + 40 Y^2 + 50Y + 60 &amp;= 0\\
+\Longleftrightarrow  60 + 50Y + 40 Y^2 - 100Y^3 &amp;= 0\\
+\end{aligned}
+</span></p>
+<p>この式を解くための関数である<code><a href="https://rdrr.io/r/base/polyroot.html">polyroot()</a></code>関数がある。 <code><a href="https://rdrr.io/r/base/polyroot.html">polyroot()</a></code>関数は，多項式の係数ベクトルをとる。 ついでに<code><a href="https://rdrr.io/r/base/Round.html">round()</a></code>関数をつかって小数点以下第4位で四捨五入します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>res <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">50</span>, <span class="dv">40</span>, <span class="sc">-</span><span class="dv">100</span>)),<span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">print</span>(res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.4082+0.5715i -0.4082-0.5715i  1.2165+0.0000i</code></pre>
+</div>
+</div>
+<p>3つの解が出力されているけれど，最初の2つは虚数解となっており，最後の1つが実数解となっているため，ほしい回答は最後の1つです。</p>
+<p>この最後の解の実数部分(<code>+000i</code>の部分は虚数部分)を取り出すため，実数解のみを返す基本関数<code><a href="https://rdrr.io/r/base/complex.html">Re()</a></code>を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">Re</span>(res[<span class="dv">3</span>]) <span class="co"># 多項式の三3目の解の実数部部</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>(IRR <span class="ot">&lt;-</span> Y <span class="sc">-</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2165</code></pre>
+</div>
+</div>
+<p>今回は，多項式の解が3つしかなかったので，目で実数解を探しましたが，もっと多次元の多項式となるとこうはいきません。 たとえば，<span class="math inline">Y^7</span>まで出てくる多項式の場合，</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">60</span>, <span class="dv">50</span>, <span class="dv">40</span>, <span class="dv">30</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="sc">-</span><span class="dv">150</span>)),<span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">print</span>(res2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  0.4729+0.7717i -0.7573+0.3412i -0.2517-0.8134i  0.4729-0.7717i
+[5] -0.2517+0.8134i -0.7573-0.3412i  1.1390+0.0000i</code></pre>
+</div>
+</div>
+<p>このように解も7つ出てきます。この中から目で実数解を探すのも面倒なので，実数解のみを取り出す関数を作ります。 ここで，<code><a href="https://rdrr.io/r/base/complex.html">Im()</a></code>関数を使って虚数部分のみをとりだし，そこがゼロとなっていれば，実数解という探し方をします。 教科書ではより精密な方法を採用していますが，ちょっと面倒なので，ここでは解を<code><a href="https://rdrr.io/r/base/Round.html">round()</a></code>関数で小数点以下第4位で四捨五入しています。 その結果，教科書のような方法をとる必要は無くなり，次のように虚数部分がゼロかどうかの判定を行うことができます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">Re</span>(res[<span class="fu">Im</span>(res) <span class="sc">==</span> <span class="dv">0</span>]) <span class="sc">-</span> <span class="dv">1</span><span class="co"># 実数のときにTRUEを返す論理式</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2165</code></pre>
+</div>
+</div>
+<p>答えが出ました。</p>
+</section></section><section id="irrを計算する独自関数の定義" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="irrを計算する独自関数の定義">
+<span class="header-section-number">4.2</span> IRRを計算する独自関数の定義</h2>
+<p>今まで学習した内容を用いて，IRRを計算する関数を定義していきます。 独自関数の定義するには，<code>function()</code>を使います。 いままでは，キャッシュ・フローのベクトルと無リスク利子率を与えると，NPVを計算する関数を定義しましたが，今回は，初期投資を含めたキャッシュ・フローのベクトルを与えるとNPVがゼロとなるIRRを計算する関数を定義します。したがって独自関数の引数は，キャッシュ・フローのベクトルのみとなります。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>cal_IRR <span class="ot">&lt;-</span> <span class="cf">function</span>(CF) {</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  sol <span class="ot">&lt;-</span> <span class="fu">polyroot</span>(CF[<span class="fu">length</span>(CF)<span class="sc">:</span><span class="dv">1</span>]) <span class="co"># CFベクトルを逆順にして多項式の解を導出</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  sol <span class="ot">&lt;-</span> <span class="fu">round</span>(sol, <span class="at">digits =</span> <span class="dv">4</span>) <span class="co"># 小数点以下第4位を四捨五入</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  x <span class="ot">&lt;-</span> <span class="fu">Re</span>(sol[<span class="fu">Im</span>(sol) <span class="sc">==</span> <span class="dv">0</span>]) <span class="sc">-</span> <span class="dv">1</span> <span class="co"># 内部収益率を計算</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">return</span>(x)</span>
+<span id="cb9-6"><a href="#cb9-6"></a>}</span>
+<span id="cb9-7"><a href="#cb9-7"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>) <span class="co"># 例</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="fu">cal_IRR</span>(CF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2165</code></pre>
+</div>
+</div>
+<p>変な解をもつキャッシュ・フローの場合</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">120</span>, <span class="sc">-</span><span class="dv">120</span>) <span class="co"># 例</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">cal_IRR</span>(CF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  0.0000 -2.0954  0.0954</code></pre>
+</div>
+</div>
+<p>内部収益率となりうる正の実数解が2つあるので，IRR法は使えなさそう，となる。</p>
+<section id="多項式の解を求める方法ニュートン法" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="多項式の解を求める方法ニュートン法">
+<span class="header-section-number">4.2.1</span> 多項式の解を求める方法：ニュートン法</h3>
+<p>この式を解くことは、<span class="math inline">y</span>についての方程式を解くことになります。この方程式を解く方法は、二分法やニュートン法などがありますが、ここではニュートン法を用いて解いていきます。</p>
+<p>ニュートン法は、ある関数<span class="math inline">f(x)</span>の解を求める方法で、次のような式で表されます。 <span class="math display">
+x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+</span></p>
+<p>この式を用いて、IRRを求める関数を作成していきます。</p>
+</section><section id="irrの計算" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="irrの計算">
+<span class="header-section-number">4.2.2</span> IRRの計算</h3>
+<p>まずは、IRRを求める関数を作成していきます。IRRを求める関数は、次のようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>calc_irr <span class="ot">&lt;-</span> <span class="cf">function</span>(cash_flow, initial_investment, <span class="at">max_iter =</span> <span class="dv">100</span>, <span class="at">tol =</span> <span class="fl">1e-10</span>) {</span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="co"># cash_flow: キャッシュフローのベクトル</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>  <span class="co"># initial_investment: 初期投資</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="co"># max_iter: 最大繰り返し回数</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="co"># tol: 許容誤差</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a>  <span class="co"># return: IRR (内部収益率)</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a></span>
+<span id="cb13-8"><a href="#cb13-8"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section></section><section id="データの型-付録" class="level1 page-columns page-full" data-number="5"><h1 data-number="5">
+<span class="header-section-number">5</span> データの型 (付録)</h1>
+<p>プログラミング言語でデータ分析を行う場合に，非常に重要になるのが，データの型です。 とりわけ，経営の実証研究では，複数の変数を複数期間にわたって記録したパネル・データを扱うことが多いので，データの型を理解しておくことは，非常に重要です。 また，Rの神と呼ばれるHadley Wickham氏は，データの型を理解することを，データ分析の第一歩とし，その一貫として<strong>整然データ(tidy data)</strong>という考え方を提唱しています。 整然データとは，次のような原則に従って構築されたデータのことです(Wickham, 2014) 参考[https://id.fnshr.info/2017/01/09/tidy-data-intro/]。</p>
+<ol type="1">
+<li>個々の変数 (variable) が1つの列 (column) をなす。</li>
+<li>個々の観測 (observation) が1つの行 (row) をなす。</li>
+<li>個々の観測の構成単位の類型 (type of observational unit) が1つの表 (table) をなす。</li>
+<li>個々の値 (value) が1つのセル (cell) をなす</li>
+</ol>
+<p>プログラミング言語には，データの型があり，よく使うものとして，数値型，文字型，論理型などがあります。 Rでは，これらのデータ型をオブジェクトと呼びます。</p>
+<p>例えば，次のような表を考えます。</p>
+<table class="caption-top table">
+<thead><tr class="header">
+<th style="text-align: center;">地点</th>
+<th style="text-align: center;">6時</th>
+<th style="text-align: center;">12時</th>
+<th style="text-align: center;">18時</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">札幌</td>
+<td style="text-align: center;">12℃ 晴れ</td>
+<td style="text-align: center;">15℃ 晴れ</td>
+<td style="text-align: center;">13℃ 曇り</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">大阪</td>
+<td style="text-align: center;">20℃ 曇り</td>
+<td style="text-align: center;">24℃ 雨</td>
+<td style="text-align: center;">22℃ 雨</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">福岡</td>
+<td style="text-align: center;">23℃ 雨</td>
+<td style="text-align: center;">25℃ 晴れ</td>
+<td style="text-align: center;">25℃ 晴れ</td>
+</tr>
+</tbody>
+</table>
+<p>天気予報で見かけそうなこの表は，人間にとっては分かりやすいですが，コンピュータにとっては，分かりにくいものです。 コンピュータが理解しやすい整然データとして表すなら，次のような表になります。</p>
+<table class="caption-top table">
+<thead><tr class="header">
+<th style="text-align: center;">地点</th>
+<th style="text-align: center;">時間</th>
+<th style="text-align: center;">天気</th>
+<th style="text-align: center;">気温(℃)</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">札幌</td>
+<td style="text-align: center;">6時</td>
+<td style="text-align: center;">晴れ</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">札幌</td>
+<td style="text-align: center;">12時</td>
+<td style="text-align: center;">晴れ</td>
+<td style="text-align: center;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">札幌</td>
+<td style="text-align: center;">18時</td>
+<td style="text-align: center;">曇り</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">大阪</td>
+<td style="text-align: center;">6時</td>
+<td style="text-align: center;">曇り</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">大阪</td>
+<td style="text-align: center;">12時</td>
+<td style="text-align: center;">雨</td>
+<td style="text-align: center;">24</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">大阪</td>
+<td style="text-align: center;">18時</td>
+<td style="text-align: center;">雨</td>
+<td style="text-align: center;">22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">福岡</td>
+<td style="text-align: center;">6時</td>
+<td style="text-align: center;">雨</td>
+<td style="text-align: center;">23</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">福岡</td>
+<td style="text-align: center;">12時</td>
+<td style="text-align: center;">晴れ</td>
+<td style="text-align: center;">25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">福岡</td>
+<td style="text-align: center;">18時</td>
+<td style="text-align: center;">晴れ</td>
+<td style="text-align: center;">25</td>
+</tr>
+</tbody>
+</table>
+<p>この表は，地点，時間，天気，気温の4つの変数があり1つの列をつくっています(ルール1)。 大阪12時の天気は雨，気温は12℃といったように1つの行が1つの観測を表しています(ルール2)。 このデータには種類の異なる観測はない(ルール3)。 また，各セルには1つの値が入っています(ルール4)。 よって，これが整然データとなります。</p>
+<aside>
+上の表をワイド型，下の表をロング型ともいい，Rでは，ロング型のデータを扱うことが多いです。もちろんワイドをロングに，またはその逆にする関数もあります。
+</aside><p>また，このデータは4つの変数を含んでおり，それぞれの変数には，次のようなデータ型があります。</p>
+<ul>
+<li>地点: 文字型</li>
+<li>時間: 文字型</li>
+<li>天気: 文字列</li>
+<li>気温: 数値型</li>
+</ul>
+<p>このように1つの変数には，同じデータ型のデータが入っているようにします。数値型のデータの中に1つでも文字列が入っていると，その変数は文字型となります。</p>
+</section><section id="データフレーム入門" class="level1 page-columns page-full" data-number="6"><h1 data-number="6">
+<span class="header-section-number">6</span> データフレーム入門</h1>
+<p>Rでは，データを扱うためのデータ型として，データフレーム(data frame)というものがあり，非常によく使うので，ここでしっかり説明しておきます。</p>
+<p>先ほど分析に使った<code>ch03_daily_stock_return.csv</code>を読み込んでみます。このcsvファイルとは，Comma-Separated-Valuesの略で，値がカンマで区切られているテキストファイルです。</p>
+<p>読み込むには，<code>readr</code>パッケージの<code>read_csv()</code>関数を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb14-2"><a href="#cb14-2"></a>daily_stock_return <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch03_daily_stock_return.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>ここでエラーが出る人は，以下の可能性を検討します。</p>
+<ul>
+<li>ソースコードに誤字がある</li>
+<li>
+<code>ch03_daily_stock_return.csv</code>の場所が違う</li>
+<li>
+<code>ch03_daily_stock_return.csv</code>が存在しない</li>
+<li>
+<code>readr</code>パッケージがインストールされていない</li>
+<li>
+<code>readr</code>パッケージが読み込まれていない</li>
+</ul>
+<p>まず始めに，ソースコードが間違っていないかどうかを確認します。大文字と小文字の間違い，ハイフンとアンダースコアの間違い，スペースの有無などを確認します。</p>
+<p>次に，読み込もうとしているフォルダを確認します。そのためには，</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">getwd</span>() <span class="co"># 現在の作業ディレクトリを表示する</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">setwd</span>() <span class="co"># 作業ディレクトリの場所を指定する</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>ファイルを置いていて，分析結果を保存するための作業用フォルダの中を確認します。そこにファイルがちゃんと存在しているのであれば，<code><a href="https://rdrr.io/r/base/getwd.html">setwd()</a></code>関数で作業ディレクトリをファイルが補完されているフォルダへと変更します。</p>
+<section id="データフレームに対する基本操作" class="level3 page-columns page-full" data-number="6.0.1"><h3 data-number="6.0.1" class="anchored" data-anchor-id="データフレームに対する基本操作">
+<span class="header-section-number">6.0.1</span> データフレームに対する基本操作</h3>
+<p>データの中をさっくり確認するには，<code><a href="https://rdrr.io/r/utils/head.html">head()</a></code>関数を使って，先頭6行を出力します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">head</span>(daily_stock_return)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        date        firm1        firm2
+1 2020-04-01 -0.039482142  0.076962597
+2 2020-04-02  0.005978689 -0.007248848
+3 2020-04-03  0.055786605 -0.017304080
+4 2020-04-06  0.041934669  0.002168957
+5 2020-04-07 -0.020192796  0.075545365
+6 2020-04-08 -0.002294705 -0.096211744</code></pre>
+</div>
+</div>
+<p>出力結果を見ると，1行目に，<code># A tibble: 6 x 3</code>という文字があります。これは，<code>tibble</code>というデータフレームの一種であることを示しており，6行・3列のデータとなっていることを表します。</p>
+<aside><code>tibble</code>は，<code>data.frame</code>の拡張版で，<code>data.frame</code>の機能を継承しているので，<code>data.frame</code>として扱っても問題ありません。
+</aside><p>データの行数と列数を確認するには，</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">nrow</span>(daily_stock_return) <span class="co"># 行数</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">ncol</span>(daily_stock_return) <span class="co"># 列数</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>とします。 このデータフレーム(正確にはtibbleだけれど同じように扱う)の構造を確認するには，<code><a href="https://rdrr.io/r/utils/str.html">str()</a></code>関数を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">str</span>(daily_stock_return)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   21 obs. of  3 variables:
+ $ date : chr  "2020-04-01" "2020-04-02" "2020-04-03" "2020-04-06" ...
+ $ firm1: num  -0.03948 0.00598 0.05579 0.04193 -0.02019 ...
+ $ firm2: num  0.07696 -0.00725 -0.0173 0.00217 0.07555 ...</code></pre>
+</div>
+</div>
+<p>出力結果の1行目をみると，<code>spc_tbl_ [21 × 3]</code>とあり，21行・3列のデータであることがわかります。 2行目から4行目はデータの構造を表しています。 2行目の<code>data : Date[1:21]</code> は日付型のデータであることを表しています。 3行目と4行目の<code>firm : num [1:21]</code>は数値型のデータであることを表しています。</p>
+<p>この<code>daily_stock_return</code>データフレームの<code>firm1</code>という変数を取り出すには，<code>$</code>演算子を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>daily_stock_return<span class="sc">$</span>firm1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] -0.039482142  0.005978689  0.055786605  0.041934669 -0.020192796
+ [6] -0.002294705  0.081707162  0.034560986  0.032601304 -0.037663113
+[11]  0.009879806 -0.027028631  0.171296956  0.046325275 -0.014593252
+[16]  0.051542677 -0.028875000 -0.041378393  0.004537501 -0.072070643
+[21]  0.044811592</code></pre>
+</div>
+</div>
+<p>ベクトルと同じように様々な演算ができるようになりました。 平均値を出すには<code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>，中央値なら<code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>，最大値なら<code><a href="https://rdrr.io/r/base/Extremes.html">max()</a></code>，最小値なら<code><a href="https://rdrr.io/r/base/Extremes.html">min()</a></code>，分散なら<code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>，標準偏差なら<code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">mean</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 平均値</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.01416117</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">median</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 中央値</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.005978689</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">max</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 最大値</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.171297</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">min</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 最小値</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.07207064</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">var</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 分散</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.002898703</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="fu">sd</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 標準偏差</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0538396</code></pre>
+</div>
+</div>
+<p>2変数の統計量として共分散や相関係数を出すには，<code><a href="https://rdrr.io/r/stats/cor.html">cov()</a></code>，<code><a href="https://rdrr.io/r/stats/cor.html">cor()</a></code>を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">cov</span>(daily_stock_return<span class="sc">$</span>firm1, daily_stock_return<span class="sc">$</span>firm2) <span class="co"># 共分散</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0006837344</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">cor</span>(daily_stock_return<span class="sc">$</span>firm1, daily_stock_return<span class="sc">$</span>firm2) <span class="co"># 相関係数</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2334892</code></pre>
+</div>
+</div>
+<p>相関係数の定義通り，共分散をそれぞれの標準偏差で割ると相関係数になるかどうかを確認してみます。</p>
+<p><span class="math display">
+\rho_{X,Y} = \frac{\mathbb{Cov}[X, Y]}{\sigma_X \sigma_Y}
+</span></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>s_12 <span class="ot">&lt;-</span> <span class="fu">cov</span>(daily_stock_return<span class="sc">$</span>firm1, daily_stock_return<span class="sc">$</span>firm2) <span class="co"># 共分散</span></span>
+<span id="cb42-2"><a href="#cb42-2"></a>s_1 <span class="ot">&lt;-</span> <span class="fu">sd</span>(daily_stock_return<span class="sc">$</span>firm1)</span>
+<span id="cb42-3"><a href="#cb42-3"></a>s_2 <span class="ot">&lt;-</span> <span class="fu">sd</span>(daily_stock_return<span class="sc">$</span>firm2)</span>
+<span id="cb42-4"><a href="#cb42-4"></a>s_12 <span class="sc">/</span> (s_1 <span class="sc">*</span> s_2) <span class="co"># 相関係数</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2334892</code></pre>
+</div>
+</div>
+<p>同じになりました。</p>
+<p><code>firm1</code>の中で最も日次リターンが低かった日付を調べる方法を考えます。ここでは<code><a href="https://rdrr.io/r/base/which.min.html">which.min()</a></code>関数を用いて，最小値をとる要素のインデックスを調べます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>worst_day_ID <span class="ot">&lt;-</span> <span class="fu">which.min</span>(daily_stock_return<span class="sc">$</span>firm1)</span>
+<span id="cb44-2"><a href="#cb44-2"></a>worst_day_ID</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20</code></pre>
+</div>
+</div>
+<p>最小の値がインデックスが20の値であること示されている。このインデックスを使って，<code>daily_stock_return</code>データフレームの20行目を取り出します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>daily_stock_return[worst_day_ID, ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         date       firm1       firm2
+20 2020-04-28 -0.07207064 -0.04687342</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a><span class="fu">min</span>(daily_stock_return<span class="sc">$</span>firm1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.07207064</code></pre>
+</div>
+</div>
+<p>最小の値<span class="math inline">-0.07207064</span>が20番目の値<span class="math inline">-0.0721</span>と一致しているので，最小の値を見つけられていることが分かる。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="fu">nrow</span>(daily_stock_return)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21</code></pre>
+</div>
+</div>
+<p>データフレームの行数を調べるには，<code><a href="https://rdrr.io/r/base/nrow.html">nrow()</a></code>関数を使います。このデータフレームの行数は21行であることがわかります。</p>
+</section></section><section id="ファクター型と日付型" class="level1" data-number="7"><h1 data-number="7">
+<span class="header-section-number">7</span> ファクター型と日付型</h1>
+<section id="ファクター型入門" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="ファクター型入門">
+<span class="header-section-number">7.1</span> ファクター型入門</h2>
+<p>ファクター型の特徴を理解するために、教科書にある例を使って説明します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>firm_ID <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>) <span class="co"># 企業コード的なもの</span></span>
+<span id="cb52-2"><a href="#cb52-2"></a>name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Firm A"</span>, <span class="st">"Firm B"</span>, <span class="st">"Firm C"</span>) <span class="co"># 企業名</span></span>
+<span id="cb52-3"><a href="#cb52-3"></a>industry <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Machinery"</span>, <span class="st">"Chemicals"</span>, <span class="st">"Machinery"</span>) <span class="co"># 業種</span></span>
+<span id="cb52-4"><a href="#cb52-4"></a>sale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">200</span>, <span class="dv">340</span>)</span>
+<span id="cb52-5"><a href="#cb52-5"></a>firm_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(firm_ID, name, industry, sale) <span class="co"># データフレームの作成</span></span>
+<span id="cb52-6"><a href="#cb52-6"></a><span class="fu">head</span>(firm_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  firm_ID   name  industry sale
+1       1 Firm A Machinery  120
+2       2 Firm B Chemicals  200
+3       3 Firm C Machinery  340</code></pre>
+</div>
+</div>
+<p>これで，企業コード，企業名，業種、売上高の4つの変数を持つデータフレームができました。構造を<code><a href="https://rdrr.io/r/utils/str.html">str()</a></code>で確認します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="fu">str</span>(firm_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   3 obs. of  4 variables:
+ $ firm_ID : num  1 2 3
+ $ name    : chr  "Firm A" "Firm B" "Firm C"
+ $ industry: chr  "Machinery" "Chemicals" "Machinery"
+ $ sale    : num  120 200 340</code></pre>
+</div>
+</div>
+<p>4つの変数が3つの観測値をもっており、</p>
+<ul>
+<li>firm_ID: 数値型 <code>num</code>
+</li>
+<li>name: 文字型 <code>chr</code>
+</li>
+<li>industry: 文字型 <code>chr</code>
+</li>
+<li>sale: 数値型 <code>num</code>
+</li>
+</ul>
+<p>となっています。 <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>関数で記述統計量を確認してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="fu">summary</span>(firm_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    firm_ID        name             industry              sale    
+ Min.   :1.0   Length:3           Length:3           Min.   :120  
+ 1st Qu.:1.5   Class :character   Class :character   1st Qu.:160  
+ Median :2.0   Mode  :character   Mode  :character   Median :200  
+ Mean   :2.0                                         Mean   :220  
+ 3rd Qu.:2.5                                         3rd Qu.:270  
+ Max.   :3.0                                         Max.   :340  </code></pre>
+</div>
+</div>
+<p><code>firm_ID</code>が数値型であるため、平均(Mean)が計算されていますが、<code>firm_ID</code>は企業を識別するコードであり、平均をとっても意味はありません。 <code>name</code>や<code>industry</code>は文字列なので何も計算されていません。 <code>sale</code>は数値型なので、平均や最大値、最小値などが計算されています。</p>
+<p>実際は、<code>firm_ID</code>は数字が入ったベクトル変数ですが、数字は企業を表すラベルであるため、名義尺度です。<code>industry</code>は業種というカテゴリーを表す文字列です。このような変数を扱うときには、<code><a href="https://rdrr.io/r/base/factor.html">factor()</a></code>関数を使って、ファクター型に変換します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>firm_data<span class="sc">$</span>firm_ID <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(firm_data<span class="sc">$</span>firm_ID)</span>
+<span id="cb58-2"><a href="#cb58-2"></a>firm_data<span class="sc">$</span>industry <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(firm_data<span class="sc">$</span>industry)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>もう一度<code>str</code>関数を使って構造を確認します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a><span class="fu">str</span>(firm_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   3 obs. of  4 variables:
+ $ firm_ID : Factor w/ 3 levels "1","2","3": 1 2 3
+ $ name    : chr  "Firm A" "Firm B" "Firm C"
+ $ industry: Factor w/ 2 levels "Chemicals","Machinery": 2 1 2
+ $ sale    : num  120 200 340</code></pre>
+</div>
+</div>
+<p><code>firm_ID</code>と<code>industry</code>がファクター型になっていることが分かります。ここでもう一度<code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>を使ってみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1"></a><span class="fu">summary</span>(firm_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> firm_ID     name                industry      sale    
+ 1:1     Length:3           Chemicals:1   Min.   :120  
+ 2:1     Class :character   Machinery:2   1st Qu.:160  
+ 3:1     Mode  :character                 Median :200  
+                                          Mean   :220  
+                                          3rd Qu.:270  
+                                          Max.   :340  </code></pre>
+</div>
+</div>
+<p><code>firm_ID</code>と<code>industry</code>の表示が変わりました。 ファクター型は、カテゴリーを表す変数として扱うことができ、カテゴリーごとにいくつのデータが存在するのかを確認することができます。 適切な分析結果を得るためにも、名義尺度の変数は、ファクター型に変換しておくことが重要です。企業分析の場合は、企業コードや業種コードなどをファクター型にします。</p>
+</section><section id="日付型入門" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="日付型入門">
+<span class="header-section-number">7.2</span> 日付型入門</h2>
+<p>日付型の特徴を理解するために、教科書にある例を使って説明します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1"></a>date <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"2021/04/01"</span>, <span class="st">"2021/04/02"</span>, <span class="st">"2021/04/03"</span>, <span class="st">"2021/04/04"</span>, <span class="st">"2021/04/05"</span>)</span>
+<span id="cb63-2"><a href="#cb63-2"></a>stock_return <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">0.03</span>, <span class="fl">0.06</span>, <span class="fl">0.05</span>)</span>
+<span id="cb63-3"><a href="#cb63-3"></a>stock_return_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(date, stock_return)</span>
+<span id="cb63-4"><a href="#cb63-4"></a><span class="fu">head</span>(stock_return_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        date stock_return
+1 2021/04/01         0.02
+2 2021/04/02        -0.01
+3 2021/04/03         0.03
+4 2021/04/04         0.06
+5 2021/04/05         0.05</code></pre>
+</div>
+</div>
+<p>2つの変数<code>data</code>と<code>stock_return</code>がそれぞれ5つの要素をもっているデータフレームを作りました。構造を確認してみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1"></a><span class="fu">str</span>(stock_return_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   5 obs. of  2 variables:
+ $ date        : chr  "2021/04/01" "2021/04/02" "2021/04/03" "2021/04/04" ...
+ $ stock_return: num  0.02 -0.01 0.03 0.06 0.05</code></pre>
+</div>
+</div>
+<p><code>date</code>は文字列、<code>stock_return</code>は数値型となっています。 ここで<code>date</code>は日付を表す文字列ですが、文字列として扱われているため、日付としての計算ができません。</p>
+<p>Rに<code>2021/04/01</code>のような日付情報を日付型のデータとして認識してもらう方法はいくつかありますが、ここでは基本関数の<code><a href="https://rdrr.io/r/base/as.Date.html">as.Date()</a></code>関数を使う方法と、<code>tidyverse</code>パッケージ群の1つである<code>lubridate</code>パッケージを使う方法を説明します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>stock_return_data<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(stock_return_data<span class="sc">$</span>date)</span>
+<span id="cb67-2"><a href="#cb67-2"></a><span class="fu">str</span>(stock_return_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   5 obs. of  2 variables:
+ $ date        : Date, format: "2021-04-01" "2021-04-02" ...
+ $ stock_return: num  0.02 -0.01 0.03 0.06 0.05</code></pre>
+</div>
+</div>
+<p><code>date</code>変数の方が<code>Date</code>に成りました。<code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>関数を使ってみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1"></a><span class="fu">summary</span>(stock_return_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      date             stock_return  
+ Min.   :2021-04-01   Min.   :-0.01  
+ 1st Qu.:2021-04-02   1st Qu.: 0.02  
+ Median :2021-04-03   Median : 0.03  
+ Mean   :2021-04-03   Mean   : 0.03  
+ 3rd Qu.:2021-04-04   3rd Qu.: 0.05  
+ Max.   :2021-04-05   Max.   : 0.06  </code></pre>
+</div>
+</div>
+<p>日付の<code>date</code>も最小値は平均などが出力されていることが分かります。 日付型<code>Date</code>は、日付としての計算ができるようになります。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1"></a><span class="co"># 日数の加算</span></span>
+<span id="cb71-2"><a href="#cb71-2"></a>stock_return_data<span class="sc">$</span>date <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-04-02" "2021-04-03" "2021-04-04" "2021-04-05" "2021-04-06"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1"></a><span class="co"># 日数の差</span></span>
+<span id="cb73-2"><a href="#cb73-2"></a>stock_return_data<span class="sc">$</span>date[<span class="dv">3</span>] <span class="sc">-</span> stock_return_data<span class="sc">$</span>date[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time difference of 2 days</code></pre>
+</div>
+</div>
+<p>このように<code>Date</code>型にすれば、日数の加算や二時点間の日数の差を計算することができます。</p>
+<p>次に<code>lubridate</code>を用いた方法をみていきましょう。 <code>lubridate</code>は<code>tidyverse</code>パッケージ群の1つで、日付型のデータを扱うためのパッケージです。かなり便利なので使いこなせるように頑張りましょう。 先の日付データは<code>2021/04/01</code>と年・月・日がスラッシュで区切られているので、<code>ymd()</code>関数を使って、日付型に変換します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb75-2"><a href="#cb75-2"></a>stock_return_data<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">ymd</span>(stock_return_data<span class="sc">$</span>date)</span>
+<span id="cb75-3"><a href="#cb75-3"></a><span class="fu">str</span>(stock_return_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   5 obs. of  2 variables:
+ $ date        : Date, format: "2021-04-01" "2021-04-02" ...
+ $ stock_return: num  0.02 -0.01 0.03 0.06 0.05</code></pre>
+</div>
+</div>
+<p>この日付データから年、月、日を取り出すには、<code>year()</code>、<code>month()</code>、<code>day()</code>関数を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a><span class="fu">year</span>(stock_return_data<span class="sc">$</span>date) <span class="co"># これはよく使う。</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2021 2021 2021 2021 2021</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="fu">month</span>(stock_return_data<span class="sc">$</span>date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4 4 4 4 4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1"></a><span class="fu">day</span>(stock_return_data<span class="sc">$</span>date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 2 3 4 5</code></pre>
+</div>
+</div>
+</section></section><section id="外部パッケージの使い方" class="level1" data-number="8"><h1 data-number="8">
+<span class="header-section-number">8</span> 外部パッケージの使い方</h1>
+<section id="外部パッケージのインストール" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="外部パッケージのインストール">
+<span class="header-section-number">8.1</span> 外部パッケージのインストール</h2>
+<p>Rの魅力の1つに，多くの外部パッケージが存在することが挙げられます。外部パッケージを使うことで，Rに様々な機能を追加することができます。もともとRに組み込まれている基本関数とは異なり，外部パッケージを使うためには，まずインストールする必要があります。インストールするには，<code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>関数を使います。例えば，<code>tidyverse</code>パッケージをインストールするには，以下のようにします。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1"></a><span class="co"># install.packages("tidyverse") # 最初の1回だけ実行</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>tidyverse</code>パッケージ群に含まれるパッケージに，グラフ作成のための<code>ggplot2</code>がある。<code>ggplot2</code>をインストールするには，以下のようにします。 作図用データを作成します。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1"></a>initinal_cost <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">80</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb84-2"><a href="#cb84-2"></a>IRR <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(initinal_cost))</span>
+<span id="cb84-3"><a href="#cb84-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(initinal_cost)) {</span>
+<span id="cb84-4"><a href="#cb84-4"></a>  IRR[i] <span class="ot">&lt;-</span> <span class="fu">cal_IRR</span>(<span class="fu">c</span>(<span class="sc">-</span>initinal_cost[i],<span class="dv">100</span>))</span>
+<span id="cb84-5"><a href="#cb84-5"></a>}</span>
+<span id="cb84-6"><a href="#cb84-6"></a>figure_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(initinal_cost, IRR) <span class="co"># データフレーム作成</span></span>
+<span id="cb84-7"><a href="#cb84-7"></a><span class="fu">head</span>(figure_data) <span class="co"># データの確認</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  initinal_cost    IRR
+1            80 0.2500
+2            81 0.2346
+3            82 0.2195
+4            83 0.2048
+5            84 0.1905
+6            85 0.1765</code></pre>
+</div>
+</div>
+<p>これをまずは基本関数<code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>で作図してみる。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1"></a><span class="fu">plot</span>(figure_data<span class="sc">$</span>initinal_cost, figure_data<span class="sc">$</span>IRR, <span class="at">type =</span> <span class="st">"l"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/unnamed-chunk-33-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="chapter03_02_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>次にこれを<code>ggplot2</code>パッケージを使って書いてみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb87-2"><a href="#cb87-2"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(figure_data) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> initinal_cost, <span class="at">y =</span> IRR) <span class="sc">+</span> <span class="fu">geom_line</span>()</span>
+<span id="cb87-3"><a href="#cb87-3"></a><span class="fu">print</span>(g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/unnamed-chunk-34-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="chapter03_02_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>折れ線グラフだけだと分かりづらいので，点をプロットしてみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">geom_point</span>()</span>
+<span id="cb88-2"><a href="#cb88-2"></a><span class="fu">print</span>(g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/unnamed-chunk-35-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="chapter03_02_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>点が加わりました。さらに雑誌Economist風のデザインにしてみます。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb89-2"><a href="#cb89-2"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">theme_economist</span>()</span>
+<span id="cb89-3"><a href="#cb89-3"></a><span class="fu">print</span>(g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/unnamed-chunk-36-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="chapter03_02_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>次に，グラフ内に文字を追加してみます。 グラフ内に文字列を追加するには<code>annotate()</code>関数を使います。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">annotate</span>( <span class="co"># 位置を指定して文字列を追加</span></span>
+<span id="cb90-2"><a href="#cb90-2"></a>  <span class="at">geom =</span> <span class="st">"text"</span>,</span>
+<span id="cb90-3"><a href="#cb90-3"></a>  <span class="at">x =</span> <span class="dv">99</span>,</span>
+<span id="cb90-4"><a href="#cb90-4"></a>  <span class="at">y =</span> <span class="fl">0.05</span>,</span>
+<span id="cb90-5"><a href="#cb90-5"></a>  <span class="at">label =</span> <span class="st">"Initial Cost 100"</span></span>
+<span id="cb90-6"><a href="#cb90-6"></a>  ) <span class="sc">+</span> <span class="fu">annotate</span>(<span class="co"># 始点や終点などを指定して矢印を追加</span></span>
+<span id="cb90-7"><a href="#cb90-7"></a>  <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb90-8"><a href="#cb90-8"></a>  <span class="at">x =</span> <span class="dv">100</span>,</span>
+<span id="cb90-9"><a href="#cb90-9"></a>  <span class="at">xend =</span> <span class="dv">100</span>,</span>
+<span id="cb90-10"><a href="#cb90-10"></a>  <span class="at">y =</span> <span class="fl">0.04</span>,</span>
+<span id="cb90-11"><a href="#cb90-11"></a>  <span class="at">yend =</span> <span class="fl">0.01</span>,</span>
+<span id="cb90-12"><a href="#cb90-12"></a>  <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb90-13"><a href="#cb90-13"></a>  <span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb90-14"><a href="#cb90-14"></a>  <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">"cm"</span>))</span>
+<span id="cb90-15"><a href="#cb90-15"></a>  )</span>
+<span id="cb90-16"><a href="#cb90-16"></a><span class="fu">print</span>(g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/ch03_58-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="chapter03_02_files/figure-html/ch03_58-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="練習問題" class="level1" data-number="9"><h1 data-number="9">
+<span class="header-section-number">9</span> 練習問題</h1>
+<section id="練習問題1" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="練習問題1">
+<span class="header-section-number">9.1</span> 練習問題1</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb91-2"><a href="#cb91-2"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">250</span>, <span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">100</span>) <span class="co"># キャッシュ・フロー</span></span>
+<span id="cb91-3"><a href="#cb91-3"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>) <span class="co"># 無リスク利子率のベクトル</span></span>
+<span id="cb91-4"><a href="#cb91-4"></a>NPV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="sc">+</span> CF[<span class="dv">2</span>] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R) <span class="sc">+</span> CF[<span class="dv">3</span>] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> CF[<span class="dv">4</span>] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb91-5"><a href="#cb91-5"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(NPV, R) <span class="co"># データフレームの作成</span></span>
+<span id="cb91-6"><a href="#cb91-6"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> R, <span class="at">y =</span> NPV) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="co"># 作図</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/unnamed-chunk-37-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="chapter03_02_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="練習問題2" class="level2" data-number="9.2"><h2 data-number="9.2" class="anchored" data-anchor-id="練習問題2">
+<span class="header-section-number">9.2</span> 練習問題2</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1"></a>R <span class="ot">&lt;-</span> <span class="fl">0.05</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb92-2"><a href="#cb92-2"></a>CF <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># キャッシュ・フロー</span></span>
+<span id="cb92-3"><a href="#cb92-3"></a></span>
+<span id="cb92-4"><a href="#cb92-4"></a>NPV <span class="ot">&lt;-</span> (<span class="dv">100</span><span class="sc">/</span><span class="fl">0.05</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">35</span> <span class="co"># NPVの計算</span></span>
+<span id="cb92-5"><a href="#cb92-5"></a><span class="fu">print</span>(NPV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 362.5806</code></pre>
+</div>
+</div>
+</section><section id="練習3" class="level2" data-number="9.3"><h2 data-number="9.3" class="anchored" data-anchor-id="練習3">
+<span class="header-section-number">9.3</span> 練習3</h2>
+<p>元本<span class="math inline">P</span>円を年利<span class="math inline">R</span>で1年間運用することを考えよう。 1年当たりの複利の回数を<span class="math inline">n</span>とおいたとき，<span class="math inline">T</span>年後の将来価値は以下のように書ける. <span class="math display">
+FV(n) = \left ( \frac{1+R}{n}\right )^{Tn} P.
+</span></p>
+<p>将来価値を計算する関数を作成せよ。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1"></a>cal_FV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, R, n, T){</span>
+<span id="cb94-2"><a href="#cb94-2"></a>  FV <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">+</span> R <span class="sc">/</span> n)<span class="sc">^</span>(T <span class="sc">*</span> n) <span class="sc">*</span> CF</span>
+<span id="cb94-3"><a href="#cb94-3"></a>  <span class="fu">return</span>(FV)</span>
+<span id="cb94-4"><a href="#cb94-4"></a>}</span>
+<span id="cb94-5"><a href="#cb94-5"></a><span class="fu">cal_FV</span>(<span class="dv">100</span>,<span class="fl">0.1</span>,<span class="dv">2</span>,<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 121.5506</code></pre>
+</div>
+</div>
+</section><section id="練習4" class="level2" data-number="9.4"><h2 data-number="9.4" class="anchored" data-anchor-id="練習4">
+<span class="header-section-number">9.4</span> 練習4*</h2>
+<p>複利の頻度を無限大にすると連続複利に収束します。すると将来価値は次式で表されます。 <span class="math display">
+\lim_{n \rightarrow \infty} FV(n) = P \mathrm{e}^{RT}
+</span></p>
+<p>ここで、元本100万円を年利10％、連続複利で1年間運用した場合の将来価値を計算してみる。</p>
+</section><section id="練習5" class="level2" data-number="9.5"><h2 data-number="9.5" class="anchored" data-anchor-id="練習5">
+<span class="header-section-number">9.5</span> 練習5*</h2>
+<ul>
+<li>元本100万円</li>
+<li>年利10%</li>
+<li>1年間運用</li>
+</ul>
+<p>1年当たりの複利の回数を<span class="math inline">n</span>とおき，<span class="math inline">n</span>を変化させたときの将来価値<span class="math inline">FV(n)</span>がどう変化するのか可視化する。</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1"></a>CF <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb96-2"><a href="#cb96-2"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb96-3"><a href="#cb96-3"></a>T <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb96-4"><a href="#cb96-4"></a>FV <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>,<span class="dv">500</span>)</span>
+<span id="cb96-5"><a href="#cb96-5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>){</span>
+<span id="cb96-6"><a href="#cb96-6"></a>  FV[i] <span class="ot">&lt;-</span> <span class="fu">cal_FV</span>(CF, R, <span class="at">n=</span>i, T)</span>
+<span id="cb96-7"><a href="#cb96-7"></a>}</span>
+<span id="cb96-8"><a href="#cb96-8"></a><span class="fu">plot</span>(FV, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb96-9"><a href="#cb96-9"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="fl">0.1</span>), <span class="at">col =</span> <span class="st">"red"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="chapter03_02_files/figure-html/unnamed-chunk-41-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="chapter03_02_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>将来価値<span class="math inline">100\times \mathrm{e}^{0.1}</span>に収束していることがわかる。</p>
+</section><section id="練習6" class="level2" data-number="9.6"><h2 data-number="9.6" class="anchored" data-anchor-id="練習6">
+<span class="header-section-number">9.6</span> 練習6</h2>
+</section><section id="練習7" class="level2" data-number="9.7"><h2 data-number="9.7" class="anchored" data-anchor-id="練習7">
+<span class="header-section-number">9.7</span> 練習7</h2>
+
+
+<!-- -->
+
+</section></section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./chapter03.html" class="pagination-link" aria-label="R言語入門">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R言語入門</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapter04.html" class="pagination-link" aria-label="財務データの取得と可視化">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb97" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb97-1"><a href="#cb97-1"></a><span class="fu">## R言語入門 後半</span></span>
+<span id="cb97-2"><a href="#cb97-2"></a></span>
+<span id="cb97-3"><a href="#cb97-3"></a></span>
+<span id="cb97-4"><a href="#cb97-4"></a>第3章R言語入門の後半では，内部収益率について学習したあと，内部収益率を計算する独自関数を定義します。</span>
+<span id="cb97-5"><a href="#cb97-5"></a>その後，今後の財務分析でよく登場する概念として，整然データ(tidy data)や尺度，データの型について学びます。</span>
+<span id="cb97-6"><a href="#cb97-6"></a></span>
+<span id="cb97-7"><a href="#cb97-7"></a><span class="fu">## 演習：IRRの計算</span></span>
+<span id="cb97-8"><a href="#cb97-8"></a></span>
+<span id="cb97-9"><a href="#cb97-9"></a><span class="in">```{r setup, echo = FALSE}</span></span>
+<span id="cb97-10"><a href="#cb97-10"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb97-11"><a href="#cb97-11"></a>  <span class="at">class.source =</span> <span class="st">"numberLines lineAnchors"</span>  <span class="co"># ソースを番号付けする</span></span>
+<span id="cb97-12"><a href="#cb97-12"></a>)</span>
+<span id="cb97-13"><a href="#cb97-13"></a><span class="in">```</span></span>
+<span id="cb97-14"><a href="#cb97-14"></a></span>
+<span id="cb97-15"><a href="#cb97-15"></a><span class="fu">### IRRを利用した投資判断</span></span>
+<span id="cb97-16"><a href="#cb97-16"></a></span>
+<span id="cb97-17"><a href="#cb97-17"></a>第2章ではNPVを用いた投資判断の解説があったが、ここでは**内部収益率**(Internal Rate of Return: IRR)を用いた投資判断の説明とともに、IRRを計算する関数の作成を行います。</span>
+<span id="cb97-18"><a href="#cb97-18"></a></span>
+<span id="cb97-19"><a href="#cb97-19"></a>IRRは、投資の収益性を測る指標の一つで、投資の現在価値と、投資にかかる費用の現在価値が等しくなる(つまりNPVがゼロとなる)割引率のことです。IRRが高いほど、投資の収益性が高いと言えます。数式で書くと次のようになります。</span>
+<span id="cb97-20"><a href="#cb97-20"></a></span>
+<span id="cb97-21"><a href="#cb97-21"></a>$$</span>
+<span id="cb97-22"><a href="#cb97-22"></a>\sum_{t =0}^{T} \frac{\mathbb{E}<span class="co">[</span><span class="ot">CF_t</span><span class="co">]</span>}{(1 + y)^t} = 0</span>
+<span id="cb97-23"><a href="#cb97-23"></a>$$</span>
+<span id="cb97-24"><a href="#cb97-24"></a></span>
+<span id="cb97-25"><a href="#cb97-25"></a>この式の$y$がIRRを表しており、この$y$を求めることがIRRの計算になります。 この$y$を計算するために、まずキャッシュ・フローのベクトルを既知として、$y$を計算します。 このIRRが，このプロジェクトXのリスクに応じた割引率$\tilde{R}_X$より大きいか否かで，プロジェクトを実行するかどうかを判断する。</span>
+<span id="cb97-26"><a href="#cb97-26"></a></span>
+<span id="cb97-27"><a href="#cb97-27"></a>例えば，以下のようなプロジェクトを考える。</span>
+<span id="cb97-28"><a href="#cb97-28"></a></span>
+<span id="cb97-29"><a href="#cb97-29"></a><span class="ss">-   </span>初期投資 $-100$，</span>
+<span id="cb97-30"><a href="#cb97-30"></a><span class="ss">-   </span>第1期のキャッシュ・フロー $40$</span>
+<span id="cb97-31"><a href="#cb97-31"></a><span class="ss">-   </span>第2期のキャッシュ・フロー $50$</span>
+<span id="cb97-32"><a href="#cb97-32"></a><span class="ss">-   </span>第3期のキャッシュ・フロー $60$</span>
+<span id="cb97-33"><a href="#cb97-33"></a></span>
+<span id="cb97-34"><a href="#cb97-34"></a>このプロジェクトXのNPVは，</span>
+<span id="cb97-35"><a href="#cb97-35"></a></span>
+<span id="cb97-36"><a href="#cb97-36"></a>$$</span>
+<span id="cb97-37"><a href="#cb97-37"></a>PV = -100 + \frac{40}{(1+y)} + \frac{50}{(1+y)^2}+ \frac{60}{(1+y)^3}</span>
+<span id="cb97-38"><a href="#cb97-38"></a>$$</span>
+<span id="cb97-39"><a href="#cb97-39"></a></span>
+<span id="cb97-40"><a href="#cb97-40"></a>となります。グラフにすると</span>
+<span id="cb97-41"><a href="#cb97-41"></a></span>
+<span id="cb97-42"><a href="#cb97-42"></a><span class="in">```{r echo = FALSE}</span></span>
+<span id="cb97-43"><a href="#cb97-43"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb97-44"><a href="#cb97-44"></a>y <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.01</span>)</span>
+<span id="cb97-45"><a href="#cb97-45"></a>NPV <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">100</span> <span class="sc">+</span> <span class="dv">40</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span>y) <span class="sc">+</span> <span class="dv">50</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span>y)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">60</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span>y)<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb97-46"><a href="#cb97-46"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y,NPV)</span>
+<span id="cb97-47"><a href="#cb97-47"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> y, <span class="at">y =</span> NPV) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span>
+<span id="cb97-48"><a href="#cb97-48"></a><span class="in">```</span></span>
+<span id="cb97-49"><a href="#cb97-49"></a></span>
+<span id="cb97-50"><a href="#cb97-50"></a>NPVがゼロになる場合の$y$を求める。解く方程式は次のようになる。</span>
+<span id="cb97-51"><a href="#cb97-51"></a></span>
+<span id="cb97-52"><a href="#cb97-52"></a>$$</span>
+<span id="cb97-53"><a href="#cb97-53"></a>-100 + \frac{40}{(1+y)} + \frac{50}{(1+y)^2}+ \frac{60}{(1+y)^3} = 0</span>
+<span id="cb97-54"><a href="#cb97-54"></a>$$</span>
+<span id="cb97-55"><a href="#cb97-55"></a></span>
+<span id="cb97-56"><a href="#cb97-56"></a>ここで，$(1+y) =Y$とおいて式を変形していく。 $$</span>
+<span id="cb97-57"><a href="#cb97-57"></a>\begin{aligned}</span>
+<span id="cb97-58"><a href="#cb97-58"></a>-100 + \frac{40}{Y} + \frac{50}{Y^2}+ \frac{60}{Y^3} &amp;= 0<span class="sc">\\</span></span>
+<span id="cb97-59"><a href="#cb97-59"></a>\Longleftrightarrow  -100Y^3 + 40 Y^2 + 50Y + 60 &amp;= 0<span class="sc">\\</span></span>
+<span id="cb97-60"><a href="#cb97-60"></a>\Longleftrightarrow  60 + 50Y + 40 Y^2 - 100Y^3 &amp;= 0<span class="sc">\\</span></span>
+<span id="cb97-61"><a href="#cb97-61"></a>\end{aligned}</span>
+<span id="cb97-62"><a href="#cb97-62"></a>$$</span>
+<span id="cb97-63"><a href="#cb97-63"></a></span>
+<span id="cb97-64"><a href="#cb97-64"></a>この式を解くための関数である<span class="in">`polyroot()`</span>関数がある。 <span class="in">`polyroot()`</span>関数は，多項式の係数ベクトルをとる。 ついでに<span class="in">`round()`</span>関数をつかって小数点以下第4位で四捨五入します。</span>
+<span id="cb97-65"><a href="#cb97-65"></a></span>
+<span id="cb97-68"><a href="#cb97-68"></a><span class="in">```{r}</span></span>
+<span id="cb97-69"><a href="#cb97-69"></a>res <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">50</span>, <span class="dv">40</span>, <span class="sc">-</span><span class="dv">100</span>)),<span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb97-70"><a href="#cb97-70"></a><span class="fu">print</span>(res)</span>
+<span id="cb97-71"><a href="#cb97-71"></a><span class="in">```</span></span>
+<span id="cb97-72"><a href="#cb97-72"></a></span>
+<span id="cb97-73"><a href="#cb97-73"></a>3つの解が出力されているけれど，最初の2つは虚数解となっており，最後の1つが実数解となっているため，ほしい回答は最後の1つです。</span>
+<span id="cb97-74"><a href="#cb97-74"></a></span>
+<span id="cb97-75"><a href="#cb97-75"></a>この最後の解の実数部分(<span class="in">`+000i`</span>の部分は虚数部分)を取り出すため，実数解のみを返す基本関数<span class="in">`Re()`</span>を使います。</span>
+<span id="cb97-76"><a href="#cb97-76"></a></span>
+<span id="cb97-79"><a href="#cb97-79"></a><span class="in">```{r}</span></span>
+<span id="cb97-80"><a href="#cb97-80"></a>Y <span class="ot">&lt;-</span> <span class="fu">Re</span>(res[<span class="dv">3</span>]) <span class="co"># 多項式の三3目の解の実数部部</span></span>
+<span id="cb97-81"><a href="#cb97-81"></a>(IRR <span class="ot">&lt;-</span> Y <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb97-82"><a href="#cb97-82"></a><span class="in">```</span></span>
+<span id="cb97-83"><a href="#cb97-83"></a></span>
+<span id="cb97-84"><a href="#cb97-84"></a>今回は，多項式の解が3つしかなかったので，目で実数解を探しましたが，もっと多次元の多項式となるとこうはいきません。 たとえば，$Y^7$まで出てくる多項式の場合，</span>
+<span id="cb97-85"><a href="#cb97-85"></a></span>
+<span id="cb97-88"><a href="#cb97-88"></a><span class="in">```{r}</span></span>
+<span id="cb97-89"><a href="#cb97-89"></a>res2 <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">60</span>, <span class="dv">50</span>, <span class="dv">40</span>, <span class="dv">30</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="sc">-</span><span class="dv">150</span>)),<span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb97-90"><a href="#cb97-90"></a><span class="fu">print</span>(res2)</span>
+<span id="cb97-91"><a href="#cb97-91"></a><span class="in">```</span></span>
+<span id="cb97-92"><a href="#cb97-92"></a></span>
+<span id="cb97-93"><a href="#cb97-93"></a>このように解も7つ出てきます。この中から目で実数解を探すのも面倒なので，実数解のみを取り出す関数を作ります。 ここで，<span class="in">`Im()`</span>関数を使って虚数部分のみをとりだし，そこがゼロとなっていれば，実数解という探し方をします。 教科書ではより精密な方法を採用していますが，ちょっと面倒なので，ここでは解を<span class="in">`round()`</span>関数で小数点以下第4位で四捨五入しています。 その結果，教科書のような方法をとる必要は無くなり，次のように虚数部分がゼロかどうかの判定を行うことができます。</span>
+<span id="cb97-94"><a href="#cb97-94"></a></span>
+<span id="cb97-97"><a href="#cb97-97"></a><span class="in">```{r}</span></span>
+<span id="cb97-98"><a href="#cb97-98"></a><span class="fu">Re</span>(res[<span class="fu">Im</span>(res) <span class="sc">==</span> <span class="dv">0</span>]) <span class="sc">-</span> <span class="dv">1</span><span class="co"># 実数のときにTRUEを返す論理式</span></span>
+<span id="cb97-99"><a href="#cb97-99"></a><span class="in">```</span></span>
+<span id="cb97-100"><a href="#cb97-100"></a></span>
+<span id="cb97-101"><a href="#cb97-101"></a>答えが出ました。</span>
+<span id="cb97-102"><a href="#cb97-102"></a></span>
+<span id="cb97-103"><a href="#cb97-103"></a><span class="fu">## IRRを計算する独自関数の定義</span></span>
+<span id="cb97-104"><a href="#cb97-104"></a></span>
+<span id="cb97-105"><a href="#cb97-105"></a>今まで学習した内容を用いて，IRRを計算する関数を定義していきます。 独自関数の定義するには，<span class="in">`function()`</span>を使います。 いままでは，キャッシュ・フローのベクトルと無リスク利子率を与えると，NPVを計算する関数を定義しましたが，今回は，初期投資を含めたキャッシュ・フローのベクトルを与えるとNPVがゼロとなるIRRを計算する関数を定義します。したがって独自関数の引数は，キャッシュ・フローのベクトルのみとなります。</span>
+<span id="cb97-106"><a href="#cb97-106"></a></span>
+<span id="cb97-109"><a href="#cb97-109"></a><span class="in">```{r}</span></span>
+<span id="cb97-110"><a href="#cb97-110"></a>cal_IRR <span class="ot">&lt;-</span> <span class="cf">function</span>(CF) {</span>
+<span id="cb97-111"><a href="#cb97-111"></a>  sol <span class="ot">&lt;-</span> <span class="fu">polyroot</span>(CF[<span class="fu">length</span>(CF)<span class="sc">:</span><span class="dv">1</span>]) <span class="co"># CFベクトルを逆順にして多項式の解を導出</span></span>
+<span id="cb97-112"><a href="#cb97-112"></a>  sol <span class="ot">&lt;-</span> <span class="fu">round</span>(sol, <span class="at">digits =</span> <span class="dv">4</span>) <span class="co"># 小数点以下第4位を四捨五入</span></span>
+<span id="cb97-113"><a href="#cb97-113"></a>  x <span class="ot">&lt;-</span> <span class="fu">Re</span>(sol[<span class="fu">Im</span>(sol) <span class="sc">==</span> <span class="dv">0</span>]) <span class="sc">-</span> <span class="dv">1</span> <span class="co"># 内部収益率を計算</span></span>
+<span id="cb97-114"><a href="#cb97-114"></a>  <span class="fu">return</span>(x)</span>
+<span id="cb97-115"><a href="#cb97-115"></a>}</span>
+<span id="cb97-116"><a href="#cb97-116"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>) <span class="co"># 例</span></span>
+<span id="cb97-117"><a href="#cb97-117"></a><span class="fu">cal_IRR</span>(CF)</span>
+<span id="cb97-118"><a href="#cb97-118"></a><span class="in">```</span></span>
+<span id="cb97-119"><a href="#cb97-119"></a></span>
+<span id="cb97-120"><a href="#cb97-120"></a>変な解をもつキャッシュ・フローの場合</span>
+<span id="cb97-121"><a href="#cb97-121"></a></span>
+<span id="cb97-124"><a href="#cb97-124"></a><span class="in">```{r}</span></span>
+<span id="cb97-125"><a href="#cb97-125"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">120</span>, <span class="sc">-</span><span class="dv">120</span>) <span class="co"># 例</span></span>
+<span id="cb97-126"><a href="#cb97-126"></a><span class="fu">cal_IRR</span>(CF)</span>
+<span id="cb97-127"><a href="#cb97-127"></a><span class="in">```</span></span>
+<span id="cb97-128"><a href="#cb97-128"></a></span>
+<span id="cb97-129"><a href="#cb97-129"></a>内部収益率となりうる正の実数解が2つあるので，IRR法は使えなさそう，となる。</span>
+<span id="cb97-130"><a href="#cb97-130"></a></span>
+<span id="cb97-131"><a href="#cb97-131"></a><span class="fu">### 多項式の解を求める方法：ニュートン法</span></span>
+<span id="cb97-132"><a href="#cb97-132"></a></span>
+<span id="cb97-133"><a href="#cb97-133"></a>この式を解くことは、$y$についての方程式を解くことになります。この方程式を解く方法は、二分法やニュートン法などがありますが、ここではニュートン法を用いて解いていきます。</span>
+<span id="cb97-134"><a href="#cb97-134"></a></span>
+<span id="cb97-135"><a href="#cb97-135"></a>ニュートン法は、ある関数$f(x)$の解を求める方法で、次のような式で表されます。 $$</span>
+<span id="cb97-136"><a href="#cb97-136"></a>x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}</span>
+<span id="cb97-137"><a href="#cb97-137"></a>$$</span>
+<span id="cb97-138"><a href="#cb97-138"></a></span>
+<span id="cb97-139"><a href="#cb97-139"></a>この式を用いて、IRRを求める関数を作成していきます。</span>
+<span id="cb97-140"><a href="#cb97-140"></a></span>
+<span id="cb97-141"><a href="#cb97-141"></a><span class="fu">### IRRの計算</span></span>
+<span id="cb97-142"><a href="#cb97-142"></a></span>
+<span id="cb97-143"><a href="#cb97-143"></a>まずは、IRRを求める関数を作成していきます。IRRを求める関数は、次のようになります。</span>
+<span id="cb97-144"><a href="#cb97-144"></a></span>
+<span id="cb97-147"><a href="#cb97-147"></a><span class="in">```{r}</span></span>
+<span id="cb97-148"><a href="#cb97-148"></a>calc_irr <span class="ot">&lt;-</span> <span class="cf">function</span>(cash_flow, initial_investment, <span class="at">max_iter =</span> <span class="dv">100</span>, <span class="at">tol =</span> <span class="fl">1e-10</span>) {</span>
+<span id="cb97-149"><a href="#cb97-149"></a>  <span class="co"># cash_flow: キャッシュフローのベクトル</span></span>
+<span id="cb97-150"><a href="#cb97-150"></a>  <span class="co"># initial_investment: 初期投資</span></span>
+<span id="cb97-151"><a href="#cb97-151"></a>  <span class="co"># max_iter: 最大繰り返し回数</span></span>
+<span id="cb97-152"><a href="#cb97-152"></a>  <span class="co"># tol: 許容誤差</span></span>
+<span id="cb97-153"><a href="#cb97-153"></a>  <span class="co"># return: IRR (内部収益率)</span></span>
+<span id="cb97-154"><a href="#cb97-154"></a></span>
+<span id="cb97-155"><a href="#cb97-155"></a>}</span>
+<span id="cb97-156"><a href="#cb97-156"></a><span class="in">```</span></span>
+<span id="cb97-157"><a href="#cb97-157"></a></span>
+<span id="cb97-158"><a href="#cb97-158"></a><span class="fu"># データの型 (付録)</span></span>
+<span id="cb97-159"><a href="#cb97-159"></a></span>
+<span id="cb97-160"><a href="#cb97-160"></a>プログラミング言語でデータ分析を行う場合に，非常に重要になるのが，データの型です。 とりわけ，経営の実証研究では，複数の変数を複数期間にわたって記録したパネル・データを扱うことが多いので，データの型を理解しておくことは，非常に重要です。 また，Rの神と呼ばれるHadley Wickham氏は，データの型を理解することを，データ分析の第一歩とし，その一貫として**整然データ(tidy data)**という考え方を提唱しています。 整然データとは，次のような原則に従って構築されたデータのことです(Wickham, 2014) 参考<span class="sc">\[</span>https://id.fnshr.info/2017/01/09/tidy-data-intro/\]。</span>
+<span id="cb97-161"><a href="#cb97-161"></a></span>
+<span id="cb97-162"><a href="#cb97-162"></a><span class="ss">1.  </span>個々の変数 (variable) が1つの列 (column) をなす。</span>
+<span id="cb97-163"><a href="#cb97-163"></a><span class="ss">2.  </span>個々の観測 (observation) が1つの行 (row) をなす。</span>
+<span id="cb97-164"><a href="#cb97-164"></a><span class="ss">3.  </span>個々の観測の構成単位の類型 (type of observational unit) が1つの表 (table) をなす。</span>
+<span id="cb97-165"><a href="#cb97-165"></a><span class="ss">4.  </span>個々の値 (value) が1つのセル (cell) をなす</span>
+<span id="cb97-166"><a href="#cb97-166"></a></span>
+<span id="cb97-167"><a href="#cb97-167"></a>プログラミング言語には，データの型があり，よく使うものとして，数値型，文字型，論理型などがあります。 Rでは，これらのデータ型をオブジェクトと呼びます。</span>
+<span id="cb97-168"><a href="#cb97-168"></a></span>
+<span id="cb97-169"><a href="#cb97-169"></a>例えば，次のような表を考えます。</span>
+<span id="cb97-170"><a href="#cb97-170"></a></span>
+<span id="cb97-171"><a href="#cb97-171"></a><span class="pp">|</span> 地点 <span class="pp">|</span>   6時    <span class="pp">|</span>   12時   <span class="pp">|</span>   18時   <span class="pp">|</span></span>
+<span id="cb97-172"><a href="#cb97-172"></a><span class="pp">|:----:|:--------:|:--------:|:--------:|</span></span>
+<span id="cb97-173"><a href="#cb97-173"></a><span class="pp">|</span> 札幌 <span class="pp">|</span> 12℃ 晴れ <span class="pp">|</span> 15℃ 晴れ <span class="pp">|</span> 13℃ 曇り <span class="pp">|</span></span>
+<span id="cb97-174"><a href="#cb97-174"></a><span class="pp">|</span> 大阪 <span class="pp">|</span> 20℃ 曇り <span class="pp">|</span>  24℃ 雨  <span class="pp">|</span>  22℃ 雨  <span class="pp">|</span></span>
+<span id="cb97-175"><a href="#cb97-175"></a><span class="pp">|</span> 福岡 <span class="pp">|</span>  23℃ 雨  <span class="pp">|</span> 25℃ 晴れ <span class="pp">|</span> 25℃ 晴れ <span class="pp">|</span></span>
+<span id="cb97-176"><a href="#cb97-176"></a></span>
+<span id="cb97-177"><a href="#cb97-177"></a>天気予報で見かけそうなこの表は，人間にとっては分かりやすいですが，コンピュータにとっては，分かりにくいものです。 コンピュータが理解しやすい整然データとして表すなら，次のような表になります。</span>
+<span id="cb97-178"><a href="#cb97-178"></a></span>
+<span id="cb97-179"><a href="#cb97-179"></a><span class="pp">|</span> 地点 <span class="pp">|</span> 時間 <span class="pp">|</span> 天気 <span class="pp">|</span> 気温(℃) <span class="pp">|</span></span>
+<span id="cb97-180"><a href="#cb97-180"></a><span class="pp">|:----:|:----:|:----:|:-------:|</span></span>
+<span id="cb97-181"><a href="#cb97-181"></a><span class="pp">|</span> 札幌 <span class="pp">|</span> 6時  <span class="pp">|</span> 晴れ <span class="pp">|</span>   12    <span class="pp">|</span></span>
+<span id="cb97-182"><a href="#cb97-182"></a><span class="pp">|</span> 札幌 <span class="pp">|</span> 12時 <span class="pp">|</span> 晴れ <span class="pp">|</span>   15    <span class="pp">|</span></span>
+<span id="cb97-183"><a href="#cb97-183"></a><span class="pp">|</span> 札幌 <span class="pp">|</span> 18時 <span class="pp">|</span> 曇り <span class="pp">|</span>   13    <span class="pp">|</span></span>
+<span id="cb97-184"><a href="#cb97-184"></a><span class="pp">|</span> 大阪 <span class="pp">|</span> 6時  <span class="pp">|</span> 曇り <span class="pp">|</span>   20    <span class="pp">|</span></span>
+<span id="cb97-185"><a href="#cb97-185"></a><span class="pp">|</span> 大阪 <span class="pp">|</span> 12時 <span class="pp">|</span>  雨  <span class="pp">|</span>   24    <span class="pp">|</span></span>
+<span id="cb97-186"><a href="#cb97-186"></a><span class="pp">|</span> 大阪 <span class="pp">|</span> 18時 <span class="pp">|</span>  雨  <span class="pp">|</span>   22    <span class="pp">|</span></span>
+<span id="cb97-187"><a href="#cb97-187"></a><span class="pp">|</span> 福岡 <span class="pp">|</span> 6時  <span class="pp">|</span>  雨  <span class="pp">|</span>   23    <span class="pp">|</span></span>
+<span id="cb97-188"><a href="#cb97-188"></a><span class="pp">|</span> 福岡 <span class="pp">|</span> 12時 <span class="pp">|</span> 晴れ <span class="pp">|</span>   25    <span class="pp">|</span></span>
+<span id="cb97-189"><a href="#cb97-189"></a><span class="pp">|</span> 福岡 <span class="pp">|</span> 18時 <span class="pp">|</span> 晴れ <span class="pp">|</span>   25    <span class="pp">|</span></span>
+<span id="cb97-190"><a href="#cb97-190"></a></span>
+<span id="cb97-191"><a href="#cb97-191"></a>この表は，地点，時間，天気，気温の4つの変数があり1つの列をつくっています(ルール1)。 大阪12時の天気は雨，気温は12℃といったように1つの行が1つの観測を表しています(ルール2)。 このデータには種類の異なる観測はない(ルール3)。 また，各セルには1つの値が入っています(ルール4)。 よって，これが整然データとなります。</span>
+<span id="cb97-192"><a href="#cb97-192"></a></span>
+<span id="cb97-193"><a href="#cb97-193"></a><span class="dt">&lt;</span><span class="kw">aside</span><span class="dt">&gt;</span>上の表をワイド型，下の表をロング型ともいい，Rでは，ロング型のデータを扱うことが多いです。もちろんワイドをロングに，またはその逆にする関数もあります。<span class="dt">&lt;/</span><span class="kw">aside</span><span class="dt">&gt;</span></span>
+<span id="cb97-194"><a href="#cb97-194"></a></span>
+<span id="cb97-195"><a href="#cb97-195"></a>また，このデータは4つの変数を含んでおり，それぞれの変数には，次のようなデータ型があります。</span>
+<span id="cb97-196"><a href="#cb97-196"></a></span>
+<span id="cb97-197"><a href="#cb97-197"></a><span class="ss">-   </span>地点: 文字型</span>
+<span id="cb97-198"><a href="#cb97-198"></a><span class="ss">-   </span>時間: 文字型</span>
+<span id="cb97-199"><a href="#cb97-199"></a><span class="ss">-   </span>天気: 文字列</span>
+<span id="cb97-200"><a href="#cb97-200"></a><span class="ss">-   </span>気温: 数値型</span>
+<span id="cb97-201"><a href="#cb97-201"></a></span>
+<span id="cb97-202"><a href="#cb97-202"></a>このように1つの変数には，同じデータ型のデータが入っているようにします。数値型のデータの中に1つでも文字列が入っていると，その変数は文字型となります。</span>
+<span id="cb97-203"><a href="#cb97-203"></a></span>
+<span id="cb97-204"><a href="#cb97-204"></a><span class="fu"># データフレーム入門</span></span>
+<span id="cb97-205"><a href="#cb97-205"></a></span>
+<span id="cb97-206"><a href="#cb97-206"></a>Rでは，データを扱うためのデータ型として，データフレーム(data frame)というものがあり，非常によく使うので，ここでしっかり説明しておきます。</span>
+<span id="cb97-207"><a href="#cb97-207"></a></span>
+<span id="cb97-208"><a href="#cb97-208"></a>先ほど分析に使った<span class="in">`ch03_daily_stock_return.csv`</span>を読み込んでみます。このcsvファイルとは，Comma-Separated-Valuesの略で，値がカンマで区切られているテキストファイルです。</span>
+<span id="cb97-209"><a href="#cb97-209"></a></span>
+<span id="cb97-210"><a href="#cb97-210"></a>読み込むには，<span class="in">`readr`</span>パッケージの<span class="in">`read_csv()`</span>関数を使います。</span>
+<span id="cb97-211"><a href="#cb97-211"></a></span>
+<span id="cb97-214"><a href="#cb97-214"></a><span class="in">```{r}</span></span>
+<span id="cb97-215"><a href="#cb97-215"></a><span class="fu">library</span>(readr)</span>
+<span id="cb97-216"><a href="#cb97-216"></a>daily_stock_return <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch03_daily_stock_return.csv"</span>)</span>
+<span id="cb97-217"><a href="#cb97-217"></a><span class="in">```</span></span>
+<span id="cb97-218"><a href="#cb97-218"></a></span>
+<span id="cb97-219"><a href="#cb97-219"></a>ここでエラーが出る人は，以下の可能性を検討します。</span>
+<span id="cb97-220"><a href="#cb97-220"></a></span>
+<span id="cb97-221"><a href="#cb97-221"></a><span class="ss">-   </span>ソースコードに誤字がある</span>
+<span id="cb97-222"><a href="#cb97-222"></a><span class="ss">-   </span><span class="in">`ch03_daily_stock_return.csv`</span>の場所が違う</span>
+<span id="cb97-223"><a href="#cb97-223"></a><span class="ss">-   </span><span class="in">`ch03_daily_stock_return.csv`</span>が存在しない</span>
+<span id="cb97-224"><a href="#cb97-224"></a><span class="ss">-   </span><span class="in">`readr`</span>パッケージがインストールされていない</span>
+<span id="cb97-225"><a href="#cb97-225"></a><span class="ss">-   </span><span class="in">`readr`</span>パッケージが読み込まれていない</span>
+<span id="cb97-226"><a href="#cb97-226"></a></span>
+<span id="cb97-227"><a href="#cb97-227"></a>まず始めに，ソースコードが間違っていないかどうかを確認します。大文字と小文字の間違い，ハイフンとアンダースコアの間違い，スペースの有無などを確認します。</span>
+<span id="cb97-228"><a href="#cb97-228"></a></span>
+<span id="cb97-229"><a href="#cb97-229"></a>次に，読み込もうとしているフォルダを確認します。そのためには，</span>
+<span id="cb97-230"><a href="#cb97-230"></a></span>
+<span id="cb97-231"><a href="#cb97-231"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb97-232"><a href="#cb97-232"></a><span class="fu">getwd</span>() <span class="co"># 現在の作業ディレクトリを表示する</span></span>
+<span id="cb97-233"><a href="#cb97-233"></a><span class="fu">setwd</span>() <span class="co"># 作業ディレクトリの場所を指定する</span></span>
+<span id="cb97-234"><a href="#cb97-234"></a><span class="in">```</span></span>
+<span id="cb97-235"><a href="#cb97-235"></a></span>
+<span id="cb97-236"><a href="#cb97-236"></a>ファイルを置いていて，分析結果を保存するための作業用フォルダの中を確認します。そこにファイルがちゃんと存在しているのであれば，<span class="in">`setwd()`</span>関数で作業ディレクトリをファイルが補完されているフォルダへと変更します。</span>
+<span id="cb97-237"><a href="#cb97-237"></a></span>
+<span id="cb97-238"><a href="#cb97-238"></a><span class="fu">### データフレームに対する基本操作</span></span>
+<span id="cb97-239"><a href="#cb97-239"></a></span>
+<span id="cb97-240"><a href="#cb97-240"></a>データの中をさっくり確認するには，<span class="in">`head()`</span>関数を使って，先頭6行を出力します。</span>
+<span id="cb97-241"><a href="#cb97-241"></a></span>
+<span id="cb97-244"><a href="#cb97-244"></a><span class="in">```{r}</span></span>
+<span id="cb97-245"><a href="#cb97-245"></a><span class="fu">head</span>(daily_stock_return)</span>
+<span id="cb97-246"><a href="#cb97-246"></a><span class="in">```</span></span>
+<span id="cb97-247"><a href="#cb97-247"></a></span>
+<span id="cb97-248"><a href="#cb97-248"></a>出力結果を見ると，1行目に，<span class="in">`# A tibble: 6 x 3`</span>という文字があります。これは，<span class="in">`tibble`</span>というデータフレームの一種であることを示しており，6行・3列のデータとなっていることを表します。</span>
+<span id="cb97-249"><a href="#cb97-249"></a></span>
+<span id="cb97-250"><a href="#cb97-250"></a><span class="dt">&lt;</span><span class="kw">aside</span><span class="dt">&gt;</span><span class="in">`tibble`</span>は，<span class="in">`data.frame`</span>の拡張版で，<span class="in">`data.frame`</span>の機能を継承しているので，<span class="in">`data.frame`</span>として扱っても問題ありません。<span class="dt">&lt;/</span><span class="kw">aside</span><span class="dt">&gt;</span></span>
+<span id="cb97-251"><a href="#cb97-251"></a></span>
+<span id="cb97-252"><a href="#cb97-252"></a>データの行数と列数を確認するには，</span>
+<span id="cb97-253"><a href="#cb97-253"></a></span>
+<span id="cb97-256"><a href="#cb97-256"></a><span class="in">```{r}</span></span>
+<span id="cb97-257"><a href="#cb97-257"></a><span class="fu">nrow</span>(daily_stock_return) <span class="co"># 行数</span></span>
+<span id="cb97-258"><a href="#cb97-258"></a><span class="fu">ncol</span>(daily_stock_return) <span class="co"># 列数</span></span>
+<span id="cb97-259"><a href="#cb97-259"></a><span class="in">```</span></span>
+<span id="cb97-260"><a href="#cb97-260"></a></span>
+<span id="cb97-261"><a href="#cb97-261"></a>とします。 このデータフレーム(正確にはtibbleだけれど同じように扱う)の構造を確認するには，<span class="in">`str()`</span>関数を使います。</span>
+<span id="cb97-262"><a href="#cb97-262"></a></span>
+<span id="cb97-265"><a href="#cb97-265"></a><span class="in">```{r}</span></span>
+<span id="cb97-266"><a href="#cb97-266"></a><span class="fu">str</span>(daily_stock_return)</span>
+<span id="cb97-267"><a href="#cb97-267"></a><span class="in">```</span></span>
+<span id="cb97-268"><a href="#cb97-268"></a></span>
+<span id="cb97-269"><a href="#cb97-269"></a>出力結果の1行目をみると，<span class="in">`spc_tbl_ [21 × 3]`</span>とあり，21行・3列のデータであることがわかります。 2行目から4行目はデータの構造を表しています。 2行目の<span class="in">`data : Date[1:21]`</span> は日付型のデータであることを表しています。 3行目と4行目の<span class="in">`firm : num [1:21]`</span>は数値型のデータであることを表しています。</span>
+<span id="cb97-270"><a href="#cb97-270"></a></span>
+<span id="cb97-271"><a href="#cb97-271"></a>この<span class="in">`daily_stock_return`</span>データフレームの<span class="in">`firm1`</span>という変数を取り出すには，<span class="in">`$`</span>演算子を使います。</span>
+<span id="cb97-272"><a href="#cb97-272"></a></span>
+<span id="cb97-275"><a href="#cb97-275"></a><span class="in">```{r}</span></span>
+<span id="cb97-276"><a href="#cb97-276"></a>daily_stock_return<span class="sc">$</span>firm1</span>
+<span id="cb97-277"><a href="#cb97-277"></a><span class="in">```</span></span>
+<span id="cb97-278"><a href="#cb97-278"></a></span>
+<span id="cb97-279"><a href="#cb97-279"></a>ベクトルと同じように様々な演算ができるようになりました。 平均値を出すには<span class="in">`mean()`</span>，中央値なら<span class="in">`median()`</span>，最大値なら<span class="in">`max()`</span>，最小値なら<span class="in">`min()`</span>，分散なら<span class="in">`var()`</span>，標準偏差なら<span class="in">`sd()`</span>を使います。</span>
+<span id="cb97-280"><a href="#cb97-280"></a></span>
+<span id="cb97-283"><a href="#cb97-283"></a><span class="in">```{r}</span></span>
+<span id="cb97-284"><a href="#cb97-284"></a><span class="fu">mean</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 平均値</span></span>
+<span id="cb97-285"><a href="#cb97-285"></a><span class="fu">median</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 中央値</span></span>
+<span id="cb97-286"><a href="#cb97-286"></a><span class="fu">max</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 最大値</span></span>
+<span id="cb97-287"><a href="#cb97-287"></a><span class="fu">min</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 最小値</span></span>
+<span id="cb97-288"><a href="#cb97-288"></a><span class="fu">var</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 分散</span></span>
+<span id="cb97-289"><a href="#cb97-289"></a><span class="fu">sd</span>(daily_stock_return<span class="sc">$</span>firm1) <span class="co"># 標準偏差</span></span>
+<span id="cb97-290"><a href="#cb97-290"></a><span class="in">```</span></span>
+<span id="cb97-291"><a href="#cb97-291"></a></span>
+<span id="cb97-292"><a href="#cb97-292"></a>2変数の統計量として共分散や相関係数を出すには，<span class="in">`cov()`</span>，<span class="in">`cor()`</span>を使います。</span>
+<span id="cb97-293"><a href="#cb97-293"></a></span>
+<span id="cb97-296"><a href="#cb97-296"></a><span class="in">```{r}</span></span>
+<span id="cb97-297"><a href="#cb97-297"></a><span class="fu">cov</span>(daily_stock_return<span class="sc">$</span>firm1, daily_stock_return<span class="sc">$</span>firm2) <span class="co"># 共分散</span></span>
+<span id="cb97-298"><a href="#cb97-298"></a><span class="fu">cor</span>(daily_stock_return<span class="sc">$</span>firm1, daily_stock_return<span class="sc">$</span>firm2) <span class="co"># 相関係数</span></span>
+<span id="cb97-299"><a href="#cb97-299"></a><span class="in">```</span></span>
+<span id="cb97-300"><a href="#cb97-300"></a></span>
+<span id="cb97-301"><a href="#cb97-301"></a>相関係数の定義通り，共分散をそれぞれの標準偏差で割ると相関係数になるかどうかを確認してみます。</span>
+<span id="cb97-302"><a href="#cb97-302"></a></span>
+<span id="cb97-303"><a href="#cb97-303"></a>$$</span>
+<span id="cb97-304"><a href="#cb97-304"></a>\rho_{X,Y} = \frac{\mathbb{Cov}<span class="co">[</span><span class="ot">X, Y</span><span class="co">]</span>}{\sigma_X \sigma_Y}</span>
+<span id="cb97-305"><a href="#cb97-305"></a>$$</span>
+<span id="cb97-306"><a href="#cb97-306"></a></span>
+<span id="cb97-309"><a href="#cb97-309"></a><span class="in">```{r}</span></span>
+<span id="cb97-310"><a href="#cb97-310"></a>s_12 <span class="ot">&lt;-</span> <span class="fu">cov</span>(daily_stock_return<span class="sc">$</span>firm1, daily_stock_return<span class="sc">$</span>firm2) <span class="co"># 共分散</span></span>
+<span id="cb97-311"><a href="#cb97-311"></a>s_1 <span class="ot">&lt;-</span> <span class="fu">sd</span>(daily_stock_return<span class="sc">$</span>firm1)</span>
+<span id="cb97-312"><a href="#cb97-312"></a>s_2 <span class="ot">&lt;-</span> <span class="fu">sd</span>(daily_stock_return<span class="sc">$</span>firm2)</span>
+<span id="cb97-313"><a href="#cb97-313"></a>s_12 <span class="sc">/</span> (s_1 <span class="sc">*</span> s_2) <span class="co"># 相関係数</span></span>
+<span id="cb97-314"><a href="#cb97-314"></a><span class="in">```</span></span>
+<span id="cb97-315"><a href="#cb97-315"></a></span>
+<span id="cb97-316"><a href="#cb97-316"></a>同じになりました。</span>
+<span id="cb97-317"><a href="#cb97-317"></a></span>
+<span id="cb97-318"><a href="#cb97-318"></a><span class="in">`firm1`</span>の中で最も日次リターンが低かった日付を調べる方法を考えます。ここでは<span class="in">`which.min()`</span>関数を用いて，最小値をとる要素のインデックスを調べます。</span>
+<span id="cb97-319"><a href="#cb97-319"></a></span>
+<span id="cb97-322"><a href="#cb97-322"></a><span class="in">```{r}</span></span>
+<span id="cb97-323"><a href="#cb97-323"></a>worst_day_ID <span class="ot">&lt;-</span> <span class="fu">which.min</span>(daily_stock_return<span class="sc">$</span>firm1)</span>
+<span id="cb97-324"><a href="#cb97-324"></a>worst_day_ID</span>
+<span id="cb97-325"><a href="#cb97-325"></a><span class="in">```</span></span>
+<span id="cb97-326"><a href="#cb97-326"></a></span>
+<span id="cb97-327"><a href="#cb97-327"></a>最小の値がインデックスが20の値であること示されている。このインデックスを使って，<span class="in">`daily_stock_return`</span>データフレームの20行目を取り出します。</span>
+<span id="cb97-328"><a href="#cb97-328"></a></span>
+<span id="cb97-331"><a href="#cb97-331"></a><span class="in">```{r}</span></span>
+<span id="cb97-332"><a href="#cb97-332"></a>daily_stock_return[worst_day_ID, ]</span>
+<span id="cb97-333"><a href="#cb97-333"></a><span class="fu">min</span>(daily_stock_return<span class="sc">$</span>firm1)</span>
+<span id="cb97-334"><a href="#cb97-334"></a><span class="in">```</span></span>
+<span id="cb97-335"><a href="#cb97-335"></a></span>
+<span id="cb97-336"><a href="#cb97-336"></a>最小の値$-0.07207064$が20番目の値$-0.0721$と一致しているので，最小の値を見つけられていることが分かる。</span>
+<span id="cb97-337"><a href="#cb97-337"></a></span>
+<span id="cb97-340"><a href="#cb97-340"></a><span class="in">```{r}</span></span>
+<span id="cb97-341"><a href="#cb97-341"></a><span class="fu">nrow</span>(daily_stock_return)</span>
+<span id="cb97-342"><a href="#cb97-342"></a><span class="in">```</span></span>
+<span id="cb97-343"><a href="#cb97-343"></a></span>
+<span id="cb97-344"><a href="#cb97-344"></a>データフレームの行数を調べるには，<span class="in">`nrow()`</span>関数を使います。このデータフレームの行数は21行であることがわかります。</span>
+<span id="cb97-345"><a href="#cb97-345"></a></span>
+<span id="cb97-346"><a href="#cb97-346"></a><span class="fu"># ファクター型と日付型</span></span>
+<span id="cb97-347"><a href="#cb97-347"></a></span>
+<span id="cb97-348"><a href="#cb97-348"></a><span class="fu">## ファクター型入門</span></span>
+<span id="cb97-349"><a href="#cb97-349"></a></span>
+<span id="cb97-350"><a href="#cb97-350"></a>ファクター型の特徴を理解するために、教科書にある例を使って説明します。</span>
+<span id="cb97-351"><a href="#cb97-351"></a></span>
+<span id="cb97-352"><a href="#cb97-352"></a><span class="in">```{r ch03_46}</span></span>
+<span id="cb97-353"><a href="#cb97-353"></a>firm_ID <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>) <span class="co"># 企業コード的なもの</span></span>
+<span id="cb97-354"><a href="#cb97-354"></a>name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Firm A"</span>, <span class="st">"Firm B"</span>, <span class="st">"Firm C"</span>) <span class="co"># 企業名</span></span>
+<span id="cb97-355"><a href="#cb97-355"></a>industry <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Machinery"</span>, <span class="st">"Chemicals"</span>, <span class="st">"Machinery"</span>) <span class="co"># 業種</span></span>
+<span id="cb97-356"><a href="#cb97-356"></a>sale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">200</span>, <span class="dv">340</span>)</span>
+<span id="cb97-357"><a href="#cb97-357"></a>firm_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(firm_ID, name, industry, sale) <span class="co"># データフレームの作成</span></span>
+<span id="cb97-358"><a href="#cb97-358"></a><span class="fu">head</span>(firm_data)</span>
+<span id="cb97-359"><a href="#cb97-359"></a><span class="in">```</span></span>
+<span id="cb97-360"><a href="#cb97-360"></a></span>
+<span id="cb97-361"><a href="#cb97-361"></a>これで，企業コード，企業名，業種、売上高の4つの変数を持つデータフレームができました。構造を<span class="in">`str()`</span>で確認します。</span>
+<span id="cb97-362"><a href="#cb97-362"></a></span>
+<span id="cb97-365"><a href="#cb97-365"></a><span class="in">```{r}</span></span>
+<span id="cb97-366"><a href="#cb97-366"></a><span class="fu">str</span>(firm_data)</span>
+<span id="cb97-367"><a href="#cb97-367"></a><span class="in">```</span></span>
+<span id="cb97-368"><a href="#cb97-368"></a></span>
+<span id="cb97-369"><a href="#cb97-369"></a>4つの変数が3つの観測値をもっており、</span>
+<span id="cb97-370"><a href="#cb97-370"></a></span>
+<span id="cb97-371"><a href="#cb97-371"></a><span class="ss">-   </span>firm_ID: 数値型 <span class="in">`num`</span></span>
+<span id="cb97-372"><a href="#cb97-372"></a><span class="ss">-   </span>name: 文字型 <span class="in">`chr`</span></span>
+<span id="cb97-373"><a href="#cb97-373"></a><span class="ss">-   </span>industry: 文字型 <span class="in">`chr`</span></span>
+<span id="cb97-374"><a href="#cb97-374"></a><span class="ss">-   </span>sale: 数値型 <span class="in">`num`</span></span>
+<span id="cb97-375"><a href="#cb97-375"></a></span>
+<span id="cb97-376"><a href="#cb97-376"></a>となっています。 <span class="in">`summary()`</span>関数で記述統計量を確認してみます。</span>
+<span id="cb97-377"><a href="#cb97-377"></a></span>
+<span id="cb97-380"><a href="#cb97-380"></a><span class="in">```{r}</span></span>
+<span id="cb97-381"><a href="#cb97-381"></a><span class="fu">summary</span>(firm_data)</span>
+<span id="cb97-382"><a href="#cb97-382"></a><span class="in">```</span></span>
+<span id="cb97-383"><a href="#cb97-383"></a></span>
+<span id="cb97-384"><a href="#cb97-384"></a><span class="in">`firm_ID`</span>が数値型であるため、平均(Mean)が計算されていますが、<span class="in">`firm_ID`</span>は企業を識別するコードであり、平均をとっても意味はありません。 <span class="in">`name`</span>や<span class="in">`industry`</span>は文字列なので何も計算されていません。 <span class="in">`sale`</span>は数値型なので、平均や最大値、最小値などが計算されています。</span>
+<span id="cb97-385"><a href="#cb97-385"></a></span>
+<span id="cb97-386"><a href="#cb97-386"></a>実際は、<span class="in">`firm_ID`</span>は数字が入ったベクトル変数ですが、数字は企業を表すラベルであるため、名義尺度です。<span class="in">`industry`</span>は業種というカテゴリーを表す文字列です。このような変数を扱うときには、<span class="in">`factor()`</span>関数を使って、ファクター型に変換します。</span>
+<span id="cb97-387"><a href="#cb97-387"></a></span>
+<span id="cb97-390"><a href="#cb97-390"></a><span class="in">```{r}</span></span>
+<span id="cb97-391"><a href="#cb97-391"></a>firm_data<span class="sc">$</span>firm_ID <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(firm_data<span class="sc">$</span>firm_ID)</span>
+<span id="cb97-392"><a href="#cb97-392"></a>firm_data<span class="sc">$</span>industry <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(firm_data<span class="sc">$</span>industry)</span>
+<span id="cb97-393"><a href="#cb97-393"></a><span class="in">```</span></span>
+<span id="cb97-394"><a href="#cb97-394"></a></span>
+<span id="cb97-395"><a href="#cb97-395"></a>もう一度<span class="in">`str`</span>関数を使って構造を確認します。</span>
+<span id="cb97-396"><a href="#cb97-396"></a></span>
+<span id="cb97-399"><a href="#cb97-399"></a><span class="in">```{r}</span></span>
+<span id="cb97-400"><a href="#cb97-400"></a><span class="fu">str</span>(firm_data)</span>
+<span id="cb97-401"><a href="#cb97-401"></a><span class="in">```</span></span>
+<span id="cb97-402"><a href="#cb97-402"></a></span>
+<span id="cb97-403"><a href="#cb97-403"></a><span class="in">`firm_ID`</span>と<span class="in">`industry`</span>がファクター型になっていることが分かります。ここでもう一度<span class="in">`summary()`</span>を使ってみます。</span>
+<span id="cb97-404"><a href="#cb97-404"></a></span>
+<span id="cb97-407"><a href="#cb97-407"></a><span class="in">```{r}</span></span>
+<span id="cb97-408"><a href="#cb97-408"></a><span class="fu">summary</span>(firm_data)</span>
+<span id="cb97-409"><a href="#cb97-409"></a><span class="in">```</span></span>
+<span id="cb97-410"><a href="#cb97-410"></a></span>
+<span id="cb97-411"><a href="#cb97-411"></a><span class="in">`firm_ID`</span>と<span class="in">`industry`</span>の表示が変わりました。 ファクター型は、カテゴリーを表す変数として扱うことができ、カテゴリーごとにいくつのデータが存在するのかを確認することができます。 適切な分析結果を得るためにも、名義尺度の変数は、ファクター型に変換しておくことが重要です。企業分析の場合は、企業コードや業種コードなどをファクター型にします。</span>
+<span id="cb97-412"><a href="#cb97-412"></a></span>
+<span id="cb97-413"><a href="#cb97-413"></a><span class="fu">## 日付型入門</span></span>
+<span id="cb97-414"><a href="#cb97-414"></a></span>
+<span id="cb97-415"><a href="#cb97-415"></a>日付型の特徴を理解するために、教科書にある例を使って説明します。</span>
+<span id="cb97-416"><a href="#cb97-416"></a></span>
+<span id="cb97-419"><a href="#cb97-419"></a><span class="in">```{r}</span></span>
+<span id="cb97-420"><a href="#cb97-420"></a>date <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"2021/04/01"</span>, <span class="st">"2021/04/02"</span>, <span class="st">"2021/04/03"</span>, <span class="st">"2021/04/04"</span>, <span class="st">"2021/04/05"</span>)</span>
+<span id="cb97-421"><a href="#cb97-421"></a>stock_return <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">0.03</span>, <span class="fl">0.06</span>, <span class="fl">0.05</span>)</span>
+<span id="cb97-422"><a href="#cb97-422"></a>stock_return_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(date, stock_return)</span>
+<span id="cb97-423"><a href="#cb97-423"></a><span class="fu">head</span>(stock_return_data)</span>
+<span id="cb97-424"><a href="#cb97-424"></a><span class="in">```</span></span>
+<span id="cb97-425"><a href="#cb97-425"></a></span>
+<span id="cb97-426"><a href="#cb97-426"></a>2つの変数<span class="in">`data`</span>と<span class="in">`stock_return`</span>がそれぞれ5つの要素をもっているデータフレームを作りました。構造を確認してみます。</span>
+<span id="cb97-427"><a href="#cb97-427"></a></span>
+<span id="cb97-430"><a href="#cb97-430"></a><span class="in">```{r}</span></span>
+<span id="cb97-431"><a href="#cb97-431"></a><span class="fu">str</span>(stock_return_data)</span>
+<span id="cb97-432"><a href="#cb97-432"></a><span class="in">```</span></span>
+<span id="cb97-433"><a href="#cb97-433"></a></span>
+<span id="cb97-434"><a href="#cb97-434"></a><span class="in">`date`</span>は文字列、<span class="in">`stock_return`</span>は数値型となっています。 ここで<span class="in">`date`</span>は日付を表す文字列ですが、文字列として扱われているため、日付としての計算ができません。</span>
+<span id="cb97-435"><a href="#cb97-435"></a></span>
+<span id="cb97-436"><a href="#cb97-436"></a>Rに<span class="in">`2021/04/01`</span>のような日付情報を日付型のデータとして認識してもらう方法はいくつかありますが、ここでは基本関数の<span class="in">`as.Date()`</span>関数を使う方法と、<span class="in">`tidyverse`</span>パッケージ群の1つである<span class="in">`lubridate`</span>パッケージを使う方法を説明します。</span>
+<span id="cb97-437"><a href="#cb97-437"></a></span>
+<span id="cb97-438"><a href="#cb97-438"></a><span class="in">```{r ch04_49}</span></span>
+<span id="cb97-439"><a href="#cb97-439"></a>stock_return_data<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(stock_return_data<span class="sc">$</span>date)</span>
+<span id="cb97-440"><a href="#cb97-440"></a><span class="fu">str</span>(stock_return_data)</span>
+<span id="cb97-441"><a href="#cb97-441"></a><span class="in">```</span></span>
+<span id="cb97-442"><a href="#cb97-442"></a></span>
+<span id="cb97-443"><a href="#cb97-443"></a><span class="in">`date`</span>変数の方が<span class="in">`Date`</span>に成りました。<span class="in">`summary()`</span>関数を使ってみます。</span>
+<span id="cb97-444"><a href="#cb97-444"></a></span>
+<span id="cb97-447"><a href="#cb97-447"></a><span class="in">```{r}</span></span>
+<span id="cb97-448"><a href="#cb97-448"></a><span class="fu">summary</span>(stock_return_data)</span>
+<span id="cb97-449"><a href="#cb97-449"></a><span class="in">```</span></span>
+<span id="cb97-450"><a href="#cb97-450"></a></span>
+<span id="cb97-451"><a href="#cb97-451"></a>日付の<span class="in">`date`</span>も最小値は平均などが出力されていることが分かります。 日付型<span class="in">`Date`</span>は、日付としての計算ができるようになります。</span>
+<span id="cb97-452"><a href="#cb97-452"></a></span>
+<span id="cb97-455"><a href="#cb97-455"></a><span class="in">```{r}</span></span>
+<span id="cb97-456"><a href="#cb97-456"></a><span class="co"># 日数の加算</span></span>
+<span id="cb97-457"><a href="#cb97-457"></a>stock_return_data<span class="sc">$</span>date <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb97-458"><a href="#cb97-458"></a><span class="co"># 日数の差</span></span>
+<span id="cb97-459"><a href="#cb97-459"></a>stock_return_data<span class="sc">$</span>date[<span class="dv">3</span>] <span class="sc">-</span> stock_return_data<span class="sc">$</span>date[<span class="dv">1</span>]</span>
+<span id="cb97-460"><a href="#cb97-460"></a><span class="in">```</span></span>
+<span id="cb97-461"><a href="#cb97-461"></a></span>
+<span id="cb97-462"><a href="#cb97-462"></a>このように<span class="in">`Date`</span>型にすれば、日数の加算や二時点間の日数の差を計算することができます。</span>
+<span id="cb97-463"><a href="#cb97-463"></a></span>
+<span id="cb97-464"><a href="#cb97-464"></a>次に<span class="in">`lubridate`</span>を用いた方法をみていきましょう。 <span class="in">`lubridate`</span>は<span class="in">`tidyverse`</span>パッケージ群の1つで、日付型のデータを扱うためのパッケージです。かなり便利なので使いこなせるように頑張りましょう。 先の日付データは<span class="in">`2021/04/01`</span>と年・月・日がスラッシュで区切られているので、<span class="in">`ymd()`</span>関数を使って、日付型に変換します。</span>
+<span id="cb97-465"><a href="#cb97-465"></a></span>
+<span id="cb97-468"><a href="#cb97-468"></a><span class="in">```{r}</span></span>
+<span id="cb97-469"><a href="#cb97-469"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb97-470"><a href="#cb97-470"></a>stock_return_data<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">ymd</span>(stock_return_data<span class="sc">$</span>date)</span>
+<span id="cb97-471"><a href="#cb97-471"></a><span class="fu">str</span>(stock_return_data)</span>
+<span id="cb97-472"><a href="#cb97-472"></a><span class="in">```</span></span>
+<span id="cb97-473"><a href="#cb97-473"></a></span>
+<span id="cb97-474"><a href="#cb97-474"></a>この日付データから年、月、日を取り出すには、<span class="in">`year()`</span>、<span class="in">`month()`</span>、<span class="in">`day()`</span>関数を使います。</span>
+<span id="cb97-475"><a href="#cb97-475"></a></span>
+<span id="cb97-478"><a href="#cb97-478"></a><span class="in">```{r}</span></span>
+<span id="cb97-479"><a href="#cb97-479"></a><span class="fu">year</span>(stock_return_data<span class="sc">$</span>date) <span class="co"># これはよく使う。</span></span>
+<span id="cb97-480"><a href="#cb97-480"></a><span class="fu">month</span>(stock_return_data<span class="sc">$</span>date)</span>
+<span id="cb97-481"><a href="#cb97-481"></a><span class="fu">day</span>(stock_return_data<span class="sc">$</span>date)</span>
+<span id="cb97-482"><a href="#cb97-482"></a><span class="in">```</span></span>
+<span id="cb97-483"><a href="#cb97-483"></a></span>
+<span id="cb97-484"><a href="#cb97-484"></a><span class="fu"># 外部パッケージの使い方</span></span>
+<span id="cb97-485"><a href="#cb97-485"></a></span>
+<span id="cb97-486"><a href="#cb97-486"></a><span class="fu">## 外部パッケージのインストール</span></span>
+<span id="cb97-487"><a href="#cb97-487"></a></span>
+<span id="cb97-488"><a href="#cb97-488"></a>Rの魅力の1つに，多くの外部パッケージが存在することが挙げられます。外部パッケージを使うことで，Rに様々な機能を追加することができます。もともとRに組み込まれている基本関数とは異なり，外部パッケージを使うためには，まずインストールする必要があります。インストールするには，<span class="in">`install.packages()`</span>関数を使います。例えば，<span class="in">`tidyverse`</span>パッケージをインストールするには，以下のようにします。</span>
+<span id="cb97-489"><a href="#cb97-489"></a></span>
+<span id="cb97-492"><a href="#cb97-492"></a><span class="in">```{r}</span></span>
+<span id="cb97-493"><a href="#cb97-493"></a><span class="co"># install.packages("tidyverse") # 最初の1回だけ実行</span></span>
+<span id="cb97-494"><a href="#cb97-494"></a><span class="in">```</span></span>
+<span id="cb97-495"><a href="#cb97-495"></a></span>
+<span id="cb97-496"><a href="#cb97-496"></a><span class="in">`tidyverse`</span>パッケージ群に含まれるパッケージに，グラフ作成のための<span class="in">`ggplot2`</span>がある。<span class="in">`ggplot2`</span>をインストールするには，以下のようにします。 作図用データを作成します。</span>
+<span id="cb97-497"><a href="#cb97-497"></a></span>
+<span id="cb97-498"><a href="#cb97-498"></a><span class="in">```{r ch03_54}</span></span>
+<span id="cb97-499"><a href="#cb97-499"></a>initinal_cost <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">80</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb97-500"><a href="#cb97-500"></a>IRR <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(initinal_cost))</span>
+<span id="cb97-501"><a href="#cb97-501"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(initinal_cost)) {</span>
+<span id="cb97-502"><a href="#cb97-502"></a>  IRR[i] <span class="ot">&lt;-</span> <span class="fu">cal_IRR</span>(<span class="fu">c</span>(<span class="sc">-</span>initinal_cost[i],<span class="dv">100</span>))</span>
+<span id="cb97-503"><a href="#cb97-503"></a>}</span>
+<span id="cb97-504"><a href="#cb97-504"></a>figure_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(initinal_cost, IRR) <span class="co"># データフレーム作成</span></span>
+<span id="cb97-505"><a href="#cb97-505"></a><span class="fu">head</span>(figure_data) <span class="co"># データの確認</span></span>
+<span id="cb97-506"><a href="#cb97-506"></a><span class="in">```</span></span>
+<span id="cb97-507"><a href="#cb97-507"></a></span>
+<span id="cb97-508"><a href="#cb97-508"></a>これをまずは基本関数<span class="in">`plot()`</span>で作図してみる。</span>
+<span id="cb97-509"><a href="#cb97-509"></a></span>
+<span id="cb97-512"><a href="#cb97-512"></a><span class="in">```{r}</span></span>
+<span id="cb97-513"><a href="#cb97-513"></a><span class="fu">plot</span>(figure_data<span class="sc">$</span>initinal_cost, figure_data<span class="sc">$</span>IRR, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb97-514"><a href="#cb97-514"></a><span class="in">```</span></span>
+<span id="cb97-515"><a href="#cb97-515"></a></span>
+<span id="cb97-516"><a href="#cb97-516"></a>次にこれを<span class="in">`ggplot2`</span>パッケージを使って書いてみます。</span>
+<span id="cb97-517"><a href="#cb97-517"></a></span>
+<span id="cb97-520"><a href="#cb97-520"></a><span class="in">```{r}</span></span>
+<span id="cb97-521"><a href="#cb97-521"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb97-522"><a href="#cb97-522"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(figure_data) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> initinal_cost, <span class="at">y =</span> IRR) <span class="sc">+</span> <span class="fu">geom_line</span>()</span>
+<span id="cb97-523"><a href="#cb97-523"></a><span class="fu">print</span>(g)</span>
+<span id="cb97-524"><a href="#cb97-524"></a><span class="in">```</span></span>
+<span id="cb97-525"><a href="#cb97-525"></a></span>
+<span id="cb97-526"><a href="#cb97-526"></a>折れ線グラフだけだと分かりづらいので，点をプロットしてみます。</span>
+<span id="cb97-527"><a href="#cb97-527"></a></span>
+<span id="cb97-530"><a href="#cb97-530"></a><span class="in">```{r}</span></span>
+<span id="cb97-531"><a href="#cb97-531"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">geom_point</span>()</span>
+<span id="cb97-532"><a href="#cb97-532"></a><span class="fu">print</span>(g)</span>
+<span id="cb97-533"><a href="#cb97-533"></a><span class="in">```</span></span>
+<span id="cb97-534"><a href="#cb97-534"></a></span>
+<span id="cb97-535"><a href="#cb97-535"></a>点が加わりました。さらに雑誌Economist風のデザインにしてみます。</span>
+<span id="cb97-536"><a href="#cb97-536"></a></span>
+<span id="cb97-539"><a href="#cb97-539"></a><span class="in">```{r}</span></span>
+<span id="cb97-540"><a href="#cb97-540"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb97-541"><a href="#cb97-541"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">theme_economist</span>()</span>
+<span id="cb97-542"><a href="#cb97-542"></a><span class="fu">print</span>(g)</span>
+<span id="cb97-543"><a href="#cb97-543"></a><span class="in">```</span></span>
+<span id="cb97-544"><a href="#cb97-544"></a></span>
+<span id="cb97-545"><a href="#cb97-545"></a>次に，グラフ内に文字を追加してみます。 グラフ内に文字列を追加するには<span class="in">`annotate()`</span>関数を使います。</span>
+<span id="cb97-546"><a href="#cb97-546"></a></span>
+<span id="cb97-547"><a href="#cb97-547"></a><span class="in">```{r ch03_58}</span></span>
+<span id="cb97-548"><a href="#cb97-548"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">annotate</span>( <span class="co"># 位置を指定して文字列を追加</span></span>
+<span id="cb97-549"><a href="#cb97-549"></a>  <span class="at">geom =</span> <span class="st">"text"</span>,</span>
+<span id="cb97-550"><a href="#cb97-550"></a>  <span class="at">x =</span> <span class="dv">99</span>,</span>
+<span id="cb97-551"><a href="#cb97-551"></a>  <span class="at">y =</span> <span class="fl">0.05</span>,</span>
+<span id="cb97-552"><a href="#cb97-552"></a>  <span class="at">label =</span> <span class="st">"Initial Cost 100"</span></span>
+<span id="cb97-553"><a href="#cb97-553"></a>  ) <span class="sc">+</span> <span class="fu">annotate</span>(<span class="co"># 始点や終点などを指定して矢印を追加</span></span>
+<span id="cb97-554"><a href="#cb97-554"></a>  <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb97-555"><a href="#cb97-555"></a>  <span class="at">x =</span> <span class="dv">100</span>,</span>
+<span id="cb97-556"><a href="#cb97-556"></a>  <span class="at">xend =</span> <span class="dv">100</span>,</span>
+<span id="cb97-557"><a href="#cb97-557"></a>  <span class="at">y =</span> <span class="fl">0.04</span>,</span>
+<span id="cb97-558"><a href="#cb97-558"></a>  <span class="at">yend =</span> <span class="fl">0.01</span>,</span>
+<span id="cb97-559"><a href="#cb97-559"></a>  <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb97-560"><a href="#cb97-560"></a>  <span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb97-561"><a href="#cb97-561"></a>  <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">"cm"</span>))</span>
+<span id="cb97-562"><a href="#cb97-562"></a>  )</span>
+<span id="cb97-563"><a href="#cb97-563"></a><span class="fu">print</span>(g)</span>
+<span id="cb97-564"><a href="#cb97-564"></a><span class="in">```</span></span>
+<span id="cb97-565"><a href="#cb97-565"></a></span>
+<span id="cb97-566"><a href="#cb97-566"></a><span class="fu"># 練習問題</span></span>
+<span id="cb97-567"><a href="#cb97-567"></a></span>
+<span id="cb97-568"><a href="#cb97-568"></a><span class="fu">## 練習問題1</span></span>
+<span id="cb97-569"><a href="#cb97-569"></a></span>
+<span id="cb97-572"><a href="#cb97-572"></a><span class="in">```{r}</span></span>
+<span id="cb97-573"><a href="#cb97-573"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb97-574"><a href="#cb97-574"></a>CF <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">250</span>, <span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">100</span>) <span class="co"># キャッシュ・フロー</span></span>
+<span id="cb97-575"><a href="#cb97-575"></a>R <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>) <span class="co"># 無リスク利子率のベクトル</span></span>
+<span id="cb97-576"><a href="#cb97-576"></a>NPV <span class="ot">&lt;-</span> CF[<span class="dv">1</span>] <span class="sc">+</span> CF[<span class="dv">2</span>] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R) <span class="sc">+</span> CF[<span class="dv">3</span>] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> CF[<span class="dv">4</span>] <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb97-577"><a href="#cb97-577"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(NPV, R) <span class="co"># データフレームの作成</span></span>
+<span id="cb97-578"><a href="#cb97-578"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> R, <span class="at">y =</span> NPV) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="co"># 作図</span></span>
+<span id="cb97-579"><a href="#cb97-579"></a><span class="in">```</span></span>
+<span id="cb97-580"><a href="#cb97-580"></a></span>
+<span id="cb97-581"><a href="#cb97-581"></a><span class="fu">## 練習問題2</span></span>
+<span id="cb97-582"><a href="#cb97-582"></a></span>
+<span id="cb97-585"><a href="#cb97-585"></a><span class="in">```{r}</span></span>
+<span id="cb97-586"><a href="#cb97-586"></a>R <span class="ot">&lt;-</span> <span class="fl">0.05</span> <span class="co"># 無リスク利子率</span></span>
+<span id="cb97-587"><a href="#cb97-587"></a>CF <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># キャッシュ・フロー</span></span>
+<span id="cb97-588"><a href="#cb97-588"></a></span>
+<span id="cb97-589"><a href="#cb97-589"></a>NPV <span class="ot">&lt;-</span> (<span class="dv">100</span><span class="sc">/</span><span class="fl">0.05</span>) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> R)<span class="sc">^</span><span class="dv">35</span> <span class="co"># NPVの計算</span></span>
+<span id="cb97-590"><a href="#cb97-590"></a><span class="fu">print</span>(NPV)</span>
+<span id="cb97-591"><a href="#cb97-591"></a><span class="in">```</span></span>
+<span id="cb97-592"><a href="#cb97-592"></a></span>
+<span id="cb97-593"><a href="#cb97-593"></a><span class="fu">## 練習3</span></span>
+<span id="cb97-594"><a href="#cb97-594"></a></span>
+<span id="cb97-595"><a href="#cb97-595"></a>元本$P$円を年利$R$で1年間運用することを考えよう。 1年当たりの複利の回数を$n$とおいたとき，$T$年後の将来価値は以下のように書ける. $$</span>
+<span id="cb97-596"><a href="#cb97-596"></a>FV(n) = \left ( \frac{1+R}{n}\right )^{Tn} P.</span>
+<span id="cb97-597"><a href="#cb97-597"></a>$$</span>
+<span id="cb97-598"><a href="#cb97-598"></a></span>
+<span id="cb97-599"><a href="#cb97-599"></a>将来価値を計算する関数を作成せよ。</span>
+<span id="cb97-600"><a href="#cb97-600"></a></span>
+<span id="cb97-603"><a href="#cb97-603"></a><span class="in">```{r}</span></span>
+<span id="cb97-604"><a href="#cb97-604"></a>cal_FV <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, R, n, T){</span>
+<span id="cb97-605"><a href="#cb97-605"></a>  FV <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">+</span> R <span class="sc">/</span> n)<span class="sc">^</span>(T <span class="sc">*</span> n) <span class="sc">*</span> CF</span>
+<span id="cb97-606"><a href="#cb97-606"></a>  <span class="fu">return</span>(FV)</span>
+<span id="cb97-607"><a href="#cb97-607"></a>}</span>
+<span id="cb97-608"><a href="#cb97-608"></a><span class="fu">cal_FV</span>(<span class="dv">100</span>,<span class="fl">0.1</span>,<span class="dv">2</span>,<span class="dv">2</span>)</span>
+<span id="cb97-609"><a href="#cb97-609"></a><span class="in">```</span></span>
+<span id="cb97-610"><a href="#cb97-610"></a></span>
+<span id="cb97-611"><a href="#cb97-611"></a><span class="fu">## 練習4\*</span></span>
+<span id="cb97-612"><a href="#cb97-612"></a></span>
+<span id="cb97-613"><a href="#cb97-613"></a>複利の頻度を無限大にすると連続複利に収束します。すると将来価値は次式で表されます。 $$</span>
+<span id="cb97-614"><a href="#cb97-614"></a>\lim_{n \rightarrow \infty} FV(n) = P \mathrm{e}^{RT}</span>
+<span id="cb97-615"><a href="#cb97-615"></a>$$</span>
+<span id="cb97-616"><a href="#cb97-616"></a></span>
+<span id="cb97-617"><a href="#cb97-617"></a>ここで、元本100万円を年利10％、連続複利で1年間運用した場合の将来価値を計算してみる。</span>
+<span id="cb97-618"><a href="#cb97-618"></a></span>
+<span id="cb97-621"><a href="#cb97-621"></a><span class="in">```{r}</span></span>
+<span id="cb97-622"><a href="#cb97-622"></a><span class="in">```</span></span>
+<span id="cb97-623"><a href="#cb97-623"></a></span>
+<span id="cb97-624"><a href="#cb97-624"></a><span class="fu">## 練習5\*</span></span>
+<span id="cb97-625"><a href="#cb97-625"></a></span>
+<span id="cb97-626"><a href="#cb97-626"></a><span class="ss">-   </span>元本100万円</span>
+<span id="cb97-627"><a href="#cb97-627"></a><span class="ss">-   </span>年利10%</span>
+<span id="cb97-628"><a href="#cb97-628"></a><span class="ss">-   </span>1年間運用</span>
+<span id="cb97-629"><a href="#cb97-629"></a></span>
+<span id="cb97-630"><a href="#cb97-630"></a>1年当たりの複利の回数を$n$とおき，$n$を変化させたときの将来価値$FV(n)$がどう変化するのか可視化する。</span>
+<span id="cb97-631"><a href="#cb97-631"></a></span>
+<span id="cb97-634"><a href="#cb97-634"></a><span class="in">```{r}</span></span>
+<span id="cb97-635"><a href="#cb97-635"></a>CF <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb97-636"><a href="#cb97-636"></a>R <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb97-637"><a href="#cb97-637"></a>T <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb97-638"><a href="#cb97-638"></a>FV <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>,<span class="dv">500</span>)</span>
+<span id="cb97-639"><a href="#cb97-639"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>){</span>
+<span id="cb97-640"><a href="#cb97-640"></a>  FV[i] <span class="ot">&lt;-</span> <span class="fu">cal_FV</span>(CF, R, <span class="at">n=</span>i, T)</span>
+<span id="cb97-641"><a href="#cb97-641"></a>}</span>
+<span id="cb97-642"><a href="#cb97-642"></a><span class="fu">plot</span>(FV, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb97-643"><a href="#cb97-643"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="fl">0.1</span>), <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb97-644"><a href="#cb97-644"></a><span class="in">```</span></span>
+<span id="cb97-645"><a href="#cb97-645"></a></span>
+<span id="cb97-646"><a href="#cb97-646"></a>将来価値$100\times \mathrm{e}^{0.1}$に収束していることがわかる。</span>
+<span id="cb97-647"><a href="#cb97-647"></a></span>
+<span id="cb97-648"><a href="#cb97-648"></a><span class="fu">## 練習6</span></span>
+<span id="cb97-649"><a href="#cb97-649"></a></span>
+<span id="cb97-650"><a href="#cb97-650"></a><span class="fu">## 練習7</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025, Soichi Matsuura</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://so-ichi.com/r.html">
+      <i class="bi bi-house" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ma2ura">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/matsuura_rits">
+      <i class="bi bi-twitter" role="img" aria-label="Twitter">
+</i> 
+    </a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+</body></html>
