@@ -1,0 +1,36 @@
+/*-- scss:defaults --*/
+// カスタム変数をここに定義
+
+
+
+/*-- scss:rules --*/
+// カスタムCSSルールをここに定義
+.callout.callout-style-default .callout-body {
+    font-size: 1rem;
+}
+
+/* Rの実行結果（プレーンテキスト）を枠で囲む */
+.cell-output-stdout pre {
+  border: 1px solid #dee2e6;
+  padding: 1em;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+/* 図（プロット）の周りに枠線を付ける場合 */
+.cell-output-display img {
+  border: 1px solid #dee2e6;
+  margin-bottom: 1em;
+}
+
+.marky {
+    background: linear-gradient(transparent 60%, #FCFFC1 0%);
+}
+
+.markb {
+    background: linear-gradient(transparent 60%, #88E2EA 0%);
+}
+
+.markp {
+    background: linear-gradient(transparent 70%, #ffcdd2 0%)
+}
