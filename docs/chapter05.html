@@ -503,24 +503,25 @@ window.Quarto = {
 <span id="cb1-6"><a href="#cb1-6"></a>  patchwork,</span>
 <span id="cb1-7"><a href="#cb1-7"></a>  Rsolnp,</span>
 <span id="cb1-8"><a href="#cb1-8"></a>  e1071,</span>
-<span id="cb1-9"><a href="#cb1-9"></a>  broom</span>
-<span id="cb1-10"><a href="#cb1-10"></a>)</span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a>mystyle <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb1-13"><a href="#cb1-13"></a>  <span class="fu">theme_economist_white</span>(</span>
-<span id="cb1-14"><a href="#cb1-14"></a>    <span class="at">base_family =</span> <span class="st">"HiraKakuProN-W3"</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a>    ),</span>
-<span id="cb1-16"><a href="#cb1-16"></a>  <span class="fu">scale_colour_economist</span>(),</span>
-<span id="cb1-17"><a href="#cb1-17"></a>  <span class="fu">theme</span>(</span>
-<span id="cb1-18"><a href="#cb1-18"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
-<span id="cb1-19"><a href="#cb1-19"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
-<span id="cb1-20"><a href="#cb1-20"></a>  )</span>
-<span id="cb1-21"><a href="#cb1-21"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-9"><a href="#cb1-9"></a>  broom,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>  scales</span>
+<span id="cb1-11"><a href="#cb1-11"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a>mystyle <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  <span class="fu">theme_economist_white</span>(</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    <span class="at">base_family =</span> <span class="st">"HiraKakuProN-W3"</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>    ),</span>
+<span id="cb1-17"><a href="#cb1-17"></a>  <span class="fu">scale_colour_economist</span>(),</span>
+<span id="cb1-18"><a href="#cb1-18"></a>  <span class="fu">theme</span>(</span>
+<span id="cb1-19"><a href="#cb1-19"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb1-20"><a href="#cb1-20"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb1-21"><a href="#cb1-21"></a>  )</span>
+<span id="cb1-22"><a href="#cb1-22"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <section id="株式データの取得と可視化" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="株式データの取得と可視化">
 <span class="header-section-number">6.1</span> 株式データの取得と可視化</h2>
-<p>前章では財務データを題材に、クロスセクションデータを扱うために必要なデータの取得と操作と可視化について学習しました。 特に重要な操作として，<code>group_by()</code>関数と<code>mutate()</code>や<code>summarise()</code>関数の組み合わせて，グループごとの変数の値を計算する方法を学びました。 本章では株式データを題材に，株式データの理解に必要な株式の基礎知識とともに，リターンの定義や計算について学び，最後には統計的推論と線形回帰分析についても学習します。</p>
+<p>前章では財務データを題材に、クロスセクションデータを扱うために必要なデータの取得と操作と可視化について学習しました。 特に重要な操作として，<code>mutate()</code>や<code>summarise()</code>関数で、<code>.by = var</code>を指定することでグループごとの変数の値を計算する方法を学びました。 本章では株式データを題材に，株式データの理解に必要な株式の基礎知識とともに，リターンの定義や計算について学び，最後には統計的推論と線形回帰分析についても学習します。</p>
 <!-- 株式データの理解を深めるために，株式市場の仕組みを理解する必要があるので，重要用語の説明を行います。
 
 | 相場用語 | 解説 |
@@ -676,9 +677,19 @@ $ R_F         &lt;dbl&gt; 6.506826e-04, 5.834099e-04, 6.114423e-04, 6.848180e-04
 </div>
 <p>たとえば，<code>firm_ID</code>が74，<code>month_ID</code>が29から32（つまり2017年5月から8月）のデータを抽出してみます。</p>
 <div class="cell" data-layout-align="center">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>データの抽出</strong></pre>
+</div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>stock_data <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">74</span> , month_ID <span class="sc">%in%</span> <span class="dv">29</span><span class="sc">:</span><span class="dv">32</span>) <span class="sc">|&gt;</span> <span class="co"># filterで条件を指定</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">select</span>(year, firm_ID, month, month_ID,stock_price, DPS, n_shares, adj_coef) <span class="co"># selectで必要な変数を指定</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="co"># 条件を満たすデータをfilter()で抽出</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">74</span> , month_ID <span class="sc">%in%</span> <span class="dv">29</span><span class="sc">:</span><span class="dv">32</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="co"># 特定の変数を抽出</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>  <span class="fu">select</span>(</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    year, firm_ID, month, month_ID, </span>
+<span id="cb7-7"><a href="#cb7-7"></a>    stock_price, DPS, n_shares, adj_coef</span>
+<span id="cb7-8"><a href="#cb7-8"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 8
    year firm_ID month month_ID stock_price   DPS n_shares adj_coef
@@ -694,23 +705,31 @@ $ R_F         &lt;dbl&gt; 6.506826e-04, 5.834099e-04, 6.114423e-04, 6.848180e-04
 <span class="header-section-number">6.2</span> 時価総額とリターンの計算</h2>
 <p>時価総額(market capitalization)を計算するためには、株式数に株価を掛けて計算します。 新しい変数を作成するときは<code>dplyr</code>パッケージの<code>mutate()</code>関数を使います。 <code>mutate()</code>で時価総額を表す新しい変数<code>ME</code>を作成します。</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">mutate</span>(<span class="at">ME =</span> stock_price <span class="sc">*</span> n_shares) <span class="co"># 時価総額</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>時価総額の計算</strong></pre>
 </div>
-<p>次に時価総額のヒストグラムを作成してみます。 前節で学習した内容に加えて、いろいろ見た目の指定を増やしてみます。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    <span class="at">ME =</span> stock_price <span class="sc">*</span> n_shares <span class="co"># 時価総額</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>次に時価総額のヒストグラムを作成してみます。 前節で学習した内容に加えて、いろいろ見た目の指定を増やしてみます。 <code><a href="https://rdrr.io/r/base/scale.html">scale()</a></code>関数を使って軸の範囲や表記方法を細かく指定します。</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定する</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="fu">library</span>(scales) <span class="co"># 軸の表記を変えるパッケージを追加</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a></span>
-<span id="cb10-5"><a href="#cb10-5"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(stock_data) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> ME)</span>
-<span id="cb10-6"><a href="#cb10-6"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="co">#基本設定</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Market Equity"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Count"</span>) <span class="co">#軸ラベル</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb10-9"><a href="#cb10-9"></a>  <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">quantile</span>(stock_data<span class="sc">$</span>ME, <span class="fl">0.95</span>)), <span class="co"># x軸の範囲</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a>  <span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="fl">1e-6</span>) <span class="co"># x軸の表記を百万円単位に</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a>  ) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"時価総額"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"度数"</span>) <span class="sc">+</span>  mystyle</span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="fu">print</span>(g) <span class="co"># グラフを出力</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>時価総額のヒストグラム</strong></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(stock_data) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> ME) <span class="sc">+</span> </span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="co">#基本設定</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">scale_x_continuous</span>( <span class="co"># 軸の範囲と表記方法の指定</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">quantile</span>(stock_data<span class="sc">$</span>ME, <span class="fl">0.95</span>)),</span>
+<span id="cb10-6"><a href="#cb10-6"></a>    <span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="fl">1e-6</span>)</span>
+<span id="cb10-7"><a href="#cb10-7"></a>  ) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"時価総額"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"度数"</span>) <span class="sc">+</span>  mystyle</span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="fu">print</span>(g) <span class="co"># グラフを出力</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><a href="chapter05_files/figure-html/ch05_06-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="chapter05_files/figure-html/ch05_06-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="3150"></a></p>
@@ -728,16 +747,14 @@ R_t = \frac{(\text{株価}_t + \text{1株当り配当}_t) \times \text{調整係
 <p><span class="math display">
 R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
 </span></p>
-<p>銘柄ごとにリターンを計算するので，<code>group_by()</code>と<code>mutate()</code>を使って計算します。ここでは，<code>firm_ID</code>ごとにトータルリターン<code>R</code>と， トータルリターンから無リスク利子率を除いた超過リターン<code>Re</code>を計算しています。</p>
+<p>銘柄ごとにリターンを計算するので，<code>mutate()</code>と<code>.by = firm_ID</code>を使って計算します。 ここでは，<code>firm_ID</code>ごとにトータルリターン<code>R</code>と，トータルリターンから無リスク利子率を除いた超過リターン<code>Re</code>を計算しています。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">group_by</span>(firm_ID) <span class="sc">|&gt;</span> <span class="co"># 企業ごとに</span></span>
-<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">mutate</span>( <span class="co"># 新しい変数を作成</span></span>
-<span id="cb11-4"><a href="#cb11-4"></a>    <span class="co"># トータルリターン</span></span>
-<span id="cb11-5"><a href="#cb11-5"></a>    <span class="at">R =</span> ( (stock_price <span class="sc">+</span> DPS) <span class="sc">*</span> adj_coef <span class="sc">-</span> <span class="fu">lag</span>(stock_price)) <span class="sc">/</span> <span class="fu">lag</span>(stock_price),</span>
-<span id="cb11-6"><a href="#cb11-6"></a>    <span class="at">Re =</span> R <span class="sc">-</span> R_F <span class="co"># 月次超過リターン</span></span>
-<span id="cb11-7"><a href="#cb11-7"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb11-8"><a href="#cb11-8"></a>  <span class="fu">ungroup</span>() <span class="co"># グループ化を解除</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">mutate</span>( <span class="co"># 新しい変数を作成</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="at">R =</span> ((stock_price <span class="sc">+</span> DPS) <span class="sc">*</span> adj_coef <span class="sc">-</span> <span class="fu">lag</span>(stock_price)) <span class="sc">/</span> <span class="fu">lag</span>(stock_price),</span>
+<span id="cb11-4"><a href="#cb11-4"></a>    <span class="at">Re =</span> R <span class="sc">-</span> R_F, <span class="co"># 月次超過リターン</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>    <span class="at">.by =</span> firm_ID <span class="co"># firm_IDごとにグループ</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>ここまでの処理で<code>stock_data</code>に時価総額<code>ME</code>，トータルリターン<code>R</code>，超過リターン<code>Re</code>が追加されました。 以下では，このデータを使って探索的データ分析を行います。</p>
 </section><section id="株式データの探索的データ分析" class="level3" data-number="6.2.2"><h3 data-number="6.2.2" class="anchored" data-anchor-id="株式データの探索的データ分析">
@@ -914,14 +931,15 @@ R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
 <p>では、<code>stock_data</code>をもとに年次リターンを計算してみましょう。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>annual_stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">group_by</span>(firm_ID, year) <span class="sc">|&gt;</span> <span class="co"># firm_IDとyearごとにグループ化</span></span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb22-4"><a href="#cb22-4"></a>    <span class="at">annual_R =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R) <span class="sc">-</span> <span class="dv">1</span>, <span class="co"># B&amp;H年次リターン</span></span>
-<span id="cb22-5"><a href="#cb22-5"></a>    <span class="at">annual_R_F =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R_F) <span class="sc">-</span> <span class="dv">1</span> <span class="co"># 年次超過リターン</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb22-3"><a href="#cb22-3"></a>    <span class="at">annual_R =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R) <span class="sc">-</span> <span class="dv">1</span>, <span class="co"># B&amp;H年次リターン</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>    <span class="at">annual_R_F =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R_F) <span class="sc">-</span> <span class="dv">1</span>, <span class="co"># 年次超過リターン</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a>    <span class="at">.by =</span> <span class="fu">c</span>(firm_ID, year) <span class="co"># 企業と年度でグループ化</span></span>
 <span id="cb22-6"><a href="#cb22-6"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb22-7"><a href="#cb22-7"></a>  <span class="fu">mutate</span>(<span class="at">annual_Re =</span> annual_R <span class="sc">-</span> annual_R_F) <span class="sc">|&gt;</span> <span class="co"># 年次超過リターン</span></span>
-<span id="cb22-8"><a href="#cb22-8"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb22-9"><a href="#cb22-9"></a><span class="fu">head</span>(annual_stock_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-7"><a href="#cb22-7"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-8"><a href="#cb22-8"></a>    <span class="at">annual_Re =</span> annual_R <span class="sc">-</span> annual_R_F <span class="co"># 年次超過リターン</span></span>
+<span id="cb22-9"><a href="#cb22-9"></a>    )  </span>
+<span id="cb22-10"><a href="#cb22-10"></a><span class="fu">head</span>(annual_stock_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   firm_ID  year annual_R annual_R_F annual_Re
@@ -973,7 +991,10 @@ R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
 </div>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>annual_data <span class="ot">&lt;-</span> annual_stock_data <span class="sc">|&gt;</span></span>
-<span id="cb30-2"><a href="#cb30-2"></a>  <span class="fu">full_join</span>(financial_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"firm_ID"</span>, <span class="st">"year"</span>)) <span class="co"># firm_IDとyearのペアをキーとして設定</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb30-2"><a href="#cb30-2"></a>  <span class="fu">full_join</span>(</span>
+<span id="cb30-3"><a href="#cb30-3"></a>    financial_data, </span>
+<span id="cb30-4"><a href="#cb30-4"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"firm_ID"</span>, <span class="st">"year"</span>)</span>
+<span id="cb30-5"><a href="#cb30-5"></a>  ) <span class="co"># firm_IDとyearのペアをキーとして設定</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>annual_data <span class="ot">&lt;-</span> annual_stock_data <span class="sc">|&gt;</span></span>
@@ -1261,12 +1282,11 @@ Y = \alpha + \beta X + u
 <span id="cb56-3"><a href="#cb56-3"></a></span>
 <span id="cb56-4"><a href="#cb56-4"></a>annual_data <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
 <span id="cb56-5"><a href="#cb56-5"></a>  <span class="fu">arrange</span>(firm_ID, year) <span class="sc">|&gt;</span> <span class="co"># 時系列順に並べ替え（lag計算に必須）</span></span>
-<span id="cb56-6"><a href="#cb56-6"></a>  <span class="fu">group_by</span>(firm_ID) <span class="sc">|&gt;</span></span>
-<span id="cb56-7"><a href="#cb56-7"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb56-8"><a href="#cb56-8"></a>    <span class="at">lag_ME =</span> <span class="fu">lag</span>(ME),</span>
-<span id="cb56-9"><a href="#cb56-9"></a>    <span class="at">lagged_BEME =</span> lagged_BE <span class="sc">/</span> lag_ME <span class="co"># ここでBEMEを計算</span></span>
-<span id="cb56-10"><a href="#cb56-10"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb56-11"><a href="#cb56-11"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb56-6"><a href="#cb56-6"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb56-7"><a href="#cb56-7"></a>    <span class="at">lag_ME =</span> <span class="fu">lag</span>(ME),</span>
+<span id="cb56-8"><a href="#cb56-8"></a>    <span class="at">lagged_BEME =</span> lagged_BE <span class="sc">/</span> lag_ME, <span class="co"># ここでBEMEを計算</span></span>
+<span id="cb56-9"><a href="#cb56-9"></a>    <span class="at">.by =</span> firm_ID</span>
+<span id="cb56-10"><a href="#cb56-10"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a>lm_sample_data <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
@@ -1868,757 +1888,763 @@ Y_i = \beta_0 + \beta_1 \log (X_i) + \varepsilon_i
 <span id="cb70-10"><a href="#cb70-10"></a>  patchwork,</span>
 <span id="cb70-11"><a href="#cb70-11"></a>  Rsolnp,</span>
 <span id="cb70-12"><a href="#cb70-12"></a>  e1071,</span>
-<span id="cb70-13"><a href="#cb70-13"></a>  broom</span>
-<span id="cb70-14"><a href="#cb70-14"></a>)</span>
-<span id="cb70-15"><a href="#cb70-15"></a></span>
-<span id="cb70-16"><a href="#cb70-16"></a>mystyle <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb70-17"><a href="#cb70-17"></a>  <span class="fu">theme_economist_white</span>(</span>
-<span id="cb70-18"><a href="#cb70-18"></a>    <span class="at">base_family =</span> <span class="st">"HiraKakuProN-W3"</span></span>
-<span id="cb70-19"><a href="#cb70-19"></a>    ),</span>
-<span id="cb70-20"><a href="#cb70-20"></a>  <span class="fu">scale_colour_economist</span>(),</span>
-<span id="cb70-21"><a href="#cb70-21"></a>  <span class="fu">theme</span>(</span>
-<span id="cb70-22"><a href="#cb70-22"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
-<span id="cb70-23"><a href="#cb70-23"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
-<span id="cb70-24"><a href="#cb70-24"></a>  )</span>
-<span id="cb70-25"><a href="#cb70-25"></a>)</span>
-<span id="cb70-26"><a href="#cb70-26"></a><span class="in">```</span></span>
-<span id="cb70-27"><a href="#cb70-27"></a></span>
-<span id="cb70-28"><a href="#cb70-28"></a><span class="fu">## 株式データの取得と可視化</span></span>
-<span id="cb70-29"><a href="#cb70-29"></a></span>
-<span id="cb70-30"><a href="#cb70-30"></a>前章では財務データを題材に、クロスセクションデータを扱うために必要なデータの取得と操作と可視化について学習しました。</span>
-<span id="cb70-31"><a href="#cb70-31"></a>特に重要な操作として，<span class="in">`group_by()`</span>関数と<span class="in">`mutate()`</span>や<span class="in">`summarise()`</span>関数の組み合わせて，グループごとの変数の値を計算する方法を学びました。</span>
-<span id="cb70-32"><a href="#cb70-32"></a>本章では株式データを題材に，株式データの理解に必要な株式の基礎知識とともに，リターンの定義や計算について学び，最後には統計的推論と線形回帰分析についても学習します。</span>
-<span id="cb70-33"><a href="#cb70-33"></a></span>
-<span id="cb70-34"><a href="#cb70-34"></a><span class="co">&lt;!-- 株式データの理解を深めるために，株式市場の仕組みを理解する必要があるので，重要用語の説明を行います。</span></span>
-<span id="cb70-35"><a href="#cb70-35"></a></span>
-<span id="cb70-36"><a href="#cb70-36"></a><span class="co">| 相場用語 | 解説 |</span></span>
-<span id="cb70-37"><a href="#cb70-37"></a><span class="co">|:-- |:-------- |</span></span>
-<span id="cb70-38"><a href="#cb70-38"></a><span class="co">| 成行注文 | 値段を指定せず，その時点の最良気配値で取引を希望すること |</span></span>
-<span id="cb70-39"><a href="#cb70-39"></a><span class="co">| 指値注文 | 特定の値段を指定して取引を希望すること |</span></span>
-<span id="cb70-40"><a href="#cb70-40"></a><span class="co">| 板 | その時点で有効な指値注文を売りと買いで分けて価格ごとにまとめた一覧表のこと |</span></span>
-<span id="cb70-41"><a href="#cb70-41"></a><span class="co">| 板寄せ方式 | 取引開始時に板情報(それまでに提出された売りと買いの注文)に 基づいて取引価格を決定する方法のこと |</span></span>
-<span id="cb70-42"><a href="#cb70-42"></a><span class="co">| ザラ場寄せ方式 | 取引時間(ザラ場)中に新規注文と板情報に基づいて取引価格を決 定する方法のこと(図 5.1 を参照) |</span></span>
-<span id="cb70-43"><a href="#cb70-43"></a><span class="co">| 歩み値 | 取引時間中の売買履歴(約定価格や出来高)に関する時系列データのこと |</span></span>
-<span id="cb70-44"><a href="#cb70-44"></a><span class="co">| 証拠金 | 信用取引を行う際に資金の貸し手に差し入れる担保のこと |</span></span>
-<span id="cb70-45"><a href="#cb70-45"></a><span class="co">| 値洗い | 保有するポートフォリオ(ポジション)の価値を時価で再評価すること |</span></span>
-<span id="cb70-46"><a href="#cb70-46"></a><span class="co">| 追証 | 値洗いの結果，追加の証拠金を求められること |</span></span>
-<span id="cb70-47"><a href="#cb70-47"></a><span class="co">| 逆日歩 | 信用売りが殺到し株不足となった銘柄でショート・セラーが追加で 支払う費用のこと |</span></span>
-<span id="cb70-48"><a href="#cb70-48"></a><span class="co">| 踏み上げ | 株価上昇で損失を抱えたショート・セラー(2.2.3 節を参照)のロス カットが一段の株高を招くこと | --&gt;</span></span>
-<span id="cb70-49"><a href="#cb70-49"></a></span>
+<span id="cb70-13"><a href="#cb70-13"></a>  broom,</span>
+<span id="cb70-14"><a href="#cb70-14"></a>  scales</span>
+<span id="cb70-15"><a href="#cb70-15"></a>)</span>
+<span id="cb70-16"><a href="#cb70-16"></a></span>
+<span id="cb70-17"><a href="#cb70-17"></a>mystyle <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb70-18"><a href="#cb70-18"></a>  <span class="fu">theme_economist_white</span>(</span>
+<span id="cb70-19"><a href="#cb70-19"></a>    <span class="at">base_family =</span> <span class="st">"HiraKakuProN-W3"</span></span>
+<span id="cb70-20"><a href="#cb70-20"></a>    ),</span>
+<span id="cb70-21"><a href="#cb70-21"></a>  <span class="fu">scale_colour_economist</span>(),</span>
+<span id="cb70-22"><a href="#cb70-22"></a>  <span class="fu">theme</span>(</span>
+<span id="cb70-23"><a href="#cb70-23"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb70-24"><a href="#cb70-24"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb70-25"><a href="#cb70-25"></a>  )</span>
+<span id="cb70-26"><a href="#cb70-26"></a>)</span>
+<span id="cb70-27"><a href="#cb70-27"></a><span class="in">```</span></span>
+<span id="cb70-28"><a href="#cb70-28"></a></span>
+<span id="cb70-29"><a href="#cb70-29"></a><span class="fu">## 株式データの取得と可視化</span></span>
+<span id="cb70-30"><a href="#cb70-30"></a></span>
+<span id="cb70-31"><a href="#cb70-31"></a>前章では財務データを題材に、クロスセクションデータを扱うために必要なデータの取得と操作と可視化について学習しました。</span>
+<span id="cb70-32"><a href="#cb70-32"></a>特に重要な操作として，<span class="in">`mutate()`</span>や<span class="in">`summarise()`</span>関数で、<span class="in">`.by = var`</span>を指定することでグループごとの変数の値を計算する方法を学びました。</span>
+<span id="cb70-33"><a href="#cb70-33"></a>本章では株式データを題材に，株式データの理解に必要な株式の基礎知識とともに，リターンの定義や計算について学び，最後には統計的推論と線形回帰分析についても学習します。</span>
+<span id="cb70-34"><a href="#cb70-34"></a></span>
+<span id="cb70-35"><a href="#cb70-35"></a><span class="co">&lt;!-- 株式データの理解を深めるために，株式市場の仕組みを理解する必要があるので，重要用語の説明を行います。</span></span>
+<span id="cb70-36"><a href="#cb70-36"></a></span>
+<span id="cb70-37"><a href="#cb70-37"></a><span class="co">| 相場用語 | 解説 |</span></span>
+<span id="cb70-38"><a href="#cb70-38"></a><span class="co">|:-- |:-------- |</span></span>
+<span id="cb70-39"><a href="#cb70-39"></a><span class="co">| 成行注文 | 値段を指定せず，その時点の最良気配値で取引を希望すること |</span></span>
+<span id="cb70-40"><a href="#cb70-40"></a><span class="co">| 指値注文 | 特定の値段を指定して取引を希望すること |</span></span>
+<span id="cb70-41"><a href="#cb70-41"></a><span class="co">| 板 | その時点で有効な指値注文を売りと買いで分けて価格ごとにまとめた一覧表のこと |</span></span>
+<span id="cb70-42"><a href="#cb70-42"></a><span class="co">| 板寄せ方式 | 取引開始時に板情報(それまでに提出された売りと買いの注文)に 基づいて取引価格を決定する方法のこと |</span></span>
+<span id="cb70-43"><a href="#cb70-43"></a><span class="co">| ザラ場寄せ方式 | 取引時間(ザラ場)中に新規注文と板情報に基づいて取引価格を決 定する方法のこと(図 5.1 を参照) |</span></span>
+<span id="cb70-44"><a href="#cb70-44"></a><span class="co">| 歩み値 | 取引時間中の売買履歴(約定価格や出来高)に関する時系列データのこと |</span></span>
+<span id="cb70-45"><a href="#cb70-45"></a><span class="co">| 証拠金 | 信用取引を行う際に資金の貸し手に差し入れる担保のこと |</span></span>
+<span id="cb70-46"><a href="#cb70-46"></a><span class="co">| 値洗い | 保有するポートフォリオ(ポジション)の価値を時価で再評価すること |</span></span>
+<span id="cb70-47"><a href="#cb70-47"></a><span class="co">| 追証 | 値洗いの結果，追加の証拠金を求められること |</span></span>
+<span id="cb70-48"><a href="#cb70-48"></a><span class="co">| 逆日歩 | 信用売りが殺到し株不足となった銘柄でショート・セラーが追加で 支払う費用のこと |</span></span>
+<span id="cb70-49"><a href="#cb70-49"></a><span class="co">| 踏み上げ | 株価上昇で損失を抱えたショート・セラー(2.2.3 節を参照)のロス カットが一段の株高を招くこと | --&gt;</span></span>
 <span id="cb70-50"><a href="#cb70-50"></a></span>
-<span id="cb70-51"><a href="#cb70-51"></a><span class="fu">### 株価データのダウンロードと読み込み</span></span>
-<span id="cb70-52"><a href="#cb70-52"></a></span>
-<span id="cb70-53"><a href="#cb70-53"></a>いままでと同じように、<span class="in">`readr`</span>パッケージの<span class="in">`read_csv()`</span>関数でCSVファイルを読み込みます。</span>
-<span id="cb70-54"><a href="#cb70-54"></a>ここでは、<span class="in">`ch05_stock_data.csv`</span>を使います。</span>
-<span id="cb70-55"><a href="#cb70-55"></a><span class="in">```{r ch05_01, filename="株式データの読み込み"}</span></span>
-<span id="cb70-56"><a href="#cb70-56"></a>stock_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch05_stock_data.csv"</span>)</span>
-<span id="cb70-57"><a href="#cb70-57"></a><span class="fu">print</span>(stock_data)</span>
-<span id="cb70-58"><a href="#cb70-58"></a><span class="in">```</span></span>
-<span id="cb70-59"><a href="#cb70-59"></a>9変数，95,040行という大規模なデータが読み込まれました。</span>
-<span id="cb70-60"><a href="#cb70-60"></a>紙面の都合上、長い変数名を短く省略します。変数名を変えるには、<span class="in">`dplyr::rename()`</span>を使います。</span>
-<span id="cb70-61"><a href="#cb70-61"></a><span class="in">```{r rename, filename="変数名の変更"}</span></span>
-<span id="cb70-62"><a href="#cb70-62"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-63"><a href="#cb70-63"></a>  <span class="fu">rename</span>(</span>
-<span id="cb70-64"><a href="#cb70-64"></a>    <span class="at">n_shares =</span> shares_outstanding, </span>
-<span id="cb70-65"><a href="#cb70-65"></a>    <span class="at">adj_coef =</span> adjustment_coefficient</span>
-<span id="cb70-66"><a href="#cb70-66"></a>  )</span>
-<span id="cb70-67"><a href="#cb70-67"></a><span class="in">```</span></span>
-<span id="cb70-68"><a href="#cb70-68"></a></span>
-<span id="cb70-69"><a href="#cb70-69"></a>読み込まれたデータ<span class="in">`stock_data`</span>の中には以下の変数が含まれています。</span>
-<span id="cb70-70"><a href="#cb70-70"></a></span>
-<span id="cb70-71"><a href="#cb70-71"></a><span class="pp">|</span>     列名       <span class="pp">|</span>  データ型    <span class="pp">|</span>           説明        <span class="pp">|</span></span>
-<span id="cb70-72"><a href="#cb70-72"></a><span class="pp">| :------------</span> <span class="pp">| :---------</span> <span class="pp">| :--------------------</span> <span class="pp">|</span></span>
-<span id="cb70-73"><a href="#cb70-73"></a><span class="pp">|</span> <span class="in">`year`</span>        <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 年度                   <span class="pp">|</span></span>
-<span id="cb70-74"><a href="#cb70-74"></a><span class="pp">|</span> <span class="in">`month`</span>       <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月                     <span class="pp">|</span></span>
-<span id="cb70-75"><a href="#cb70-75"></a><span class="pp">|</span> <span class="in">`month_ID`</span>    <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月ID                   <span class="pp">|</span></span>
-<span id="cb70-76"><a href="#cb70-76"></a><span class="pp">|</span> <span class="in">`firm_ID`</span>     <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 企業ID                 <span class="pp">|</span></span>
-<span id="cb70-77"><a href="#cb70-77"></a><span class="pp">|</span> <span class="in">`stock_price`</span> <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月末時点での終値         <span class="pp">|</span></span>
-<span id="cb70-78"><a href="#cb70-78"></a><span class="pp">|</span> <span class="in">`DPS`</span>         <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 一株当たり配当額         <span class="pp">|</span></span>
-<span id="cb70-79"><a href="#cb70-79"></a><span class="pp">|</span> <span class="in">`n_shares`</span>    <span class="pp">|</span> 数値型<span class="in">`int`</span> <span class="pp">|</span> 月末時点での発行済株式数  <span class="pp">|</span></span>
-<span id="cb70-80"><a href="#cb70-80"></a><span class="pp">|</span> <span class="in">`adj_coef`</span>    <span class="pp">|</span> 数値型<span class="in">`int`</span> <span class="pp">|</span> 調整係数               <span class="pp">|</span></span>
-<span id="cb70-81"><a href="#cb70-81"></a><span class="pp">|</span> <span class="in">`R_F`</span>         <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月次無リスク金利         <span class="pp">|</span></span>
-<span id="cb70-82"><a href="#cb70-82"></a></span>
-<span id="cb70-83"><a href="#cb70-83"></a><span class="in">`year`</span>〜<span class="in">`firm_ID`</span>までは，時系列や企業の特定に必要なキーとなり，</span>
-<span id="cb70-84"><a href="#cb70-84"></a><span class="in">`stock_price`</span>から<span class="in">`R_F`</span>が分析する対象となる株価や配当，発行済株式数，調整係数，無リスク金利となります。</span>
-<span id="cb70-85"><a href="#cb70-85"></a>7列目の<span class="in">`n_shares`</span>は発行済株式数です。</span>
-<span id="cb70-86"><a href="#cb70-86"></a>発行済株式数は随時，新株発行や自社株買い，株式分割で変動するため，株式数の変化を調整するためのデータとして<span class="in">`adj_coef`</span>があります。</span>
-<span id="cb70-87"><a href="#cb70-87"></a>旧株式1に対して新株式2となる株式分割が行われた場合，この調整係数は2となります。</span>
-<span id="cb70-88"><a href="#cb70-88"></a></span>
-<span id="cb70-89"><a href="#cb70-89"></a>このような大規模データを前にした場合，とりあえずデータの構造を把握することから始めます。</span>
-<span id="cb70-90"><a href="#cb70-90"></a>ここでは基本関数よりも多機能な<span class="in">`tidyverse`</span>の<span class="in">`dplyr`</span>パッケージに含まれる<span class="in">`glimpse`</span>関数を使って，データの構造を確認してみます。</span>
-<span id="cb70-91"><a href="#cb70-91"></a></span>
-<span id="cb70-94"><a href="#cb70-94"></a><span class="in">```{r}</span></span>
-<span id="cb70-95"><a href="#cb70-95"></a><span class="fu">glimpse</span>(stock_data)</span>
-<span id="cb70-96"><a href="#cb70-96"></a><span class="in">```</span></span>
-<span id="cb70-97"><a href="#cb70-97"></a></span>
-<span id="cb70-98"><a href="#cb70-98"></a>データの型が<span class="in">`dbl`</span>という初めて出てきた型になってますが，これは<span class="in">`double`</span>の略で，数値型の一種です。<span class="in">`double`</span>は64ビットの浮動小数点数を表し，小数点以下15桁までの精度を持ちます。</span>
-<span id="cb70-99"><a href="#cb70-99"></a></span>
-<span id="cb70-100"><a href="#cb70-100"></a>::: {.callout-tip}</span>
-<span id="cb70-101"><a href="#cb70-101"></a><span class="fu">## 数値型の種類</span></span>
-<span id="cb70-102"><a href="#cb70-102"></a></span>
-<span id="cb70-103"><a href="#cb70-103"></a>数値型<span class="in">`numeric`</span>は，<span class="in">`double`</span>と<span class="in">`int`</span>のどちらかになります。</span>
-<span id="cb70-104"><a href="#cb70-104"></a><span class="in">`int`</span>は整数(integer)型で，32ビットの整数を表し，小数点以下は切り捨てられます。</span>
-<span id="cb70-105"><a href="#cb70-105"></a><span class="in">`dbl`</span>は<span class="in">`int`</span>の上位互換で，小数点以下の桁数が多い場合に使われます。</span>
-<span id="cb70-106"><a href="#cb70-106"></a>:::</span>
-<span id="cb70-107"><a href="#cb70-107"></a></span>
-<span id="cb70-108"><a href="#cb70-108"></a>たとえば，<span class="in">`firm_ID`</span>が74，<span class="in">`month_ID`</span>が29から32（つまり2017年5月から8月）のデータを抽出してみます。</span>
-<span id="cb70-109"><a href="#cb70-109"></a></span>
-<span id="cb70-110"><a href="#cb70-110"></a><span class="in">```{r ch05_04}</span></span>
-<span id="cb70-111"><a href="#cb70-111"></a>stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-112"><a href="#cb70-112"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">74</span> , month_ID <span class="sc">%in%</span> <span class="dv">29</span><span class="sc">:</span><span class="dv">32</span>) <span class="sc">|&gt;</span> <span class="co"># filterで条件を指定</span></span>
-<span id="cb70-113"><a href="#cb70-113"></a>  <span class="fu">select</span>(year, firm_ID, month, month_ID,stock_price, DPS, n_shares, adj_coef) <span class="co"># selectで必要な変数を指定</span></span>
-<span id="cb70-114"><a href="#cb70-114"></a><span class="in">```</span></span>
-<span id="cb70-115"><a href="#cb70-115"></a></span>
-<span id="cb70-116"><a href="#cb70-116"></a>出力された結果の2行の<span class="in">`adj_coef`</span>が2となっており、同時に<span class="in">`n_shares`</span>が倍になっていることから、この会社は1株を2株に株式分割していることがわかります。</span>
-<span id="cb70-117"><a href="#cb70-117"></a></span>
-<span id="cb70-118"><a href="#cb70-118"></a><span class="fu">## 時価総額とリターンの計算</span></span>
-<span id="cb70-119"><a href="#cb70-119"></a></span>
-<span id="cb70-120"><a href="#cb70-120"></a>時価総額(market capitalization)を計算するためには、株式数に株価を掛けて計算します。</span>
-<span id="cb70-121"><a href="#cb70-121"></a>新しい変数を作成するときは<span class="in">`dplyr`</span>パッケージの<span class="in">`mutate()`</span>関数を使います。</span>
-<span id="cb70-122"><a href="#cb70-122"></a><span class="in">`mutate()`</span>で時価総額を表す新しい変数<span class="in">`ME`</span>を作成します。</span>
+<span id="cb70-51"><a href="#cb70-51"></a></span>
+<span id="cb70-52"><a href="#cb70-52"></a><span class="fu">### 株価データのダウンロードと読み込み</span></span>
+<span id="cb70-53"><a href="#cb70-53"></a></span>
+<span id="cb70-54"><a href="#cb70-54"></a>いままでと同じように、<span class="in">`readr`</span>パッケージの<span class="in">`read_csv()`</span>関数でCSVファイルを読み込みます。</span>
+<span id="cb70-55"><a href="#cb70-55"></a>ここでは、<span class="in">`ch05_stock_data.csv`</span>を使います。</span>
+<span id="cb70-56"><a href="#cb70-56"></a><span class="in">```{r ch05_01, filename="株式データの読み込み"}</span></span>
+<span id="cb70-57"><a href="#cb70-57"></a>stock_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch05_stock_data.csv"</span>)</span>
+<span id="cb70-58"><a href="#cb70-58"></a><span class="fu">print</span>(stock_data)</span>
+<span id="cb70-59"><a href="#cb70-59"></a><span class="in">```</span></span>
+<span id="cb70-60"><a href="#cb70-60"></a>9変数，95,040行という大規模なデータが読み込まれました。</span>
+<span id="cb70-61"><a href="#cb70-61"></a>紙面の都合上、長い変数名を短く省略します。変数名を変えるには、<span class="in">`dplyr::rename()`</span>を使います。</span>
+<span id="cb70-62"><a href="#cb70-62"></a><span class="in">```{r rename, filename="変数名の変更"}</span></span>
+<span id="cb70-63"><a href="#cb70-63"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-64"><a href="#cb70-64"></a>  <span class="fu">rename</span>(</span>
+<span id="cb70-65"><a href="#cb70-65"></a>    <span class="at">n_shares =</span> shares_outstanding, </span>
+<span id="cb70-66"><a href="#cb70-66"></a>    <span class="at">adj_coef =</span> adjustment_coefficient</span>
+<span id="cb70-67"><a href="#cb70-67"></a>  )</span>
+<span id="cb70-68"><a href="#cb70-68"></a><span class="in">```</span></span>
+<span id="cb70-69"><a href="#cb70-69"></a></span>
+<span id="cb70-70"><a href="#cb70-70"></a>読み込まれたデータ<span class="in">`stock_data`</span>の中には以下の変数が含まれています。</span>
+<span id="cb70-71"><a href="#cb70-71"></a></span>
+<span id="cb70-72"><a href="#cb70-72"></a><span class="pp">|</span>     列名       <span class="pp">|</span>  データ型    <span class="pp">|</span>           説明        <span class="pp">|</span></span>
+<span id="cb70-73"><a href="#cb70-73"></a><span class="pp">| :------------</span> <span class="pp">| :---------</span> <span class="pp">| :--------------------</span> <span class="pp">|</span></span>
+<span id="cb70-74"><a href="#cb70-74"></a><span class="pp">|</span> <span class="in">`year`</span>        <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 年度                   <span class="pp">|</span></span>
+<span id="cb70-75"><a href="#cb70-75"></a><span class="pp">|</span> <span class="in">`month`</span>       <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月                     <span class="pp">|</span></span>
+<span id="cb70-76"><a href="#cb70-76"></a><span class="pp">|</span> <span class="in">`month_ID`</span>    <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月ID                   <span class="pp">|</span></span>
+<span id="cb70-77"><a href="#cb70-77"></a><span class="pp">|</span> <span class="in">`firm_ID`</span>     <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 企業ID                 <span class="pp">|</span></span>
+<span id="cb70-78"><a href="#cb70-78"></a><span class="pp">|</span> <span class="in">`stock_price`</span> <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月末時点での終値         <span class="pp">|</span></span>
+<span id="cb70-79"><a href="#cb70-79"></a><span class="pp">|</span> <span class="in">`DPS`</span>         <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 一株当たり配当額         <span class="pp">|</span></span>
+<span id="cb70-80"><a href="#cb70-80"></a><span class="pp">|</span> <span class="in">`n_shares`</span>    <span class="pp">|</span> 数値型<span class="in">`int`</span> <span class="pp">|</span> 月末時点での発行済株式数  <span class="pp">|</span></span>
+<span id="cb70-81"><a href="#cb70-81"></a><span class="pp">|</span> <span class="in">`adj_coef`</span>    <span class="pp">|</span> 数値型<span class="in">`int`</span> <span class="pp">|</span> 調整係数               <span class="pp">|</span></span>
+<span id="cb70-82"><a href="#cb70-82"></a><span class="pp">|</span> <span class="in">`R_F`</span>         <span class="pp">|</span> 数値型<span class="in">`dbl`</span> <span class="pp">|</span> 月次無リスク金利         <span class="pp">|</span></span>
+<span id="cb70-83"><a href="#cb70-83"></a></span>
+<span id="cb70-84"><a href="#cb70-84"></a><span class="in">`year`</span>〜<span class="in">`firm_ID`</span>までは，時系列や企業の特定に必要なキーとなり，</span>
+<span id="cb70-85"><a href="#cb70-85"></a><span class="in">`stock_price`</span>から<span class="in">`R_F`</span>が分析する対象となる株価や配当，発行済株式数，調整係数，無リスク金利となります。</span>
+<span id="cb70-86"><a href="#cb70-86"></a>7列目の<span class="in">`n_shares`</span>は発行済株式数です。</span>
+<span id="cb70-87"><a href="#cb70-87"></a>発行済株式数は随時，新株発行や自社株買い，株式分割で変動するため，株式数の変化を調整するためのデータとして<span class="in">`adj_coef`</span>があります。</span>
+<span id="cb70-88"><a href="#cb70-88"></a>旧株式1に対して新株式2となる株式分割が行われた場合，この調整係数は2となります。</span>
+<span id="cb70-89"><a href="#cb70-89"></a></span>
+<span id="cb70-90"><a href="#cb70-90"></a>このような大規模データを前にした場合，とりあえずデータの構造を把握することから始めます。</span>
+<span id="cb70-91"><a href="#cb70-91"></a>ここでは基本関数よりも多機能な<span class="in">`tidyverse`</span>の<span class="in">`dplyr`</span>パッケージに含まれる<span class="in">`glimpse`</span>関数を使って，データの構造を確認してみます。</span>
+<span id="cb70-92"><a href="#cb70-92"></a></span>
+<span id="cb70-95"><a href="#cb70-95"></a><span class="in">```{r}</span></span>
+<span id="cb70-96"><a href="#cb70-96"></a><span class="fu">glimpse</span>(stock_data)</span>
+<span id="cb70-97"><a href="#cb70-97"></a><span class="in">```</span></span>
+<span id="cb70-98"><a href="#cb70-98"></a></span>
+<span id="cb70-99"><a href="#cb70-99"></a>データの型が<span class="in">`dbl`</span>という初めて出てきた型になってますが，これは<span class="in">`double`</span>の略で，数値型の一種です。<span class="in">`double`</span>は64ビットの浮動小数点数を表し，小数点以下15桁までの精度を持ちます。</span>
+<span id="cb70-100"><a href="#cb70-100"></a></span>
+<span id="cb70-101"><a href="#cb70-101"></a>::: {.callout-tip}</span>
+<span id="cb70-102"><a href="#cb70-102"></a><span class="fu">## 数値型の種類</span></span>
+<span id="cb70-103"><a href="#cb70-103"></a></span>
+<span id="cb70-104"><a href="#cb70-104"></a>数値型<span class="in">`numeric`</span>は，<span class="in">`double`</span>と<span class="in">`int`</span>のどちらかになります。</span>
+<span id="cb70-105"><a href="#cb70-105"></a><span class="in">`int`</span>は整数(integer)型で，32ビットの整数を表し，小数点以下は切り捨てられます。</span>
+<span id="cb70-106"><a href="#cb70-106"></a><span class="in">`dbl`</span>は<span class="in">`int`</span>の上位互換で，小数点以下の桁数が多い場合に使われます。</span>
+<span id="cb70-107"><a href="#cb70-107"></a>:::</span>
+<span id="cb70-108"><a href="#cb70-108"></a></span>
+<span id="cb70-109"><a href="#cb70-109"></a>たとえば，<span class="in">`firm_ID`</span>が74，<span class="in">`month_ID`</span>が29から32（つまり2017年5月から8月）のデータを抽出してみます。</span>
+<span id="cb70-110"><a href="#cb70-110"></a></span>
+<span id="cb70-111"><a href="#cb70-111"></a><span class="in">```{r ch05_04, filename="データの抽出"}</span></span>
+<span id="cb70-112"><a href="#cb70-112"></a>stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-113"><a href="#cb70-113"></a>  <span class="co"># 条件を満たすデータをfilter()で抽出</span></span>
+<span id="cb70-114"><a href="#cb70-114"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">74</span> , month_ID <span class="sc">%in%</span> <span class="dv">29</span><span class="sc">:</span><span class="dv">32</span>) <span class="sc">|&gt;</span></span>
+<span id="cb70-115"><a href="#cb70-115"></a>  <span class="co"># 特定の変数を抽出</span></span>
+<span id="cb70-116"><a href="#cb70-116"></a>  <span class="fu">select</span>(</span>
+<span id="cb70-117"><a href="#cb70-117"></a>    year, firm_ID, month, month_ID, </span>
+<span id="cb70-118"><a href="#cb70-118"></a>    stock_price, DPS, n_shares, adj_coef</span>
+<span id="cb70-119"><a href="#cb70-119"></a>  )</span>
+<span id="cb70-120"><a href="#cb70-120"></a><span class="in">```</span></span>
+<span id="cb70-121"><a href="#cb70-121"></a></span>
+<span id="cb70-122"><a href="#cb70-122"></a>出力された結果の2行の<span class="in">`adj_coef`</span>が2となっており、同時に<span class="in">`n_shares`</span>が倍になっていることから、この会社は1株を2株に株式分割していることがわかります。</span>
 <span id="cb70-123"><a href="#cb70-123"></a></span>
-<span id="cb70-124"><a href="#cb70-124"></a><span class="in">```{r ch05_05}</span></span>
-<span id="cb70-125"><a href="#cb70-125"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-126"><a href="#cb70-126"></a>  <span class="fu">mutate</span>(<span class="at">ME =</span> stock_price <span class="sc">*</span> n_shares) <span class="co"># 時価総額</span></span>
-<span id="cb70-127"><a href="#cb70-127"></a><span class="in">```</span></span>
-<span id="cb70-128"><a href="#cb70-128"></a></span>
-<span id="cb70-129"><a href="#cb70-129"></a>次に時価総額のヒストグラムを作成してみます。</span>
-<span id="cb70-130"><a href="#cb70-130"></a>前節で学習した内容に加えて、いろいろ見た目の指定を増やしてみます。</span>
-<span id="cb70-131"><a href="#cb70-131"></a></span>
-<span id="cb70-132"><a href="#cb70-132"></a><span class="in">```{r ch05_06}</span></span>
-<span id="cb70-133"><a href="#cb70-133"></a><span class="co"># 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定する</span></span>
-<span id="cb70-134"><a href="#cb70-134"></a></span>
-<span id="cb70-135"><a href="#cb70-135"></a><span class="fu">library</span>(scales) <span class="co"># 軸の表記を変えるパッケージを追加</span></span>
+<span id="cb70-124"><a href="#cb70-124"></a><span class="fu">## 時価総額とリターンの計算</span></span>
+<span id="cb70-125"><a href="#cb70-125"></a></span>
+<span id="cb70-126"><a href="#cb70-126"></a>時価総額(market capitalization)を計算するためには、株式数に株価を掛けて計算します。</span>
+<span id="cb70-127"><a href="#cb70-127"></a>新しい変数を作成するときは<span class="in">`dplyr`</span>パッケージの<span class="in">`mutate()`</span>関数を使います。</span>
+<span id="cb70-128"><a href="#cb70-128"></a><span class="in">`mutate()`</span>で時価総額を表す新しい変数<span class="in">`ME`</span>を作成します。</span>
+<span id="cb70-129"><a href="#cb70-129"></a></span>
+<span id="cb70-130"><a href="#cb70-130"></a><span class="in">```{r ch05_05, filename="時価総額の計算"}</span></span>
+<span id="cb70-131"><a href="#cb70-131"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-132"><a href="#cb70-132"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb70-133"><a href="#cb70-133"></a>    <span class="at">ME =</span> stock_price <span class="sc">*</span> n_shares <span class="co"># 時価総額</span></span>
+<span id="cb70-134"><a href="#cb70-134"></a>    )</span>
+<span id="cb70-135"><a href="#cb70-135"></a><span class="in">```</span></span>
 <span id="cb70-136"><a href="#cb70-136"></a></span>
-<span id="cb70-137"><a href="#cb70-137"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(stock_data) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> ME)</span>
-<span id="cb70-138"><a href="#cb70-138"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="co">#基本設定</span></span>
-<span id="cb70-139"><a href="#cb70-139"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Market Equity"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Count"</span>) <span class="co">#軸ラベル</span></span>
-<span id="cb70-140"><a href="#cb70-140"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb70-141"><a href="#cb70-141"></a>  <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">quantile</span>(stock_data<span class="sc">$</span>ME, <span class="fl">0.95</span>)), <span class="co"># x軸の範囲</span></span>
-<span id="cb70-142"><a href="#cb70-142"></a>  <span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="fl">1e-6</span>) <span class="co"># x軸の表記を百万円単位に</span></span>
-<span id="cb70-143"><a href="#cb70-143"></a>  ) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"時価総額"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"度数"</span>) <span class="sc">+</span>  mystyle</span>
-<span id="cb70-144"><a href="#cb70-144"></a><span class="fu">print</span>(g) <span class="co"># グラフを出力</span></span>
-<span id="cb70-145"><a href="#cb70-145"></a><span class="in">```</span></span>
-<span id="cb70-146"><a href="#cb70-146"></a></span>
-<span id="cb70-147"><a href="#cb70-147"></a><span class="fu">### トータル・リターンと超過リターンの計算</span></span>
-<span id="cb70-148"><a href="#cb70-148"></a></span>
-<span id="cb70-149"><a href="#cb70-149"></a>ある株式の$t$期のトータル・リターン$R_t$は、次式で定義されます。</span>
-<span id="cb70-150"><a href="#cb70-150"></a></span>
-<span id="cb70-151"><a href="#cb70-151"></a>$$</span>
-<span id="cb70-152"><a href="#cb70-152"></a>R_t = \frac{(\text{株価}_t + \text{1株当り配当}_t) \times \text{調整係数}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}</span>
-<span id="cb70-153"><a href="#cb70-153"></a>$$</span>
-<span id="cb70-154"><a href="#cb70-154"></a></span>
-<span id="cb70-155"><a href="#cb70-155"></a>たいていの場合，1株当り配当$DPS_t$はゼロで，調整係数$adjustment<span class="sc">\_</span>coefficient_t$は1となるため，次式のように簡略化できます。</span>
-<span id="cb70-156"><a href="#cb70-156"></a></span>
-<span id="cb70-157"><a href="#cb70-157"></a>$$</span>
-<span id="cb70-158"><a href="#cb70-158"></a>R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}</span>
-<span id="cb70-159"><a href="#cb70-159"></a>$$</span>
-<span id="cb70-160"><a href="#cb70-160"></a></span>
-<span id="cb70-161"><a href="#cb70-161"></a>銘柄ごとにリターンを計算するので，<span class="in">`group_by()`</span>と<span class="in">`mutate()`</span>を使って計算します。ここでは，<span class="in">`firm_ID`</span>ごとにトータルリターン<span class="in">`R`</span>と，</span>
-<span id="cb70-162"><a href="#cb70-162"></a>トータルリターンから無リスク利子率を除いた超過リターン<span class="in">`Re`</span>を計算しています。</span>
-<span id="cb70-163"><a href="#cb70-163"></a></span>
-<span id="cb70-164"><a href="#cb70-164"></a><span class="in">```{r ch05_07}</span></span>
-<span id="cb70-165"><a href="#cb70-165"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-166"><a href="#cb70-166"></a>  <span class="fu">group_by</span>(firm_ID) <span class="sc">|&gt;</span> <span class="co"># 企業ごとに</span></span>
-<span id="cb70-167"><a href="#cb70-167"></a>  <span class="fu">mutate</span>( <span class="co"># 新しい変数を作成</span></span>
-<span id="cb70-168"><a href="#cb70-168"></a>    <span class="co"># トータルリターン</span></span>
-<span id="cb70-169"><a href="#cb70-169"></a>    <span class="at">R =</span> ( (stock_price <span class="sc">+</span> DPS) <span class="sc">*</span> adj_coef <span class="sc">-</span> <span class="fu">lag</span>(stock_price)) <span class="sc">/</span> <span class="fu">lag</span>(stock_price),</span>
-<span id="cb70-170"><a href="#cb70-170"></a>    <span class="at">Re =</span> R <span class="sc">-</span> R_F <span class="co"># 月次超過リターン</span></span>
-<span id="cb70-171"><a href="#cb70-171"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb70-172"><a href="#cb70-172"></a>  <span class="fu">ungroup</span>() <span class="co"># グループ化を解除</span></span>
-<span id="cb70-173"><a href="#cb70-173"></a><span class="in">```</span></span>
-<span id="cb70-174"><a href="#cb70-174"></a></span>
-<span id="cb70-175"><a href="#cb70-175"></a>ここまでの処理で<span class="in">`stock_data`</span>に時価総額<span class="in">`ME`</span>，トータルリターン<span class="in">`R`</span>，超過リターン<span class="in">`Re`</span>が追加されました。</span>
-<span id="cb70-176"><a href="#cb70-176"></a>以下では，このデータを使って探索的データ分析を行います。</span>
+<span id="cb70-137"><a href="#cb70-137"></a>次に時価総額のヒストグラムを作成してみます。</span>
+<span id="cb70-138"><a href="#cb70-138"></a>前節で学習した内容に加えて、いろいろ見た目の指定を増やしてみます。</span>
+<span id="cb70-139"><a href="#cb70-139"></a><span class="in">`scale()`</span>関数を使って軸の範囲や表記方法を細かく指定します。</span>
+<span id="cb70-140"><a href="#cb70-140"></a></span>
+<span id="cb70-141"><a href="#cb70-141"></a><span class="in">```{r ch05_06, filename="時価総額のヒストグラム"}</span></span>
+<span id="cb70-142"><a href="#cb70-142"></a><span class="co"># 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定</span></span>
+<span id="cb70-143"><a href="#cb70-143"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(stock_data) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> ME) <span class="sc">+</span> </span>
+<span id="cb70-144"><a href="#cb70-144"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="co">#基本設定</span></span>
+<span id="cb70-145"><a href="#cb70-145"></a>  <span class="fu">scale_x_continuous</span>( <span class="co"># 軸の範囲と表記方法の指定</span></span>
+<span id="cb70-146"><a href="#cb70-146"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">quantile</span>(stock_data<span class="sc">$</span>ME, <span class="fl">0.95</span>)),</span>
+<span id="cb70-147"><a href="#cb70-147"></a>    <span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="fl">1e-6</span>)</span>
+<span id="cb70-148"><a href="#cb70-148"></a>  ) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"時価総額"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"度数"</span>) <span class="sc">+</span>  mystyle</span>
+<span id="cb70-149"><a href="#cb70-149"></a><span class="fu">print</span>(g) <span class="co"># グラフを出力</span></span>
+<span id="cb70-150"><a href="#cb70-150"></a><span class="in">```</span></span>
+<span id="cb70-151"><a href="#cb70-151"></a></span>
+<span id="cb70-152"><a href="#cb70-152"></a><span class="fu">### トータル・リターンと超過リターンの計算</span></span>
+<span id="cb70-153"><a href="#cb70-153"></a></span>
+<span id="cb70-154"><a href="#cb70-154"></a>ある株式の$t$期のトータル・リターン$R_t$は、次式で定義されます。</span>
+<span id="cb70-155"><a href="#cb70-155"></a></span>
+<span id="cb70-156"><a href="#cb70-156"></a>$$</span>
+<span id="cb70-157"><a href="#cb70-157"></a>R_t = \frac{(\text{株価}_t + \text{1株当り配当}_t) \times \text{調整係数}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}</span>
+<span id="cb70-158"><a href="#cb70-158"></a>$$</span>
+<span id="cb70-159"><a href="#cb70-159"></a></span>
+<span id="cb70-160"><a href="#cb70-160"></a>たいていの場合，1株当り配当$DPS_t$はゼロで，調整係数$adjustment<span class="sc">\_</span>coefficient_t$は1となるため，次式のように簡略化できます。</span>
+<span id="cb70-161"><a href="#cb70-161"></a></span>
+<span id="cb70-162"><a href="#cb70-162"></a>$$</span>
+<span id="cb70-163"><a href="#cb70-163"></a>R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}</span>
+<span id="cb70-164"><a href="#cb70-164"></a>$$</span>
+<span id="cb70-165"><a href="#cb70-165"></a></span>
+<span id="cb70-166"><a href="#cb70-166"></a>銘柄ごとにリターンを計算するので，<span class="in">`mutate()`</span>と<span class="in">`.by = firm_ID`</span>を使って計算します。</span>
+<span id="cb70-167"><a href="#cb70-167"></a>ここでは，<span class="in">`firm_ID`</span>ごとにトータルリターン<span class="in">`R`</span>と，トータルリターンから無リスク利子率を除いた超過リターン<span class="in">`Re`</span>を計算しています。</span>
+<span id="cb70-168"><a href="#cb70-168"></a></span>
+<span id="cb70-169"><a href="#cb70-169"></a><span class="in">```{r ch05_07}</span></span>
+<span id="cb70-170"><a href="#cb70-170"></a>stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-171"><a href="#cb70-171"></a>  <span class="fu">mutate</span>( <span class="co"># 新しい変数を作成</span></span>
+<span id="cb70-172"><a href="#cb70-172"></a>    <span class="at">R =</span> ((stock_price <span class="sc">+</span> DPS) <span class="sc">*</span> adj_coef <span class="sc">-</span> <span class="fu">lag</span>(stock_price)) <span class="sc">/</span> <span class="fu">lag</span>(stock_price),</span>
+<span id="cb70-173"><a href="#cb70-173"></a>    <span class="at">Re =</span> R <span class="sc">-</span> R_F, <span class="co"># 月次超過リターン</span></span>
+<span id="cb70-174"><a href="#cb70-174"></a>    <span class="at">.by =</span> firm_ID <span class="co"># firm_IDごとにグループ</span></span>
+<span id="cb70-175"><a href="#cb70-175"></a>  )</span>
+<span id="cb70-176"><a href="#cb70-176"></a><span class="in">```</span></span>
 <span id="cb70-177"><a href="#cb70-177"></a></span>
-<span id="cb70-178"><a href="#cb70-178"></a><span class="fu">### 株式データの探索的データ分析</span></span>
-<span id="cb70-179"><a href="#cb70-179"></a></span>
-<span id="cb70-180"><a href="#cb70-180"></a>探索的データ分析という名の，とりあえず何も考えずに目の前のデータから何が分かるのかを調べ倒してみる，という分析を行います。</span>
-<span id="cb70-181"><a href="#cb70-181"></a></span>
-<span id="cb70-182"><a href="#cb70-182"></a>とりあえず，<span class="in">`summary()`</span>で基本統計量を確認します。</span>
-<span id="cb70-183"><a href="#cb70-183"></a></span>
-<span id="cb70-184"><a href="#cb70-184"></a><span class="in">```{r ch05_10}</span></span>
-<span id="cb70-185"><a href="#cb70-185"></a><span class="fu">summary</span>(stock_data)</span>
-<span id="cb70-186"><a href="#cb70-186"></a><span class="in">```</span></span>
-<span id="cb70-187"><a href="#cb70-187"></a></span>
-<span id="cb70-188"><a href="#cb70-188"></a>さらに，分散と標準偏差も計算します。データには欠損値が含まれているため，<span class="in">`na.rm = TRUE`</span>オプションをつけています。</span>
-<span id="cb70-189"><a href="#cb70-189"></a>教科書とは違いますが，<span class="in">`dplyr::summarize()`</span>関数を使って一気に複数の統計量を計算します。</span>
-<span id="cb70-190"><a href="#cb70-190"></a>ここでは，<span class="in">`stock_data &lt;- stock_data`</span>としていないため，<span class="in">`stock_data`</span>には新しい変数は追加されず，結果を表示するだけです。</span>
-<span id="cb70-191"><a href="#cb70-191"></a></span>
-<span id="cb70-192"><a href="#cb70-192"></a><span class="in">```{r ch05_11}</span></span>
-<span id="cb70-193"><a href="#cb70-193"></a>stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-194"><a href="#cb70-194"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb70-195"><a href="#cb70-195"></a>    <span class="at">var_R =</span> <span class="fu">var</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの分散</span></span>
-<span id="cb70-196"><a href="#cb70-196"></a>    <span class="at">sd_R  =</span> <span class="fu">sd</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの標準偏差</span></span>
-<span id="cb70-197"><a href="#cb70-197"></a>    <span class="at">var_Re =</span> <span class="fu">var</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 超過リターンの分散</span></span>
-<span id="cb70-198"><a href="#cb70-198"></a>    <span class="at">sd_Re =</span> <span class="fu">sd</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="co"># 超過リターンの標準偏差</span></span>
-<span id="cb70-199"><a href="#cb70-199"></a>  )</span>
-<span id="cb70-200"><a href="#cb70-200"></a><span class="in">```</span></span>
-<span id="cb70-201"><a href="#cb70-201"></a></span>
-<span id="cb70-202"><a href="#cb70-202"></a>データの分布の形を表す統計量である，3次のモーメントである歪度(skewness)と4次のモーメントである尖度(kurtosis)も計算してみます。</span>
-<span id="cb70-203"><a href="#cb70-203"></a>たとえば確率変数$x$の歪度は</span>
-<span id="cb70-204"><a href="#cb70-204"></a>$$</span>
-<span id="cb70-205"><a href="#cb70-205"></a>\text{歪度} = \frac 1n \sum _{i = 1}^n \left( \frac{x_i - \bar x}{\hat \sigma_x} \right) ^3</span>
-<span id="cb70-206"><a href="#cb70-206"></a>$$</span>
-<span id="cb70-207"><a href="#cb70-207"></a>で表され，正の値をとるとき分布が右に歪んでいる(裾が右に長い)ことを示している。</span>
-<span id="cb70-208"><a href="#cb70-208"></a>尖度は，</span>
+<span id="cb70-178"><a href="#cb70-178"></a>ここまでの処理で<span class="in">`stock_data`</span>に時価総額<span class="in">`ME`</span>，トータルリターン<span class="in">`R`</span>，超過リターン<span class="in">`Re`</span>が追加されました。</span>
+<span id="cb70-179"><a href="#cb70-179"></a>以下では，このデータを使って探索的データ分析を行います。</span>
+<span id="cb70-180"><a href="#cb70-180"></a></span>
+<span id="cb70-181"><a href="#cb70-181"></a><span class="fu">### 株式データの探索的データ分析</span></span>
+<span id="cb70-182"><a href="#cb70-182"></a></span>
+<span id="cb70-183"><a href="#cb70-183"></a>探索的データ分析という名の，とりあえず何も考えずに目の前のデータから何が分かるのかを調べ倒してみる，という分析を行います。</span>
+<span id="cb70-184"><a href="#cb70-184"></a></span>
+<span id="cb70-185"><a href="#cb70-185"></a>とりあえず，<span class="in">`summary()`</span>で基本統計量を確認します。</span>
+<span id="cb70-186"><a href="#cb70-186"></a></span>
+<span id="cb70-187"><a href="#cb70-187"></a><span class="in">```{r ch05_10}</span></span>
+<span id="cb70-188"><a href="#cb70-188"></a><span class="fu">summary</span>(stock_data)</span>
+<span id="cb70-189"><a href="#cb70-189"></a><span class="in">```</span></span>
+<span id="cb70-190"><a href="#cb70-190"></a></span>
+<span id="cb70-191"><a href="#cb70-191"></a>さらに，分散と標準偏差も計算します。データには欠損値が含まれているため，<span class="in">`na.rm = TRUE`</span>オプションをつけています。</span>
+<span id="cb70-192"><a href="#cb70-192"></a>教科書とは違いますが，<span class="in">`dplyr::summarize()`</span>関数を使って一気に複数の統計量を計算します。</span>
+<span id="cb70-193"><a href="#cb70-193"></a>ここでは，<span class="in">`stock_data &lt;- stock_data`</span>としていないため，<span class="in">`stock_data`</span>には新しい変数は追加されず，結果を表示するだけです。</span>
+<span id="cb70-194"><a href="#cb70-194"></a></span>
+<span id="cb70-195"><a href="#cb70-195"></a><span class="in">```{r ch05_11}</span></span>
+<span id="cb70-196"><a href="#cb70-196"></a>stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-197"><a href="#cb70-197"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb70-198"><a href="#cb70-198"></a>    <span class="at">var_R =</span> <span class="fu">var</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの分散</span></span>
+<span id="cb70-199"><a href="#cb70-199"></a>    <span class="at">sd_R  =</span> <span class="fu">sd</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの標準偏差</span></span>
+<span id="cb70-200"><a href="#cb70-200"></a>    <span class="at">var_Re =</span> <span class="fu">var</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 超過リターンの分散</span></span>
+<span id="cb70-201"><a href="#cb70-201"></a>    <span class="at">sd_Re =</span> <span class="fu">sd</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="co"># 超過リターンの標準偏差</span></span>
+<span id="cb70-202"><a href="#cb70-202"></a>  )</span>
+<span id="cb70-203"><a href="#cb70-203"></a><span class="in">```</span></span>
+<span id="cb70-204"><a href="#cb70-204"></a></span>
+<span id="cb70-205"><a href="#cb70-205"></a>データの分布の形を表す統計量である，3次のモーメントである歪度(skewness)と4次のモーメントである尖度(kurtosis)も計算してみます。</span>
+<span id="cb70-206"><a href="#cb70-206"></a>たとえば確率変数$x$の歪度は</span>
+<span id="cb70-207"><a href="#cb70-207"></a>$$</span>
+<span id="cb70-208"><a href="#cb70-208"></a>\text{歪度} = \frac 1n \sum _{i = 1}^n \left( \frac{x_i - \bar x}{\hat \sigma_x} \right) ^3</span>
 <span id="cb70-209"><a href="#cb70-209"></a>$$</span>
-<span id="cb70-210"><a href="#cb70-210"></a>\text{尖度} = \frac 1n \sum _{i = 1}^n \left( \frac{x_i - \bar x}{\hat \sigma_x} \right) ^4</span>
-<span id="cb70-211"><a href="#cb70-211"></a>$$</span>
-<span id="cb70-212"><a href="#cb70-212"></a>で定義され，尖度が3のとき，正規分布と同じ尖度を持つことを示し，3より小さいとき，正規分布よりとがった分布をしていることを示します。</span>
-<span id="cb70-213"><a href="#cb70-213"></a></span>
-<span id="cb70-214"><a href="#cb70-214"></a>歪度と尖度を計算するには，<span class="in">`e1071`</span>パッケージの<span class="in">`skewness()`</span>関数を使います。</span>
-<span id="cb70-215"><a href="#cb70-215"></a><span class="in">```{r ch05_12}</span></span>
-<span id="cb70-216"><a href="#cb70-216"></a>stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-217"><a href="#cb70-217"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb70-218"><a href="#cb70-218"></a>    <span class="at">skewness_R =</span> <span class="fu">skewness</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの歪度</span></span>
-<span id="cb70-219"><a href="#cb70-219"></a>    <span class="at">kurtosis_R =</span> <span class="fu">kurtosis</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの尖度</span></span>
-<span id="cb70-220"><a href="#cb70-220"></a>    <span class="at">skewness_Re =</span> <span class="fu">skewness</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 超過リターンの歪度</span></span>
-<span id="cb70-221"><a href="#cb70-221"></a>    <span class="at">kurtosis_Re =</span> <span class="fu">kurtosis</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="co"># 超過リターンの尖度</span></span>
-<span id="cb70-222"><a href="#cb70-222"></a>  )</span>
-<span id="cb70-223"><a href="#cb70-223"></a><span class="in">```</span></span>
-<span id="cb70-224"><a href="#cb70-224"></a></span>
-<span id="cb70-225"><a href="#cb70-225"></a>トータルリターンの歪度が$0.507 &gt;0$なので，右に裾の広い分布となっており，尖度が$1.27 &lt; 3$なので正規分布よりもとがった形となっていることがわかります。</span>
-<span id="cb70-226"><a href="#cb70-226"></a></span>
-<span id="cb70-227"><a href="#cb70-227"></a>図でも確認するために，トータルリターン<span class="in">`R`</span>のヒストグラムを書いてみます。</span>
-<span id="cb70-228"><a href="#cb70-228"></a></span>
-<span id="cb70-229"><a href="#cb70-229"></a><span class="in">```{r ch05_14}</span></span>
-<span id="cb70-230"><a href="#cb70-230"></a><span class="fu">ggplot</span>(stock_data) <span class="sc">+</span></span>
-<span id="cb70-231"><a href="#cb70-231"></a>  <span class="fu">aes</span>(<span class="at">x =</span> R) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="co"># トータルリターンのヒストグラム</span></span>
-<span id="cb70-232"><a href="#cb70-232"></a>  <span class="fu">xlab</span>(<span class="st">"Monthly Stock Return"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Count"</span>) <span class="co"># 軸ラベル</span></span>
-<span id="cb70-233"><a href="#cb70-233"></a><span class="in">```</span></span>
-<span id="cb70-234"><a href="#cb70-234"></a></span>
-<span id="cb70-235"><a href="#cb70-235"></a>トータルリターンのヒストグラムに正規分布のグラフを重ねてみると，次のようになります。</span>
-<span id="cb70-238"><a href="#cb70-238"></a><span class="in">```{r}</span></span>
-<span id="cb70-239"><a href="#cb70-239"></a><span class="co"># トータルリターン</span></span>
-<span id="cb70-240"><a href="#cb70-240"></a>R <span class="ot">&lt;-</span> stock_data<span class="sc">$</span>R</span>
-<span id="cb70-241"><a href="#cb70-241"></a></span>
-<span id="cb70-242"><a href="#cb70-242"></a><span class="co"># 正規分布データ作成</span></span>
-<span id="cb70-243"><a href="#cb70-243"></a>m <span class="ot">&lt;-</span> <span class="fu">mean</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb70-244"><a href="#cb70-244"></a>sd <span class="ot">&lt;-</span> <span class="fu">sd</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb70-245"><a href="#cb70-245"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">95040</span>, <span class="at">mean =</span> m, <span class="at">sd =</span> sd)</span>
-<span id="cb70-246"><a href="#cb70-246"></a></span>
-<span id="cb70-247"><a href="#cb70-247"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(R,x) <span class="sc">|&gt;</span> <span class="fu">drop_na</span>() <span class="co"># 欠損値削除</span></span>
-<span id="cb70-248"><a href="#cb70-248"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="fu">everything</span>())</span>
-<span id="cb70-249"><a href="#cb70-249"></a><span class="in">```</span></span>
-<span id="cb70-250"><a href="#cb70-250"></a></span>
-<span id="cb70-253"><a href="#cb70-253"></a><span class="in">```{r}</span></span>
-<span id="cb70-254"><a href="#cb70-254"></a><span class="co"># トータルリターン</span></span>
-<span id="cb70-255"><a href="#cb70-255"></a>R <span class="ot">&lt;-</span> stock_data<span class="sc">$</span>R</span>
-<span id="cb70-256"><a href="#cb70-256"></a><span class="co"># 平均と標準偏差を計算</span></span>
-<span id="cb70-257"><a href="#cb70-257"></a>m <span class="ot">&lt;-</span> <span class="fu">mean</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb70-258"><a href="#cb70-258"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb70-259"><a href="#cb70-259"></a></span>
-<span id="cb70-260"><a href="#cb70-260"></a><span class="fu">ggplot</span>(stock_data) <span class="sc">+</span></span>
-<span id="cb70-261"><a href="#cb70-261"></a>  <span class="fu">aes</span>(<span class="at">x =</span> R) <span class="sc">+</span></span>
-<span id="cb70-262"><a href="#cb70-262"></a>  <span class="co"># y軸を密度(density)に設定</span></span>
-<span id="cb70-263"><a href="#cb70-263"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">100</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">fill =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
-<span id="cb70-264"><a href="#cb70-264"></a>  <span class="co"># 正規分布の曲線を追加</span></span>
-<span id="cb70-265"><a href="#cb70-265"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> m, <span class="at">sd =</span> s), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb70-266"><a href="#cb70-266"></a>  <span class="fu">xlab</span>(<span class="st">"Monthly Stock Return"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Density"</span>) <span class="sc">+</span></span>
-<span id="cb70-267"><a href="#cb70-267"></a>  mystyle</span>
-<span id="cb70-268"><a href="#cb70-268"></a><span class="in">```</span></span>
-<span id="cb70-269"><a href="#cb70-269"></a></span>
-<span id="cb70-270"><a href="#cb70-270"></a>トータルリターンと正規分布のヒストグラムを書いてみる。</span>
-<span id="cb70-271"><a href="#cb70-271"></a></span>
-<span id="cb70-274"><a href="#cb70-274"></a><span class="in">```{r}</span></span>
-<span id="cb70-275"><a href="#cb70-275"></a><span class="co"># dev="quartz_pdf"</span></span>
-<span id="cb70-276"><a href="#cb70-276"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> name, <span class="at">group =</span> name) <span class="sc">+</span></span>
-<span id="cb70-277"><a href="#cb70-277"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">100</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb70-278"><a href="#cb70-278"></a>  <span class="fu">xlab</span>(<span class="st">"Monthly Stock Return"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Count"</span>)</span>
-<span id="cb70-279"><a href="#cb70-279"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">annotate</span>( <span class="co"># 位置を指定して文字列を追加</span></span>
-<span id="cb70-280"><a href="#cb70-280"></a>  <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="dv">900</span>, <span class="at">label =</span> <span class="st">"fat tail"</span>) <span class="sc">+</span></span>
-<span id="cb70-281"><a href="#cb70-281"></a>  <span class="fu">annotate</span>(<span class="co"># 始点や終点などを指定して矢印を追加</span></span>
-<span id="cb70-282"><a href="#cb70-282"></a>  <span class="at">geom =</span> <span class="st">"segment"</span>, <span class="at">x =</span> <span class="fl">0.3</span>, <span class="at">xend =</span> <span class="fl">0.3</span>,</span>
-<span id="cb70-283"><a href="#cb70-283"></a>  <span class="at">y =</span> <span class="dv">800</span>, <span class="at">yend =</span> <span class="dv">300</span>,</span>
-<span id="cb70-284"><a href="#cb70-284"></a>  <span class="at">color =</span> <span class="st">"black"</span>,  <span class="at">size =</span> <span class="fl">0.5</span>,</span>
-<span id="cb70-285"><a href="#cb70-285"></a>  <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">"cm"</span>))</span>
-<span id="cb70-286"><a href="#cb70-286"></a>  )</span>
-<span id="cb70-287"><a href="#cb70-287"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">annotate</span>( <span class="co"># 位置を指定して文字列を追加</span></span>
-<span id="cb70-288"><a href="#cb70-288"></a>  <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="dv">4200</span>,</span>
-<span id="cb70-289"><a href="#cb70-289"></a>  <span class="at">label =</span> <span class="st">"Sharp shape"</span></span>
-<span id="cb70-290"><a href="#cb70-290"></a>  ) <span class="sc">+</span></span>
-<span id="cb70-291"><a href="#cb70-291"></a>  <span class="fu">annotate</span>(<span class="co"># 始点や終点などを指定して矢印を追加</span></span>
-<span id="cb70-292"><a href="#cb70-292"></a>  <span class="at">geom =</span> <span class="st">"segment"</span>, <span class="at">x =</span> <span class="fl">0.2</span>, <span class="at">xend =</span> <span class="fl">0.1</span>,</span>
-<span id="cb70-293"><a href="#cb70-293"></a>  <span class="at">y =</span> <span class="dv">4200</span>, <span class="at">yend =</span> <span class="dv">4200</span>,</span>
-<span id="cb70-294"><a href="#cb70-294"></a>  <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.5</span>,</span>
-<span id="cb70-295"><a href="#cb70-295"></a>  <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">"cm"</span>))</span>
-<span id="cb70-296"><a href="#cb70-296"></a>  )</span>
-<span id="cb70-297"><a href="#cb70-297"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> mystyle</span>
-<span id="cb70-298"><a href="#cb70-298"></a><span class="fu">print</span>(g)</span>
-<span id="cb70-299"><a href="#cb70-299"></a><span class="in">```</span></span>
-<span id="cb70-300"><a href="#cb70-300"></a>歪度と尖度の結果と整合的に、赤色で表されているトータルリターンのヒストグラムは正規分布よりも右に裾が長く，尖度も正規分布よりもとがった形となっています。</span>
-<span id="cb70-301"><a href="#cb70-301"></a></span>
-<span id="cb70-302"><a href="#cb70-302"></a><span class="fu"># リターンの累積</span></span>
-<span id="cb70-303"><a href="#cb70-303"></a></span>
-<span id="cb70-304"><a href="#cb70-304"></a><span class="fu">## バイ・アンド・ホールド・リターンの考え方</span></span>
-<span id="cb70-305"><a href="#cb70-305"></a></span>
-<span id="cb70-306"><a href="#cb70-306"></a>**バイ・アンド・ホールド・リターン**(buy-and-hold-return)は，ある時点で株式を購入し，そのまま保有し続けたときのリターンのことを指します。</span>
-<span id="cb70-307"><a href="#cb70-307"></a>たとえば，$12$月末に株式を購入し，$3$月末に売却したときの、バイ・アンド・ホールド・リターンの累積は，次式で計算できます。ただし配当は無視します。</span>
-<span id="cb70-308"><a href="#cb70-308"></a>$$</span>
-<span id="cb70-309"><a href="#cb70-309"></a>\begin{aligned}</span>
-<span id="cb70-310"><a href="#cb70-310"></a>\left ( \frac{W_{\text{3月}}}{W_{\text{12月}}} \right) =</span>
-<span id="cb70-311"><a href="#cb70-311"></a>\underbrace{\left ( \frac{W_{\text{1月}}}{W_{\text{12月}}} \right)}_{1 + R_{\text{1月}}} \times</span>
-<span id="cb70-312"><a href="#cb70-312"></a>\underbrace{\left ( \frac{W_{\text{2月}}}{W_{\text{1月}}} \right)}_{1 + R_{\text{2月}}} \times</span>
-<span id="cb70-313"><a href="#cb70-313"></a>\underbrace{\left ( \frac{W_{\text{3月}}}{W_{\text{2月}}} \right)}_{1 + R_{\text{3月}}} \times</span>
-<span id="cb70-314"><a href="#cb70-314"></a>\end{aligned}</span>
-<span id="cb70-315"><a href="#cb70-315"></a>$$</span>
-<span id="cb70-316"><a href="#cb70-316"></a></span>
-<span id="cb70-317"><a href="#cb70-317"></a>一般的に、月次で$t$時点から$T$時点までの年次リターンは、</span>
-<span id="cb70-318"><a href="#cb70-318"></a></span>
-<span id="cb70-319"><a href="#cb70-319"></a>$$</span>
-<span id="cb70-320"><a href="#cb70-320"></a>\left ( \frac{W_{\text{翌年12月末}}}{W_{\text{12月末}}} \right) = \prod_{t = \text{1月}}^{\text{12月}} (1 + R_t)</span>
-<span id="cb70-321"><a href="#cb70-321"></a>$$</span>
-<span id="cb70-322"><a href="#cb70-322"></a></span>
-<span id="cb70-323"><a href="#cb70-323"></a>と計算できます。</span>
-<span id="cb70-324"><a href="#cb70-324"></a></span>
-<span id="cb70-325"><a href="#cb70-325"></a><span class="fu">## 年次リターンの計算</span></span>
-<span id="cb70-326"><a href="#cb70-326"></a></span>
-<span id="cb70-327"><a href="#cb70-327"></a>では、<span class="in">`stock_data`</span>をもとに年次リターンを計算してみましょう。</span>
-<span id="cb70-328"><a href="#cb70-328"></a></span>
+<span id="cb70-210"><a href="#cb70-210"></a>で表され，正の値をとるとき分布が右に歪んでいる(裾が右に長い)ことを示している。</span>
+<span id="cb70-211"><a href="#cb70-211"></a>尖度は，</span>
+<span id="cb70-212"><a href="#cb70-212"></a>$$</span>
+<span id="cb70-213"><a href="#cb70-213"></a>\text{尖度} = \frac 1n \sum _{i = 1}^n \left( \frac{x_i - \bar x}{\hat \sigma_x} \right) ^4</span>
+<span id="cb70-214"><a href="#cb70-214"></a>$$</span>
+<span id="cb70-215"><a href="#cb70-215"></a>で定義され，尖度が3のとき，正規分布と同じ尖度を持つことを示し，3より小さいとき，正規分布よりとがった分布をしていることを示します。</span>
+<span id="cb70-216"><a href="#cb70-216"></a></span>
+<span id="cb70-217"><a href="#cb70-217"></a>歪度と尖度を計算するには，<span class="in">`e1071`</span>パッケージの<span class="in">`skewness()`</span>関数を使います。</span>
+<span id="cb70-218"><a href="#cb70-218"></a><span class="in">```{r ch05_12}</span></span>
+<span id="cb70-219"><a href="#cb70-219"></a>stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-220"><a href="#cb70-220"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb70-221"><a href="#cb70-221"></a>    <span class="at">skewness_R =</span> <span class="fu">skewness</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの歪度</span></span>
+<span id="cb70-222"><a href="#cb70-222"></a>    <span class="at">kurtosis_R =</span> <span class="fu">kurtosis</span>(R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 総リターンの尖度</span></span>
+<span id="cb70-223"><a href="#cb70-223"></a>    <span class="at">skewness_Re =</span> <span class="fu">skewness</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 超過リターンの歪度</span></span>
+<span id="cb70-224"><a href="#cb70-224"></a>    <span class="at">kurtosis_Re =</span> <span class="fu">kurtosis</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="co"># 超過リターンの尖度</span></span>
+<span id="cb70-225"><a href="#cb70-225"></a>  )</span>
+<span id="cb70-226"><a href="#cb70-226"></a><span class="in">```</span></span>
+<span id="cb70-227"><a href="#cb70-227"></a></span>
+<span id="cb70-228"><a href="#cb70-228"></a>トータルリターンの歪度が$0.507 &gt;0$なので，右に裾の広い分布となっており，尖度が$1.27 &lt; 3$なので正規分布よりもとがった形となっていることがわかります。</span>
+<span id="cb70-229"><a href="#cb70-229"></a></span>
+<span id="cb70-230"><a href="#cb70-230"></a>図でも確認するために，トータルリターン<span class="in">`R`</span>のヒストグラムを書いてみます。</span>
+<span id="cb70-231"><a href="#cb70-231"></a></span>
+<span id="cb70-232"><a href="#cb70-232"></a><span class="in">```{r ch05_14}</span></span>
+<span id="cb70-233"><a href="#cb70-233"></a><span class="fu">ggplot</span>(stock_data) <span class="sc">+</span></span>
+<span id="cb70-234"><a href="#cb70-234"></a>  <span class="fu">aes</span>(<span class="at">x =</span> R) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="co"># トータルリターンのヒストグラム</span></span>
+<span id="cb70-235"><a href="#cb70-235"></a>  <span class="fu">xlab</span>(<span class="st">"Monthly Stock Return"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Count"</span>) <span class="co"># 軸ラベル</span></span>
+<span id="cb70-236"><a href="#cb70-236"></a><span class="in">```</span></span>
+<span id="cb70-237"><a href="#cb70-237"></a></span>
+<span id="cb70-238"><a href="#cb70-238"></a>トータルリターンのヒストグラムに正規分布のグラフを重ねてみると，次のようになります。</span>
+<span id="cb70-241"><a href="#cb70-241"></a><span class="in">```{r}</span></span>
+<span id="cb70-242"><a href="#cb70-242"></a><span class="co"># トータルリターン</span></span>
+<span id="cb70-243"><a href="#cb70-243"></a>R <span class="ot">&lt;-</span> stock_data<span class="sc">$</span>R</span>
+<span id="cb70-244"><a href="#cb70-244"></a></span>
+<span id="cb70-245"><a href="#cb70-245"></a><span class="co"># 正規分布データ作成</span></span>
+<span id="cb70-246"><a href="#cb70-246"></a>m <span class="ot">&lt;-</span> <span class="fu">mean</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-247"><a href="#cb70-247"></a>sd <span class="ot">&lt;-</span> <span class="fu">sd</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-248"><a href="#cb70-248"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">95040</span>, <span class="at">mean =</span> m, <span class="at">sd =</span> sd)</span>
+<span id="cb70-249"><a href="#cb70-249"></a></span>
+<span id="cb70-250"><a href="#cb70-250"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(R,x) <span class="sc">|&gt;</span> <span class="fu">drop_na</span>() <span class="co"># 欠損値削除</span></span>
+<span id="cb70-251"><a href="#cb70-251"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="fu">everything</span>())</span>
+<span id="cb70-252"><a href="#cb70-252"></a><span class="in">```</span></span>
+<span id="cb70-253"><a href="#cb70-253"></a></span>
+<span id="cb70-256"><a href="#cb70-256"></a><span class="in">```{r}</span></span>
+<span id="cb70-257"><a href="#cb70-257"></a><span class="co"># トータルリターン</span></span>
+<span id="cb70-258"><a href="#cb70-258"></a>R <span class="ot">&lt;-</span> stock_data<span class="sc">$</span>R</span>
+<span id="cb70-259"><a href="#cb70-259"></a><span class="co"># 平均と標準偏差を計算</span></span>
+<span id="cb70-260"><a href="#cb70-260"></a>m <span class="ot">&lt;-</span> <span class="fu">mean</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-261"><a href="#cb70-261"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(stock_data<span class="sc">$</span>R, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-262"><a href="#cb70-262"></a></span>
+<span id="cb70-263"><a href="#cb70-263"></a><span class="fu">ggplot</span>(stock_data) <span class="sc">+</span></span>
+<span id="cb70-264"><a href="#cb70-264"></a>  <span class="fu">aes</span>(<span class="at">x =</span> R) <span class="sc">+</span></span>
+<span id="cb70-265"><a href="#cb70-265"></a>  <span class="co"># y軸を密度(density)に設定</span></span>
+<span id="cb70-266"><a href="#cb70-266"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">100</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">fill =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb70-267"><a href="#cb70-267"></a>  <span class="co"># 正規分布の曲線を追加</span></span>
+<span id="cb70-268"><a href="#cb70-268"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> m, <span class="at">sd =</span> s), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb70-269"><a href="#cb70-269"></a>  <span class="fu">xlab</span>(<span class="st">"Monthly Stock Return"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb70-270"><a href="#cb70-270"></a>  mystyle</span>
+<span id="cb70-271"><a href="#cb70-271"></a><span class="in">```</span></span>
+<span id="cb70-272"><a href="#cb70-272"></a></span>
+<span id="cb70-273"><a href="#cb70-273"></a>トータルリターンと正規分布のヒストグラムを書いてみる。</span>
+<span id="cb70-274"><a href="#cb70-274"></a></span>
+<span id="cb70-277"><a href="#cb70-277"></a><span class="in">```{r}</span></span>
+<span id="cb70-278"><a href="#cb70-278"></a><span class="co"># dev="quartz_pdf"</span></span>
+<span id="cb70-279"><a href="#cb70-279"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> name, <span class="at">group =</span> name) <span class="sc">+</span></span>
+<span id="cb70-280"><a href="#cb70-280"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">100</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">position=</span><span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb70-281"><a href="#cb70-281"></a>  <span class="fu">xlab</span>(<span class="st">"Monthly Stock Return"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Count"</span>)</span>
+<span id="cb70-282"><a href="#cb70-282"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">annotate</span>( <span class="co"># 位置を指定して文字列を追加</span></span>
+<span id="cb70-283"><a href="#cb70-283"></a>  <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="dv">900</span>, <span class="at">label =</span> <span class="st">"fat tail"</span>) <span class="sc">+</span></span>
+<span id="cb70-284"><a href="#cb70-284"></a>  <span class="fu">annotate</span>(<span class="co"># 始点や終点などを指定して矢印を追加</span></span>
+<span id="cb70-285"><a href="#cb70-285"></a>  <span class="at">geom =</span> <span class="st">"segment"</span>, <span class="at">x =</span> <span class="fl">0.3</span>, <span class="at">xend =</span> <span class="fl">0.3</span>,</span>
+<span id="cb70-286"><a href="#cb70-286"></a>  <span class="at">y =</span> <span class="dv">800</span>, <span class="at">yend =</span> <span class="dv">300</span>,</span>
+<span id="cb70-287"><a href="#cb70-287"></a>  <span class="at">color =</span> <span class="st">"black"</span>,  <span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb70-288"><a href="#cb70-288"></a>  <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">"cm"</span>))</span>
+<span id="cb70-289"><a href="#cb70-289"></a>  )</span>
+<span id="cb70-290"><a href="#cb70-290"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> <span class="fu">annotate</span>( <span class="co"># 位置を指定して文字列を追加</span></span>
+<span id="cb70-291"><a href="#cb70-291"></a>  <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="dv">4200</span>,</span>
+<span id="cb70-292"><a href="#cb70-292"></a>  <span class="at">label =</span> <span class="st">"Sharp shape"</span></span>
+<span id="cb70-293"><a href="#cb70-293"></a>  ) <span class="sc">+</span></span>
+<span id="cb70-294"><a href="#cb70-294"></a>  <span class="fu">annotate</span>(<span class="co"># 始点や終点などを指定して矢印を追加</span></span>
+<span id="cb70-295"><a href="#cb70-295"></a>  <span class="at">geom =</span> <span class="st">"segment"</span>, <span class="at">x =</span> <span class="fl">0.2</span>, <span class="at">xend =</span> <span class="fl">0.1</span>,</span>
+<span id="cb70-296"><a href="#cb70-296"></a>  <span class="at">y =</span> <span class="dv">4200</span>, <span class="at">yend =</span> <span class="dv">4200</span>,</span>
+<span id="cb70-297"><a href="#cb70-297"></a>  <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="cb70-298"><a href="#cb70-298"></a>  <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">"cm"</span>))</span>
+<span id="cb70-299"><a href="#cb70-299"></a>  )</span>
+<span id="cb70-300"><a href="#cb70-300"></a>g <span class="ot">&lt;-</span> g <span class="sc">+</span> mystyle</span>
+<span id="cb70-301"><a href="#cb70-301"></a><span class="fu">print</span>(g)</span>
+<span id="cb70-302"><a href="#cb70-302"></a><span class="in">```</span></span>
+<span id="cb70-303"><a href="#cb70-303"></a>歪度と尖度の結果と整合的に、赤色で表されているトータルリターンのヒストグラムは正規分布よりも右に裾が長く，尖度も正規分布よりもとがった形となっています。</span>
+<span id="cb70-304"><a href="#cb70-304"></a></span>
+<span id="cb70-305"><a href="#cb70-305"></a><span class="fu"># リターンの累積</span></span>
+<span id="cb70-306"><a href="#cb70-306"></a></span>
+<span id="cb70-307"><a href="#cb70-307"></a><span class="fu">## バイ・アンド・ホールド・リターンの考え方</span></span>
+<span id="cb70-308"><a href="#cb70-308"></a></span>
+<span id="cb70-309"><a href="#cb70-309"></a>**バイ・アンド・ホールド・リターン**(buy-and-hold-return)は，ある時点で株式を購入し，そのまま保有し続けたときのリターンのことを指します。</span>
+<span id="cb70-310"><a href="#cb70-310"></a>たとえば，$12$月末に株式を購入し，$3$月末に売却したときの、バイ・アンド・ホールド・リターンの累積は，次式で計算できます。ただし配当は無視します。</span>
+<span id="cb70-311"><a href="#cb70-311"></a>$$</span>
+<span id="cb70-312"><a href="#cb70-312"></a>\begin{aligned}</span>
+<span id="cb70-313"><a href="#cb70-313"></a>\left ( \frac{W_{\text{3月}}}{W_{\text{12月}}} \right) =</span>
+<span id="cb70-314"><a href="#cb70-314"></a>\underbrace{\left ( \frac{W_{\text{1月}}}{W_{\text{12月}}} \right)}_{1 + R_{\text{1月}}} \times</span>
+<span id="cb70-315"><a href="#cb70-315"></a>\underbrace{\left ( \frac{W_{\text{2月}}}{W_{\text{1月}}} \right)}_{1 + R_{\text{2月}}} \times</span>
+<span id="cb70-316"><a href="#cb70-316"></a>\underbrace{\left ( \frac{W_{\text{3月}}}{W_{\text{2月}}} \right)}_{1 + R_{\text{3月}}} \times</span>
+<span id="cb70-317"><a href="#cb70-317"></a>\end{aligned}</span>
+<span id="cb70-318"><a href="#cb70-318"></a>$$</span>
+<span id="cb70-319"><a href="#cb70-319"></a></span>
+<span id="cb70-320"><a href="#cb70-320"></a>一般的に、月次で$t$時点から$T$時点までの年次リターンは、</span>
+<span id="cb70-321"><a href="#cb70-321"></a></span>
+<span id="cb70-322"><a href="#cb70-322"></a>$$</span>
+<span id="cb70-323"><a href="#cb70-323"></a>\left ( \frac{W_{\text{翌年12月末}}}{W_{\text{12月末}}} \right) = \prod_{t = \text{1月}}^{\text{12月}} (1 + R_t)</span>
+<span id="cb70-324"><a href="#cb70-324"></a>$$</span>
+<span id="cb70-325"><a href="#cb70-325"></a></span>
+<span id="cb70-326"><a href="#cb70-326"></a>と計算できます。</span>
+<span id="cb70-327"><a href="#cb70-327"></a></span>
+<span id="cb70-328"><a href="#cb70-328"></a><span class="fu">## 年次リターンの計算</span></span>
 <span id="cb70-329"><a href="#cb70-329"></a></span>
-<span id="cb70-330"><a href="#cb70-330"></a><span class="in">```{r ch05_15}</span></span>
-<span id="cb70-331"><a href="#cb70-331"></a>annual_stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-332"><a href="#cb70-332"></a>  <span class="fu">group_by</span>(firm_ID, year) <span class="sc">|&gt;</span> <span class="co"># firm_IDとyearごとにグループ化</span></span>
-<span id="cb70-333"><a href="#cb70-333"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb70-334"><a href="#cb70-334"></a>    <span class="at">annual_R =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R) <span class="sc">-</span> <span class="dv">1</span>, <span class="co"># B&amp;H年次リターン</span></span>
-<span id="cb70-335"><a href="#cb70-335"></a>    <span class="at">annual_R_F =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R_F) <span class="sc">-</span> <span class="dv">1</span> <span class="co"># 年次超過リターン</span></span>
-<span id="cb70-336"><a href="#cb70-336"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb70-337"><a href="#cb70-337"></a>  <span class="fu">mutate</span>(<span class="at">annual_Re =</span> annual_R <span class="sc">-</span> annual_R_F) <span class="sc">|&gt;</span> <span class="co"># 年次超過リターン</span></span>
-<span id="cb70-338"><a href="#cb70-338"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb70-339"><a href="#cb70-339"></a><span class="fu">head</span>(annual_stock_data)</span>
-<span id="cb70-340"><a href="#cb70-340"></a><span class="in">```</span></span>
-<span id="cb70-341"><a href="#cb70-341"></a></span>
-<span id="cb70-342"><a href="#cb70-342"></a><span class="fu"># 株式データと財務データを組み合わせた分析</span></span>
-<span id="cb70-343"><a href="#cb70-343"></a></span>
-<span id="cb70-344"><a href="#cb70-344"></a>ここでは，株式データと財務データを組み合わせて分析を行います。</span>
+<span id="cb70-330"><a href="#cb70-330"></a>では、<span class="in">`stock_data`</span>をもとに年次リターンを計算してみましょう。</span>
+<span id="cb70-331"><a href="#cb70-331"></a></span>
+<span id="cb70-332"><a href="#cb70-332"></a></span>
+<span id="cb70-333"><a href="#cb70-333"></a><span class="in">```{r ch05_15}</span></span>
+<span id="cb70-334"><a href="#cb70-334"></a>annual_stock_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-335"><a href="#cb70-335"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb70-336"><a href="#cb70-336"></a>    <span class="at">annual_R =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R) <span class="sc">-</span> <span class="dv">1</span>, <span class="co"># B&amp;H年次リターン</span></span>
+<span id="cb70-337"><a href="#cb70-337"></a>    <span class="at">annual_R_F =</span> <span class="fu">prod</span>(<span class="dv">1</span> <span class="sc">+</span> R_F) <span class="sc">-</span> <span class="dv">1</span>, <span class="co"># 年次超過リターン</span></span>
+<span id="cb70-338"><a href="#cb70-338"></a>    <span class="at">.by =</span> <span class="fu">c</span>(firm_ID, year) <span class="co"># 企業と年度でグループ化</span></span>
+<span id="cb70-339"><a href="#cb70-339"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb70-340"><a href="#cb70-340"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb70-341"><a href="#cb70-341"></a>    <span class="at">annual_Re =</span> annual_R <span class="sc">-</span> annual_R_F <span class="co"># 年次超過リターン</span></span>
+<span id="cb70-342"><a href="#cb70-342"></a>    )  </span>
+<span id="cb70-343"><a href="#cb70-343"></a><span class="fu">head</span>(annual_stock_data)</span>
+<span id="cb70-344"><a href="#cb70-344"></a><span class="in">```</span></span>
 <span id="cb70-345"><a href="#cb70-345"></a></span>
-<span id="cb70-346"><a href="#cb70-346"></a><span class="fu">## データの結合</span></span>
+<span id="cb70-346"><a href="#cb70-346"></a><span class="fu"># 株式データと財務データを組み合わせた分析</span></span>
 <span id="cb70-347"><a href="#cb70-347"></a></span>
-<span id="cb70-348"><a href="#cb70-348"></a>複数のデータフレームを結合する際に重要なところは、</span>
+<span id="cb70-348"><a href="#cb70-348"></a>ここでは，株式データと財務データを組み合わせて分析を行います。</span>
 <span id="cb70-349"><a href="#cb70-349"></a></span>
-<span id="cb70-350"><a href="#cb70-350"></a><span class="ss">1. </span>データの頻度の違い</span>
-<span id="cb70-351"><a href="#cb70-351"></a><span class="ss">2. </span>タイミングの一致</span>
-<span id="cb70-352"><a href="#cb70-352"></a></span>
-<span id="cb70-353"><a href="#cb70-353"></a>となる。</span>
-<span id="cb70-354"><a href="#cb70-354"></a>今まで使ってきた財務データは年次データであるのに対して，株式データは月次データであるため，データの頻度が異なります。</span>
-<span id="cb70-355"><a href="#cb70-355"></a>確認してみましょう。</span>
+<span id="cb70-350"><a href="#cb70-350"></a><span class="fu">## データの結合</span></span>
+<span id="cb70-351"><a href="#cb70-351"></a></span>
+<span id="cb70-352"><a href="#cb70-352"></a>複数のデータフレームを結合する際に重要なところは、</span>
+<span id="cb70-353"><a href="#cb70-353"></a></span>
+<span id="cb70-354"><a href="#cb70-354"></a><span class="ss">1. </span>データの頻度の違い</span>
+<span id="cb70-355"><a href="#cb70-355"></a><span class="ss">2. </span>タイミングの一致</span>
 <span id="cb70-356"><a href="#cb70-356"></a></span>
-<span id="cb70-357"><a href="#cb70-357"></a></span>
-<span id="cb70-358"><a href="#cb70-358"></a><span class="in">```{r ch05_17}</span></span>
-<span id="cb70-359"><a href="#cb70-359"></a>financial_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"data/ch04_output.csv"</span>)</span>
-<span id="cb70-360"><a href="#cb70-360"></a><span class="fu">nrow</span>(financial_data) <span class="co"># 年次財務データの行数</span></span>
-<span id="cb70-361"><a href="#cb70-361"></a><span class="fu">nrow</span>(annual_stock_data) <span class="co"># 年次リターン・データの行数</span></span>
-<span id="cb70-362"><a href="#cb70-362"></a><span class="fu">nrow</span>(stock_data) <span class="co"># 月次リターン・データの行数</span></span>
-<span id="cb70-363"><a href="#cb70-363"></a><span class="in">```</span></span>
-<span id="cb70-364"><a href="#cb70-364"></a></span>
-<span id="cb70-365"><a href="#cb70-365"></a>月次リターンの行数が上の年次データとは大きく異なっていることが分かります。</span>
-<span id="cb70-366"><a href="#cb70-366"></a></span>
-<span id="cb70-367"><a href="#cb70-367"></a>::: {.callout .callout-info}</span>
-<span id="cb70-368"><a href="#cb70-368"></a>**先読みバイアス**(look-ahead bias)とは、ある時点での情報を使って、その時点よりも未来の情報を使っていることを指します。12月末決算の会社のディスクロジャージャーは、最速で決算日後45日以内に出される決算短信か、3ヶ月以内に出される有価証券報告書があります。</span>
-<span id="cb70-369"><a href="#cb70-369"></a>このため、年次データを使って同時期の年次リターンを計算すると、年次データの発表後に出される有価証券報告書の情報を使っていることになります。これを先読みバイアスといいます。</span>
-<span id="cb70-370"><a href="#cb70-370"></a>:::</span>
-<span id="cb70-371"><a href="#cb70-371"></a></span>
-<span id="cb70-372"><a href="#cb70-372"></a></span>
-<span id="cb70-373"><a href="#cb70-373"></a><span class="in">```{r ch05_18}</span></span>
-<span id="cb70-374"><a href="#cb70-374"></a>annual_data <span class="ot">&lt;-</span> annual_stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-375"><a href="#cb70-375"></a>  <span class="fu">full_join</span>(financial_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"firm_ID"</span>, <span class="st">"year"</span>)) <span class="co"># firm_IDとyearのペアをキーとして設定</span></span>
-<span id="cb70-376"><a href="#cb70-376"></a><span class="in">```</span></span>
-<span id="cb70-377"><a href="#cb70-377"></a></span>
-<span id="cb70-378"><a href="#cb70-378"></a></span>
-<span id="cb70-379"><a href="#cb70-379"></a><span class="in">```{r ch05_19}</span></span>
-<span id="cb70-380"><a href="#cb70-380"></a>annual_data <span class="ot">&lt;-</span> annual_stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-381"><a href="#cb70-381"></a>  <span class="fu">full_join</span>(financial_data) <span class="co"># キーを省略した場合，列名が同じ変数がキーになる</span></span>
-<span id="cb70-382"><a href="#cb70-382"></a><span class="in">```</span></span>
-<span id="cb70-383"><a href="#cb70-383"></a></span>
-<span id="cb70-384"><a href="#cb70-384"></a><span class="in">```{r ch05_20}</span></span>
-<span id="cb70-385"><a href="#cb70-385"></a>monthly_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-386"><a href="#cb70-386"></a>  <span class="fu">full_join</span>(financial_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"firm_ID"</span>, <span class="st">"year"</span>)) <span class="co"># firm_IDとyearのペアをキーとして設定</span></span>
-<span id="cb70-387"><a href="#cb70-387"></a><span class="in">```</span></span>
-<span id="cb70-388"><a href="#cb70-388"></a></span>
-<span id="cb70-389"><a href="#cb70-389"></a></span>
-<span id="cb70-390"><a href="#cb70-390"></a><span class="fu">## バブルチャート</span></span>
-<span id="cb70-391"><a href="#cb70-391"></a></span>
-<span id="cb70-392"><a href="#cb70-392"></a><span class="in">```{r ch05_24}</span></span>
-<span id="cb70-393"><a href="#cb70-393"></a>annual_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-394"><a href="#cb70-394"></a>  <span class="fu">filter</span>(month <span class="sc">==</span> <span class="dv">12</span>) <span class="sc">|&gt;</span> <span class="co"># 12月のみ</span></span>
-<span id="cb70-395"><a href="#cb70-395"></a>  <span class="fu">select</span>(year, firm_ID, ME) <span class="sc">|&gt;</span> <span class="co"># 変数を選択</span></span>
-<span id="cb70-396"><a href="#cb70-396"></a>  <span class="fu">full_join</span>(annual_data, ., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"firm_ID"</span>)) <span class="sc">|&gt;</span> <span class="co"># 年次データと結合</span></span>
-<span id="cb70-397"><a href="#cb70-397"></a>  <span class="fu">mutate</span>(<span class="at">ME =</span> ME <span class="sc">/</span> <span class="fl">1e6</span>)</span>
-<span id="cb70-398"><a href="#cb70-398"></a><span class="in">```</span></span>
-<span id="cb70-399"><a href="#cb70-399"></a></span>
-<span id="cb70-400"><a href="#cb70-400"></a><span class="in">```{r ch05_25}</span></span>
-<span id="cb70-401"><a href="#cb70-401"></a>year2015 <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
-<span id="cb70-402"><a href="#cb70-402"></a>   <span class="fu">filter</span>(</span>
-<span id="cb70-403"><a href="#cb70-403"></a>      year <span class="sc">==</span> <span class="dv">2015</span>, <span class="co"># 2015年のみ</span></span>
-<span id="cb70-404"><a href="#cb70-404"></a>      firm_ID <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">20</span>, <span class="co"># firm_IDが2から20のデータを抽出</span></span>
-<span id="cb70-405"><a href="#cb70-405"></a>      X <span class="sc">&gt;</span> <span class="dv">0</span> <span class="co"># 対数を取るため当期純利益が正のデータのみ抽出</span></span>
-<span id="cb70-406"><a href="#cb70-406"></a>      )</span>
-<span id="cb70-407"><a href="#cb70-407"></a></span>
-<span id="cb70-408"><a href="#cb70-408"></a><span class="fu">ggplot</span>(year2015) <span class="sc">+</span></span>
-<span id="cb70-409"><a href="#cb70-409"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">log</span>(sales), <span class="at">y =</span> <span class="fu">log</span>(X), <span class="at">size =</span> ME, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb70-410"><a href="#cb70-410"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="co"># バブルチャートを描くにはsize引数を指定</span></span>
-<span id="cb70-411"><a href="#cb70-411"></a>  <span class="fu">scale_size</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">20</span>), <span class="at">name =</span> <span class="st">"Market Equity"</span>) <span class="sc">+</span> <span class="co"># rangeでバブルの最小最大面積を指定</span></span>
-<span id="cb70-412"><a href="#cb70-412"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">14</span>)) <span class="sc">+</span> <span class="co"># 両軸の範囲を指定</span></span>
-<span id="cb70-413"><a href="#cb70-413"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">11</span>)) <span class="sc">+</span> mystyle</span>
-<span id="cb70-414"><a href="#cb70-414"></a><span class="in">```</span></span>
-<span id="cb70-415"><a href="#cb70-415"></a></span>
-<span id="cb70-416"><a href="#cb70-416"></a><span class="fu"># 統計的推論入門</span></span>
-<span id="cb70-417"><a href="#cb70-417"></a></span>
-<span id="cb70-418"><a href="#cb70-418"></a><span class="fu">## リターン・データに関する仮定</span></span>
-<span id="cb70-419"><a href="#cb70-419"></a></span>
-<span id="cb70-420"><a href="#cb70-420"></a>統計的推論の内容に入る前に、<span class="in">`firm_ID`</span>が1の企業の超過リターン<span class="in">`Re`</span>のデータを眺めてみます。</span>
-<span id="cb70-421"><a href="#cb70-421"></a></span>
-<span id="cb70-422"><a href="#cb70-422"></a><span class="in">```{r ch05_27}</span></span>
-<span id="cb70-423"><a href="#cb70-423"></a>stock_data_1_month <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-424"><a href="#cb70-424"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb70-425"><a href="#cb70-425"></a>  <span class="fu">select</span>(month_ID, Re, R)</span>
-<span id="cb70-426"><a href="#cb70-426"></a><span class="fu">ggplot</span>(stock_data_1_month) <span class="sc">+</span></span>
-<span id="cb70-427"><a href="#cb70-427"></a>  <span class="fu">aes</span>(<span class="at">x =</span> month_ID, <span class="at">y =</span> Re) <span class="sc">+</span> <span class="co"># 軸の設定</span></span>
-<span id="cb70-428"><a href="#cb70-428"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> mystyle <span class="co"># 折れ線グラフ</span></span>
-<span id="cb70-429"><a href="#cb70-429"></a><span class="in">```</span></span>
-<span id="cb70-430"><a href="#cb70-430"></a></span>
-<span id="cb70-431"><a href="#cb70-431"></a>このようなデータは時系列データと呼ばれ、ある個体(ここでは<span class="in">`firm_ID`</span>が1の企業)の一定期間にわたって観測したデータのことを指します。</span>
-<span id="cb70-432"><a href="#cb70-432"></a></span>
-<span id="cb70-433"><a href="#cb70-433"></a>::: {.callout-important title="仮定"}</span>
-<span id="cb70-434"><a href="#cb70-434"></a>月次超過リターンの時系列データは、何らかの確率分布(モデル)から独立に生成されている。</span>
-<span id="cb70-435"><a href="#cb70-435"></a>:::</span>
-<span id="cb70-436"><a href="#cb70-436"></a></span>
-<span id="cb70-437"><a href="#cb70-437"></a><span class="ss">1. </span>株価そのものでは無く変化率であるリターンをモデル化する理由</span>
-<span id="cb70-438"><a href="#cb70-438"></a></span>
-<span id="cb70-439"><a href="#cb70-439"></a>株価それ自体は株式分割などの要因でも変化するし、会社の成長に応じて上昇するため、その成長率をモデル化する方が、投資のリスクに対するリターンをより明確に評価することができるからである。</span>
-<span id="cb70-440"><a href="#cb70-440"></a></span>
-<span id="cb70-441"><a href="#cb70-441"></a><span class="ss">2. </span>月次リターンではなく月次超過リターンをモデルかする理由</span>
-<span id="cb70-442"><a href="#cb70-442"></a></span>
-<span id="cb70-443"><a href="#cb70-443"></a>投資リスクを取って得られる追加的なリターンであるリスクプレミアムを明確に評価するために、無リスク金利を差し引いた超過リターンをモデル化します。</span>
-<span id="cb70-444"><a href="#cb70-444"></a></span>
-<span id="cb70-445"><a href="#cb70-445"></a><span class="ss">3. </span>月次超過リターンが独立であるとする理由</span>
-<span id="cb70-446"><a href="#cb70-446"></a></span>
-<span id="cb70-447"><a href="#cb70-447"></a>半強度の効率的市場であれば、過去の情報はすでに株価に織り込まれているので、過去の超過リターンは将来の超過リターンと無関係である、とし、超過リターンに系列相関はない、と仮定します。</span>
-<span id="cb70-448"><a href="#cb70-448"></a>しかし、アノマリーの存在などにより、現実には系列相関があると考えられますが、モデルが複雑になるので、ここでは独立の仮定をおいて、モデルを単純化します。</span>
+<span id="cb70-357"><a href="#cb70-357"></a>となる。</span>
+<span id="cb70-358"><a href="#cb70-358"></a>今まで使ってきた財務データは年次データであるのに対して，株式データは月次データであるため，データの頻度が異なります。</span>
+<span id="cb70-359"><a href="#cb70-359"></a>確認してみましょう。</span>
+<span id="cb70-360"><a href="#cb70-360"></a></span>
+<span id="cb70-361"><a href="#cb70-361"></a></span>
+<span id="cb70-362"><a href="#cb70-362"></a><span class="in">```{r ch05_17}</span></span>
+<span id="cb70-363"><a href="#cb70-363"></a>financial_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"data/ch04_output.csv"</span>)</span>
+<span id="cb70-364"><a href="#cb70-364"></a><span class="fu">nrow</span>(financial_data) <span class="co"># 年次財務データの行数</span></span>
+<span id="cb70-365"><a href="#cb70-365"></a><span class="fu">nrow</span>(annual_stock_data) <span class="co"># 年次リターン・データの行数</span></span>
+<span id="cb70-366"><a href="#cb70-366"></a><span class="fu">nrow</span>(stock_data) <span class="co"># 月次リターン・データの行数</span></span>
+<span id="cb70-367"><a href="#cb70-367"></a><span class="in">```</span></span>
+<span id="cb70-368"><a href="#cb70-368"></a></span>
+<span id="cb70-369"><a href="#cb70-369"></a>月次リターンの行数が上の年次データとは大きく異なっていることが分かります。</span>
+<span id="cb70-370"><a href="#cb70-370"></a></span>
+<span id="cb70-371"><a href="#cb70-371"></a>:::{.callout .callout-info}</span>
+<span id="cb70-372"><a href="#cb70-372"></a>**先読みバイアス**(look-ahead bias)とは、ある時点での情報を使って、その時点よりも未来の情報を使っていることを指します。12月末決算の会社のディスクロジャージャーは、最速で決算日後45日以内に出される決算短信か、3ヶ月以内に出される有価証券報告書があります。</span>
+<span id="cb70-373"><a href="#cb70-373"></a>このため、年次データを使って同時期の年次リターンを計算すると、年次データの発表後に出される有価証券報告書の情報を使っていることになります。これを先読みバイアスといいます。</span>
+<span id="cb70-374"><a href="#cb70-374"></a>:::</span>
+<span id="cb70-375"><a href="#cb70-375"></a></span>
+<span id="cb70-376"><a href="#cb70-376"></a></span>
+<span id="cb70-377"><a href="#cb70-377"></a><span class="in">```{r ch05_18}</span></span>
+<span id="cb70-378"><a href="#cb70-378"></a>annual_data <span class="ot">&lt;-</span> annual_stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-379"><a href="#cb70-379"></a>  <span class="fu">full_join</span>(</span>
+<span id="cb70-380"><a href="#cb70-380"></a>    financial_data, </span>
+<span id="cb70-381"><a href="#cb70-381"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"firm_ID"</span>, <span class="st">"year"</span>)</span>
+<span id="cb70-382"><a href="#cb70-382"></a>  ) <span class="co"># firm_IDとyearのペアをキーとして設定</span></span>
+<span id="cb70-383"><a href="#cb70-383"></a><span class="in">```</span></span>
+<span id="cb70-384"><a href="#cb70-384"></a></span>
+<span id="cb70-385"><a href="#cb70-385"></a></span>
+<span id="cb70-386"><a href="#cb70-386"></a><span class="in">```{r ch05_19}</span></span>
+<span id="cb70-387"><a href="#cb70-387"></a>annual_data <span class="ot">&lt;-</span> annual_stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-388"><a href="#cb70-388"></a>  <span class="fu">full_join</span>(financial_data) <span class="co"># キーを省略した場合，列名が同じ変数がキーになる</span></span>
+<span id="cb70-389"><a href="#cb70-389"></a><span class="in">```</span></span>
+<span id="cb70-390"><a href="#cb70-390"></a></span>
+<span id="cb70-391"><a href="#cb70-391"></a><span class="in">```{r ch05_20}</span></span>
+<span id="cb70-392"><a href="#cb70-392"></a>monthly_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-393"><a href="#cb70-393"></a>  <span class="fu">full_join</span>(financial_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"firm_ID"</span>, <span class="st">"year"</span>)) <span class="co"># firm_IDとyearのペアをキーとして設定</span></span>
+<span id="cb70-394"><a href="#cb70-394"></a><span class="in">```</span></span>
+<span id="cb70-395"><a href="#cb70-395"></a></span>
+<span id="cb70-396"><a href="#cb70-396"></a></span>
+<span id="cb70-397"><a href="#cb70-397"></a><span class="fu">## バブルチャート</span></span>
+<span id="cb70-398"><a href="#cb70-398"></a></span>
+<span id="cb70-399"><a href="#cb70-399"></a><span class="in">```{r ch05_24}</span></span>
+<span id="cb70-400"><a href="#cb70-400"></a>annual_data <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-401"><a href="#cb70-401"></a>  <span class="fu">filter</span>(month <span class="sc">==</span> <span class="dv">12</span>) <span class="sc">|&gt;</span> <span class="co"># 12月のみ</span></span>
+<span id="cb70-402"><a href="#cb70-402"></a>  <span class="fu">select</span>(year, firm_ID, ME) <span class="sc">|&gt;</span> <span class="co"># 変数を選択</span></span>
+<span id="cb70-403"><a href="#cb70-403"></a>  <span class="fu">full_join</span>(annual_data, ., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"firm_ID"</span>)) <span class="sc">|&gt;</span> <span class="co"># 年次データと結合</span></span>
+<span id="cb70-404"><a href="#cb70-404"></a>  <span class="fu">mutate</span>(<span class="at">ME =</span> ME <span class="sc">/</span> <span class="fl">1e6</span>)</span>
+<span id="cb70-405"><a href="#cb70-405"></a><span class="in">```</span></span>
+<span id="cb70-406"><a href="#cb70-406"></a></span>
+<span id="cb70-407"><a href="#cb70-407"></a><span class="in">```{r ch05_25}</span></span>
+<span id="cb70-408"><a href="#cb70-408"></a>year2015 <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
+<span id="cb70-409"><a href="#cb70-409"></a>   <span class="fu">filter</span>(</span>
+<span id="cb70-410"><a href="#cb70-410"></a>      year <span class="sc">==</span> <span class="dv">2015</span>, <span class="co"># 2015年のみ</span></span>
+<span id="cb70-411"><a href="#cb70-411"></a>      firm_ID <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">20</span>, <span class="co"># firm_IDが2から20のデータを抽出</span></span>
+<span id="cb70-412"><a href="#cb70-412"></a>      X <span class="sc">&gt;</span> <span class="dv">0</span> <span class="co"># 対数を取るため当期純利益が正のデータのみ抽出</span></span>
+<span id="cb70-413"><a href="#cb70-413"></a>      )</span>
+<span id="cb70-414"><a href="#cb70-414"></a></span>
+<span id="cb70-415"><a href="#cb70-415"></a><span class="fu">ggplot</span>(year2015) <span class="sc">+</span></span>
+<span id="cb70-416"><a href="#cb70-416"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">log</span>(sales), <span class="at">y =</span> <span class="fu">log</span>(X), <span class="at">size =</span> ME, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb70-417"><a href="#cb70-417"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="co"># バブルチャートを描くにはsize引数を指定</span></span>
+<span id="cb70-418"><a href="#cb70-418"></a>  <span class="fu">scale_size</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">20</span>), <span class="at">name =</span> <span class="st">"Market Equity"</span>) <span class="sc">+</span> <span class="co"># rangeでバブルの最小最大面積を指定</span></span>
+<span id="cb70-419"><a href="#cb70-419"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">14</span>)) <span class="sc">+</span> <span class="co"># 両軸の範囲を指定</span></span>
+<span id="cb70-420"><a href="#cb70-420"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">11</span>)) <span class="sc">+</span> mystyle</span>
+<span id="cb70-421"><a href="#cb70-421"></a><span class="in">```</span></span>
+<span id="cb70-422"><a href="#cb70-422"></a></span>
+<span id="cb70-423"><a href="#cb70-423"></a><span class="fu"># 統計的推論入門</span></span>
+<span id="cb70-424"><a href="#cb70-424"></a></span>
+<span id="cb70-425"><a href="#cb70-425"></a><span class="fu">## リターン・データに関する仮定</span></span>
+<span id="cb70-426"><a href="#cb70-426"></a></span>
+<span id="cb70-427"><a href="#cb70-427"></a>統計的推論の内容に入る前に、<span class="in">`firm_ID`</span>が1の企業の超過リターン<span class="in">`Re`</span>のデータを眺めてみます。</span>
+<span id="cb70-428"><a href="#cb70-428"></a></span>
+<span id="cb70-429"><a href="#cb70-429"></a><span class="in">```{r ch05_27}</span></span>
+<span id="cb70-430"><a href="#cb70-430"></a>stock_data_1_month <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-431"><a href="#cb70-431"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb70-432"><a href="#cb70-432"></a>  <span class="fu">select</span>(month_ID, Re, R)</span>
+<span id="cb70-433"><a href="#cb70-433"></a><span class="fu">ggplot</span>(stock_data_1_month) <span class="sc">+</span></span>
+<span id="cb70-434"><a href="#cb70-434"></a>  <span class="fu">aes</span>(<span class="at">x =</span> month_ID, <span class="at">y =</span> Re) <span class="sc">+</span> <span class="co"># 軸の設定</span></span>
+<span id="cb70-435"><a href="#cb70-435"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> mystyle <span class="co"># 折れ線グラフ</span></span>
+<span id="cb70-436"><a href="#cb70-436"></a><span class="in">```</span></span>
+<span id="cb70-437"><a href="#cb70-437"></a></span>
+<span id="cb70-438"><a href="#cb70-438"></a>このようなデータは時系列データと呼ばれ、ある個体(ここでは<span class="in">`firm_ID`</span>が1の企業)の一定期間にわたって観測したデータのことを指します。</span>
+<span id="cb70-439"><a href="#cb70-439"></a></span>
+<span id="cb70-440"><a href="#cb70-440"></a>::: {.callout-important title="仮定"}</span>
+<span id="cb70-441"><a href="#cb70-441"></a>月次超過リターンの時系列データは、何らかの確率分布(モデル)から独立に生成されている。</span>
+<span id="cb70-442"><a href="#cb70-442"></a>:::</span>
+<span id="cb70-443"><a href="#cb70-443"></a></span>
+<span id="cb70-444"><a href="#cb70-444"></a><span class="ss">1. </span>株価そのものでは無く変化率であるリターンをモデル化する理由</span>
+<span id="cb70-445"><a href="#cb70-445"></a></span>
+<span id="cb70-446"><a href="#cb70-446"></a>株価それ自体は株式分割などの要因でも変化するし、会社の成長に応じて上昇するため、その成長率をモデル化する方が、投資のリスクに対するリターンをより明確に評価することができるからである。</span>
+<span id="cb70-447"><a href="#cb70-447"></a></span>
+<span id="cb70-448"><a href="#cb70-448"></a><span class="ss">2. </span>月次リターンではなく月次超過リターンをモデルかする理由</span>
 <span id="cb70-449"><a href="#cb70-449"></a></span>
-<span id="cb70-450"><a href="#cb70-450"></a><span class="ss">4. </span>月次超過リターンが正規分布に従うとする理由</span>
+<span id="cb70-450"><a href="#cb70-450"></a>投資リスクを取って得られる追加的なリターンであるリスクプレミアムを明確に評価するために、無リスク金利を差し引いた超過リターンをモデル化します。</span>
 <span id="cb70-451"><a href="#cb70-451"></a></span>
-<span id="cb70-452"><a href="#cb70-452"></a>正規分布を仮定するといろいろ計算が楽になる、という理由とともに、</span>
-<span id="cb70-453"><a href="#cb70-453"></a>株価の動きは多くの独立した事象の結果であると考えられ、中心極限定理により、超過リターンは正規分布に従うと考えられます。</span>
-<span id="cb70-454"><a href="#cb70-454"></a></span>
-<span id="cb70-455"><a href="#cb70-455"></a>これらの仮定を受け入れると、超過リターンの確率分布は次式で表されます。</span>
+<span id="cb70-452"><a href="#cb70-452"></a><span class="ss">3. </span>月次超過リターンが独立であるとする理由</span>
+<span id="cb70-453"><a href="#cb70-453"></a></span>
+<span id="cb70-454"><a href="#cb70-454"></a>半強度の効率的市場であれば、過去の情報はすでに株価に織り込まれているので、過去の超過リターンは将来の超過リターンと無関係である、とし、超過リターンに系列相関はない、と仮定します。</span>
+<span id="cb70-455"><a href="#cb70-455"></a>しかし、アノマリーの存在などにより、現実には系列相関があると考えられますが、モデルが複雑になるので、ここでは独立の仮定をおいて、モデルを単純化します。</span>
 <span id="cb70-456"><a href="#cb70-456"></a></span>
-<span id="cb70-457"><a href="#cb70-457"></a>$$</span>
-<span id="cb70-458"><a href="#cb70-458"></a>Re_t \sim N(\mu, \sigma^2)</span>
-<span id="cb70-459"><a href="#cb70-459"></a>$$</span>
-<span id="cb70-460"><a href="#cb70-460"></a></span>
-<span id="cb70-461"><a href="#cb70-461"></a>これにより、母集団分布に対して統計的推論が可能になります。</span>
-<span id="cb70-462"><a href="#cb70-462"></a><span class="in">`firm 1`</span>の超過リターンのヒストグラムを書いてみます。</span>
+<span id="cb70-457"><a href="#cb70-457"></a><span class="ss">4. </span>月次超過リターンが正規分布に従うとする理由</span>
+<span id="cb70-458"><a href="#cb70-458"></a></span>
+<span id="cb70-459"><a href="#cb70-459"></a>正規分布を仮定するといろいろ計算が楽になる、という理由とともに、</span>
+<span id="cb70-460"><a href="#cb70-460"></a>株価の動きは多くの独立した事象の結果であると考えられ、中心極限定理により、超過リターンは正規分布に従うと考えられます。</span>
+<span id="cb70-461"><a href="#cb70-461"></a></span>
+<span id="cb70-462"><a href="#cb70-462"></a>これらの仮定を受け入れると、超過リターンの確率分布は次式で表されます。</span>
 <span id="cb70-463"><a href="#cb70-463"></a></span>
-<span id="cb70-466"><a href="#cb70-466"></a><span class="in">```{r}</span></span>
-<span id="cb70-467"><a href="#cb70-467"></a><span class="fu">ggplot</span>(stock_data_1_month) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> Re) <span class="sc">+</span> <span class="co"># データと変数</span></span>
-<span id="cb70-468"><a href="#cb70-468"></a>  <span class="fu">geom_histogram</span>()</span>
-<span id="cb70-469"><a href="#cb70-469"></a><span class="in">```</span></span>
+<span id="cb70-464"><a href="#cb70-464"></a>$$</span>
+<span id="cb70-465"><a href="#cb70-465"></a>Re_t \sim N(\mu, \sigma^2)</span>
+<span id="cb70-466"><a href="#cb70-466"></a>$$</span>
+<span id="cb70-467"><a href="#cb70-467"></a></span>
+<span id="cb70-468"><a href="#cb70-468"></a>これにより、母集団分布に対して統計的推論が可能になります。</span>
+<span id="cb70-469"><a href="#cb70-469"></a><span class="in">`firm 1`</span>の超過リターンのヒストグラムを書いてみます。</span>
 <span id="cb70-470"><a href="#cb70-470"></a></span>
-<span id="cb70-471"><a href="#cb70-471"></a>サンプルサイズが小さいため凸凹しているけれど、もっとサンプルを増やせば、正規分布に近い形をとるはずです。</span>
-<span id="cb70-472"><a href="#cb70-472"></a></span>
-<span id="cb70-473"><a href="#cb70-473"></a></span>
-<span id="cb70-474"><a href="#cb70-474"></a><span class="fu">## 推定量と推定値の違い</span></span>
-<span id="cb70-475"><a href="#cb70-475"></a></span>
-<span id="cb70-476"><a href="#cb70-476"></a>推定量(estimator)とは、母集団分布の母数(パラメータ)を推定するために使われる統計量のことです。</span>
-<span id="cb70-477"><a href="#cb70-477"></a>推定値(estimates)とは、推定量に実際のデータを代入して計算した値のことです。</span>
-<span id="cb70-478"><a href="#cb70-478"></a>たとえば母集団分布が正規分布$N(\mu, \sigma^2)$に従うと仮定すると、母数は$\mu$と$\sigma^2$の2つです。この母数を推定するために使われる統計量が、それぞれ標本平均$\bar x$と標本分散$s^2$です。</span>
-<span id="cb70-479"><a href="#cb70-479"></a>このときの推定値とは、実際に観察された標本から計算された標本平均$\bar x$と標本分散$s^2$のことを指します。</span>
+<span id="cb70-473"><a href="#cb70-473"></a><span class="in">```{r}</span></span>
+<span id="cb70-474"><a href="#cb70-474"></a><span class="fu">ggplot</span>(stock_data_1_month) <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> Re) <span class="sc">+</span> <span class="co"># データと変数</span></span>
+<span id="cb70-475"><a href="#cb70-475"></a>  <span class="fu">geom_histogram</span>()</span>
+<span id="cb70-476"><a href="#cb70-476"></a><span class="in">```</span></span>
+<span id="cb70-477"><a href="#cb70-477"></a></span>
+<span id="cb70-478"><a href="#cb70-478"></a>サンプルサイズが小さいため凸凹しているけれど、もっとサンプルを増やせば、正規分布に近い形をとるはずです。</span>
+<span id="cb70-479"><a href="#cb70-479"></a></span>
 <span id="cb70-480"><a href="#cb70-480"></a></span>
-<span id="cb70-481"><a href="#cb70-481"></a>次の問題を考えます。</span>
+<span id="cb70-481"><a href="#cb70-481"></a><span class="fu">## 推定量と推定値の違い</span></span>
 <span id="cb70-482"><a href="#cb70-482"></a></span>
-<span id="cb70-483"><a href="#cb70-483"></a>::: {.callout-important title="問題"}</span>
-<span id="cb70-484"><a href="#cb70-484"></a><span class="in">`firm_ID`</span>が1の銘柄の月次リターン$R_{i,t}^e$は、期待値の意味で、ゼロより大きいのだろうか？</span>
-<span id="cb70-485"><a href="#cb70-485"></a>:::</span>
-<span id="cb70-486"><a href="#cb70-486"></a></span>
-<span id="cb70-487"><a href="#cb70-487"></a>ここで「期待値の意味で」というのは平均的に、と言い換えても問題ないです。</span>
-<span id="cb70-488"><a href="#cb70-488"></a>企業1の月次超過リターンの平均は0より大きい、ということは、企業1の月次リターンは平均的に無リスク利子率よりも大きいかどうか、を比べるということです。</span>
+<span id="cb70-483"><a href="#cb70-483"></a>推定量(estimator)とは、母集団分布の母数(パラメータ)を推定するために使われる統計量のことです。</span>
+<span id="cb70-484"><a href="#cb70-484"></a>推定値(estimates)とは、推定量に実際のデータを代入して計算した値のことです。</span>
+<span id="cb70-485"><a href="#cb70-485"></a>たとえば母集団分布が正規分布$N(\mu, \sigma^2)$に従うと仮定すると、母数は$\mu$と$\sigma^2$の2つです。この母数を推定するために使われる統計量が、それぞれ標本平均$\bar x$と標本分散$s^2$です。</span>
+<span id="cb70-486"><a href="#cb70-486"></a>このときの推定値とは、実際に観察された標本から計算された標本平均$\bar x$と標本分散$s^2$のことを指します。</span>
+<span id="cb70-487"><a href="#cb70-487"></a></span>
+<span id="cb70-488"><a href="#cb70-488"></a>次の問題を考えます。</span>
 <span id="cb70-489"><a href="#cb70-489"></a></span>
-<span id="cb70-490"><a href="#cb70-490"></a>この問題を解くために、まずは母集団分布の母数である期待値$\mu$を推定する必要があります。</span>
-<span id="cb70-491"><a href="#cb70-491"></a>期待値$\mu$を推定するために使われる推定量は標本平均$\bar x$なので、ここで標本平均を計算します。</span>
-<span id="cb70-492"><a href="#cb70-492"></a></span>
-<span id="cb70-495"><a href="#cb70-495"></a><span class="in">```{r}</span></span>
-<span id="cb70-496"><a href="#cb70-496"></a>stock_data_1_month <span class="sc">|&gt;</span></span>
-<span id="cb70-497"><a href="#cb70-497"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb70-498"><a href="#cb70-498"></a>    <span class="at">mean_Re =</span> <span class="fu">mean</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb70-499"><a href="#cb70-499"></a>  )</span>
-<span id="cb70-500"><a href="#cb70-500"></a><span class="in">```</span></span>
-<span id="cb70-501"><a href="#cb70-501"></a></span>
-<span id="cb70-502"><a href="#cb70-502"></a>企業1の平均月次超過リターン<span class="in">`mean_Re`</span>が$0.0291$となりました。</span>
-<span id="cb70-503"><a href="#cb70-503"></a>これだけみるとゼロより大きい値ですが、これは母集団から抽出された1つのサンプルの平均ですので、他のサンプルの平均がゼロを超えるかどうかは分かりません。</span>
-<span id="cb70-504"><a href="#cb70-504"></a></span>
-<span id="cb70-505"><a href="#cb70-505"></a><span class="fu">### 大数の法則</span></span>
-<span id="cb70-506"><a href="#cb70-506"></a></span>
-<span id="cb70-507"><a href="#cb70-507"></a>母集団から無限個の標本(sample)を抽出して、それぞれの標本平均(sample mean)を計算すると、その標本平均の平均は母集団の期待値$\mu$に一致することが知られています。これを対数の法則(law of large number)といいます。</span>
+<span id="cb70-490"><a href="#cb70-490"></a>::: {.callout-important title="問題"}</span>
+<span id="cb70-491"><a href="#cb70-491"></a><span class="in">`firm_ID`</span>が1の銘柄の月次リターン$R_{i,t}^e$は、期待値の意味で、ゼロより大きいのだろうか？</span>
+<span id="cb70-492"><a href="#cb70-492"></a>:::</span>
+<span id="cb70-493"><a href="#cb70-493"></a></span>
+<span id="cb70-494"><a href="#cb70-494"></a>ここで「期待値の意味で」というのは平均的に、と言い換えても問題ないです。</span>
+<span id="cb70-495"><a href="#cb70-495"></a>企業1の月次超過リターンの平均は0より大きい、ということは、企業1の月次リターンは平均的に無リスク利子率よりも大きいかどうか、を比べるということです。</span>
+<span id="cb70-496"><a href="#cb70-496"></a></span>
+<span id="cb70-497"><a href="#cb70-497"></a>この問題を解くために、まずは母集団分布の母数である期待値$\mu$を推定する必要があります。</span>
+<span id="cb70-498"><a href="#cb70-498"></a>期待値$\mu$を推定するために使われる推定量は標本平均$\bar x$なので、ここで標本平均を計算します。</span>
+<span id="cb70-499"><a href="#cb70-499"></a></span>
+<span id="cb70-502"><a href="#cb70-502"></a><span class="in">```{r}</span></span>
+<span id="cb70-503"><a href="#cb70-503"></a>stock_data_1_month <span class="sc">|&gt;</span></span>
+<span id="cb70-504"><a href="#cb70-504"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb70-505"><a href="#cb70-505"></a>    <span class="at">mean_Re =</span> <span class="fu">mean</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-506"><a href="#cb70-506"></a>  )</span>
+<span id="cb70-507"><a href="#cb70-507"></a><span class="in">```</span></span>
 <span id="cb70-508"><a href="#cb70-508"></a></span>
-<span id="cb70-509"><a href="#cb70-509"></a>数式よりも前にシミュレーションで確認してみましょう。</span>
-<span id="cb70-510"><a href="#cb70-510"></a>まずは、母集団分布を平均が10、標準偏差が2の正規分布$N(10, 4)$として、母集団から100のデータを抽出して標本を1つ作ります。そしてその標本の平均を計算します。</span>
+<span id="cb70-509"><a href="#cb70-509"></a>企業1の平均月次超過リターン<span class="in">`mean_Re`</span>が$0.0291$となりました。</span>
+<span id="cb70-510"><a href="#cb70-510"></a>これだけみるとゼロより大きい値ですが、これは母集団から抽出された1つのサンプルの平均ですので、他のサンプルの平均がゼロを超えるかどうかは分かりません。</span>
 <span id="cb70-511"><a href="#cb70-511"></a></span>
-<span id="cb70-514"><a href="#cb70-514"></a><span class="in">```{r}</span></span>
-<span id="cb70-515"><a href="#cb70-515"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># 乱数の種を固定</span></span>
-<span id="cb70-516"><a href="#cb70-516"></a>size <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># 標本サイズ</span></span>
-<span id="cb70-517"><a href="#cb70-517"></a><span class="co"># 母集団のパラメータの設定</span></span>
-<span id="cb70-518"><a href="#cb70-518"></a>mu <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co"># 平均</span></span>
-<span id="cb70-519"><a href="#cb70-519"></a>sigma <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># 標準偏差</span></span>
-<span id="cb70-520"><a href="#cb70-520"></a>population <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(size, mu, sigma) <span class="co"># 母集団からサンプルを抽出</span></span>
-<span id="cb70-521"><a href="#cb70-521"></a><span class="fu">mean</span>(population) <span class="co"># 標本平均</span></span>
-<span id="cb70-522"><a href="#cb70-522"></a><span class="in">```</span></span>
-<span id="cb70-523"><a href="#cb70-523"></a>平均は<span class="in">`r mean(population)`</span>となりました。</span>
-<span id="cb70-524"><a href="#cb70-524"></a>母集団の平均10とは異なる数値になっています。</span>
-<span id="cb70-525"><a href="#cb70-525"></a>もう一度別の標本でやってみると、</span>
-<span id="cb70-526"><a href="#cb70-526"></a></span>
-<span id="cb70-529"><a href="#cb70-529"></a><span class="in">```{r}</span></span>
-<span id="cb70-530"><a href="#cb70-530"></a>population <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(size, mu, sigma) <span class="co"># 母集団からサンプルを抽出</span></span>
-<span id="cb70-531"><a href="#cb70-531"></a><span class="fu">mean</span>(population) <span class="co"># 標本平均</span></span>
-<span id="cb70-532"><a href="#cb70-532"></a><span class="in">```</span></span>
+<span id="cb70-512"><a href="#cb70-512"></a><span class="fu">### 大数の法則</span></span>
+<span id="cb70-513"><a href="#cb70-513"></a></span>
+<span id="cb70-514"><a href="#cb70-514"></a>母集団から無限個の標本(sample)を抽出して、それぞれの標本平均(sample mean)を計算すると、その標本平均の平均は母集団の期待値$\mu$に一致することが知られています。これを対数の法則(law of large number)といいます。</span>
+<span id="cb70-515"><a href="#cb70-515"></a></span>
+<span id="cb70-516"><a href="#cb70-516"></a>数式よりも前にシミュレーションで確認してみましょう。</span>
+<span id="cb70-517"><a href="#cb70-517"></a>まずは、母集団分布を平均が10、標準偏差が2の正規分布$N(10, 4)$として、母集団から100のデータを抽出して標本を1つ作ります。そしてその標本の平均を計算します。</span>
+<span id="cb70-518"><a href="#cb70-518"></a></span>
+<span id="cb70-521"><a href="#cb70-521"></a><span class="in">```{r}</span></span>
+<span id="cb70-522"><a href="#cb70-522"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># 乱数の種を固定</span></span>
+<span id="cb70-523"><a href="#cb70-523"></a>size <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># 標本サイズ</span></span>
+<span id="cb70-524"><a href="#cb70-524"></a><span class="co"># 母集団のパラメータの設定</span></span>
+<span id="cb70-525"><a href="#cb70-525"></a>mu <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co"># 平均</span></span>
+<span id="cb70-526"><a href="#cb70-526"></a>sigma <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># 標準偏差</span></span>
+<span id="cb70-527"><a href="#cb70-527"></a>population <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(size, mu, sigma) <span class="co"># 母集団からサンプルを抽出</span></span>
+<span id="cb70-528"><a href="#cb70-528"></a><span class="fu">mean</span>(population) <span class="co"># 標本平均</span></span>
+<span id="cb70-529"><a href="#cb70-529"></a><span class="in">```</span></span>
+<span id="cb70-530"><a href="#cb70-530"></a>平均は<span class="in">`r mean(population)`</span>となりました。</span>
+<span id="cb70-531"><a href="#cb70-531"></a>母集団の平均10とは異なる数値になっています。</span>
+<span id="cb70-532"><a href="#cb70-532"></a>もう一度別の標本でやってみると、</span>
 <span id="cb70-533"><a href="#cb70-533"></a></span>
-<span id="cb70-534"><a href="#cb70-534"></a>また違う平均が計算されました。</span>
-<span id="cb70-535"><a href="#cb70-535"></a>この作業を何度も何度も繰り返し、標本平均をたくさん計算します。</span>
-<span id="cb70-536"><a href="#cb70-536"></a>ここでは、100個のデータをもつ標本を100個作って、それぞれの標本平均を計算します。</span>
-<span id="cb70-537"><a href="#cb70-537"></a></span>
-<span id="cb70-540"><a href="#cb70-540"></a><span class="in">```{r}</span></span>
-<span id="cb70-541"><a href="#cb70-541"></a>n_sample <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># サンプル数</span></span>
-<span id="cb70-542"><a href="#cb70-542"></a>sample_mean <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_sample) <span class="co"># 標本平均を格納するベクトル</span></span>
-<span id="cb70-543"><a href="#cb70-543"></a>sample_sd <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_sample) <span class="co"># 標本分散を格納するベクトル</span></span>
-<span id="cb70-544"><a href="#cb70-544"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sample){</span>
-<span id="cb70-545"><a href="#cb70-545"></a>  population <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(size, mu, sigma) <span class="co"># 母集団からサンプルを抽出</span></span>
-<span id="cb70-546"><a href="#cb70-546"></a>  sample_mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(population) <span class="co"># 標本平均を計算</span></span>
-<span id="cb70-547"><a href="#cb70-547"></a>  sample_sd[i] <span class="ot">&lt;-</span> <span class="fu">sd</span>(population)</span>
-<span id="cb70-548"><a href="#cb70-548"></a>}</span>
-<span id="cb70-549"><a href="#cb70-549"></a><span class="in">```</span></span>
-<span id="cb70-550"><a href="#cb70-550"></a></span>
-<span id="cb70-551"><a href="#cb70-551"></a>サンプルの平均が100個計算できたので、ヒストグラムを書いてみます。</span>
-<span id="cb70-552"><a href="#cb70-552"></a></span>
-<span id="cb70-553"><a href="#cb70-553"></a><span class="in">```{r }</span></span>
-<span id="cb70-554"><a href="#cb70-554"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> sample_mean) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> mystyle</span>
-<span id="cb70-555"><a href="#cb70-555"></a><span class="in">```</span></span>
-<span id="cb70-556"><a href="#cb70-556"></a>あまり正規分布のようには見えません。</span>
-<span id="cb70-557"><a href="#cb70-557"></a>ではサンプルの平均の平均を計算してみます。</span>
-<span id="cb70-558"><a href="#cb70-558"></a></span>
-<span id="cb70-561"><a href="#cb70-561"></a><span class="in">```{r}</span></span>
-<span id="cb70-562"><a href="#cb70-562"></a><span class="fu">mean</span>(sample_mean) <span class="co"># 標本平均の平均</span></span>
-<span id="cb70-563"><a href="#cb70-563"></a><span class="in">```</span></span>
-<span id="cb70-564"><a href="#cb70-564"></a></span>
-<span id="cb70-565"><a href="#cb70-565"></a>母集団の平均10に近い値になっていることが分かります。もっとサンプルの数を増やしてみます。</span>
-<span id="cb70-566"><a href="#cb70-566"></a>データの数が100のサンプルを1,000,000個(100万個)抽出して、それぞれのサンプルの平均値を計算します。</span>
-<span id="cb70-567"><a href="#cb70-567"></a></span>
-<span id="cb70-570"><a href="#cb70-570"></a><span class="in">```{r}</span></span>
-<span id="cb70-571"><a href="#cb70-571"></a>n_sample <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">6</span></span>
-<span id="cb70-572"><a href="#cb70-572"></a><span class="co"># 標本平均のシミュレーション</span></span>
-<span id="cb70-573"><a href="#cb70-573"></a>sample_mean <span class="ot">&lt;-</span> <span class="fu">replicate</span>(n_sample, <span class="fu">mean</span>(<span class="fu">rnorm</span>(size, mu, sigma)))</span>
-<span id="cb70-574"><a href="#cb70-574"></a><span class="co"># 標本標準偏差のシミュレーション（必要な場合）</span></span>
-<span id="cb70-575"><a href="#cb70-575"></a>sample_sd <span class="ot">&lt;-</span> <span class="fu">replicate</span>(n_sample, <span class="fu">sd</span>(<span class="fu">rnorm</span>(size, mu, sigma)))</span>
-<span id="cb70-576"><a href="#cb70-576"></a><span class="co"># 作図</span></span>
-<span id="cb70-577"><a href="#cb70-577"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> sample_mean) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> mystyle</span>
-<span id="cb70-578"><a href="#cb70-578"></a><span class="in">```</span></span>
-<span id="cb70-579"><a href="#cb70-579"></a></span>
-<span id="cb70-580"><a href="#cb70-580"></a>ほぼ正規分布のような形をしていることが分かります。ではサンプルの平均の平均を計算してみます。</span>
-<span id="cb70-581"><a href="#cb70-581"></a></span>
-<span id="cb70-584"><a href="#cb70-584"></a><span class="in">```{r}</span></span>
-<span id="cb70-585"><a href="#cb70-585"></a><span class="fu">mean</span>(sample_mean) <span class="co"># 標本平均の平均</span></span>
-<span id="cb70-586"><a href="#cb70-586"></a><span class="fu">mean</span>(sample_sd) <span class="co"># 標本分散の平均</span></span>
-<span id="cb70-587"><a href="#cb70-587"></a><span class="in">```</span></span>
+<span id="cb70-536"><a href="#cb70-536"></a><span class="in">```{r}</span></span>
+<span id="cb70-537"><a href="#cb70-537"></a>population <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(size, mu, sigma) <span class="co"># 母集団からサンプルを抽出</span></span>
+<span id="cb70-538"><a href="#cb70-538"></a><span class="fu">mean</span>(population) <span class="co"># 標本平均</span></span>
+<span id="cb70-539"><a href="#cb70-539"></a><span class="in">```</span></span>
+<span id="cb70-540"><a href="#cb70-540"></a></span>
+<span id="cb70-541"><a href="#cb70-541"></a>また違う平均が計算されました。</span>
+<span id="cb70-542"><a href="#cb70-542"></a>この作業を何度も何度も繰り返し、標本平均をたくさん計算します。</span>
+<span id="cb70-543"><a href="#cb70-543"></a>ここでは、100個のデータをもつ標本を100個作って、それぞれの標本平均を計算します。</span>
+<span id="cb70-544"><a href="#cb70-544"></a></span>
+<span id="cb70-547"><a href="#cb70-547"></a><span class="in">```{r}</span></span>
+<span id="cb70-548"><a href="#cb70-548"></a>n_sample <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># サンプル数</span></span>
+<span id="cb70-549"><a href="#cb70-549"></a>sample_mean <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_sample) <span class="co"># 標本平均を格納するベクトル</span></span>
+<span id="cb70-550"><a href="#cb70-550"></a>sample_sd <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n_sample) <span class="co"># 標本分散を格納するベクトル</span></span>
+<span id="cb70-551"><a href="#cb70-551"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sample){</span>
+<span id="cb70-552"><a href="#cb70-552"></a>  population <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(size, mu, sigma) <span class="co"># 母集団からサンプルを抽出</span></span>
+<span id="cb70-553"><a href="#cb70-553"></a>  sample_mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(population) <span class="co"># 標本平均を計算</span></span>
+<span id="cb70-554"><a href="#cb70-554"></a>  sample_sd[i] <span class="ot">&lt;-</span> <span class="fu">sd</span>(population)</span>
+<span id="cb70-555"><a href="#cb70-555"></a>}</span>
+<span id="cb70-556"><a href="#cb70-556"></a><span class="in">```</span></span>
+<span id="cb70-557"><a href="#cb70-557"></a></span>
+<span id="cb70-558"><a href="#cb70-558"></a>サンプルの平均が100個計算できたので、ヒストグラムを書いてみます。</span>
+<span id="cb70-559"><a href="#cb70-559"></a></span>
+<span id="cb70-560"><a href="#cb70-560"></a><span class="in">```{r }</span></span>
+<span id="cb70-561"><a href="#cb70-561"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> sample_mean) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> mystyle</span>
+<span id="cb70-562"><a href="#cb70-562"></a><span class="in">```</span></span>
+<span id="cb70-563"><a href="#cb70-563"></a>あまり正規分布のようには見えません。</span>
+<span id="cb70-564"><a href="#cb70-564"></a>ではサンプルの平均の平均を計算してみます。</span>
+<span id="cb70-565"><a href="#cb70-565"></a></span>
+<span id="cb70-568"><a href="#cb70-568"></a><span class="in">```{r}</span></span>
+<span id="cb70-569"><a href="#cb70-569"></a><span class="fu">mean</span>(sample_mean) <span class="co"># 標本平均の平均</span></span>
+<span id="cb70-570"><a href="#cb70-570"></a><span class="in">```</span></span>
+<span id="cb70-571"><a href="#cb70-571"></a></span>
+<span id="cb70-572"><a href="#cb70-572"></a>母集団の平均10に近い値になっていることが分かります。もっとサンプルの数を増やしてみます。</span>
+<span id="cb70-573"><a href="#cb70-573"></a>データの数が100のサンプルを1,000,000個(100万個)抽出して、それぞれのサンプルの平均値を計算します。</span>
+<span id="cb70-574"><a href="#cb70-574"></a></span>
+<span id="cb70-577"><a href="#cb70-577"></a><span class="in">```{r}</span></span>
+<span id="cb70-578"><a href="#cb70-578"></a>n_sample <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">6</span></span>
+<span id="cb70-579"><a href="#cb70-579"></a><span class="co"># 標本平均のシミュレーション</span></span>
+<span id="cb70-580"><a href="#cb70-580"></a>sample_mean <span class="ot">&lt;-</span> <span class="fu">replicate</span>(n_sample, <span class="fu">mean</span>(<span class="fu">rnorm</span>(size, mu, sigma)))</span>
+<span id="cb70-581"><a href="#cb70-581"></a><span class="co"># 標本標準偏差のシミュレーション（必要な場合）</span></span>
+<span id="cb70-582"><a href="#cb70-582"></a>sample_sd <span class="ot">&lt;-</span> <span class="fu">replicate</span>(n_sample, <span class="fu">sd</span>(<span class="fu">rnorm</span>(size, mu, sigma)))</span>
+<span id="cb70-583"><a href="#cb70-583"></a><span class="co"># 作図</span></span>
+<span id="cb70-584"><a href="#cb70-584"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">aes</span>(<span class="at">x =</span> sample_mean) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> mystyle</span>
+<span id="cb70-585"><a href="#cb70-585"></a><span class="in">```</span></span>
+<span id="cb70-586"><a href="#cb70-586"></a></span>
+<span id="cb70-587"><a href="#cb70-587"></a>ほぼ正規分布のような形をしていることが分かります。ではサンプルの平均の平均を計算してみます。</span>
 <span id="cb70-588"><a href="#cb70-588"></a></span>
-<span id="cb70-589"><a href="#cb70-589"></a>このように標本の数を無限に大きくしたとき、サンプルの平均の平均は母集団の平均10に一致するし，標本標準偏差は母集団の標準偏差4に一致する，というのが大数の法則です。</span>
-<span id="cb70-590"><a href="#cb70-590"></a></span>
-<span id="cb70-591"><a href="#cb70-591"></a><span class="fu">## $t$値の計算</span></span>
-<span id="cb70-592"><a href="#cb70-592"></a></span>
-<span id="cb70-593"><a href="#cb70-593"></a>先ほど計算した<span class="in">`firm_ID`</span>が1の企業の超過リターンの平均値は<span class="in">`r mean(stock_data_1_month$Re)`</span>でした。</span>
-<span id="cb70-594"><a href="#cb70-594"></a>これがゼロより大きいかどうかはすぐ分かりますが，この値はたまたま今手元にある1つのサンプルから計算された平均値なので，他の標本ではどうなるか分かりません。</span>
-<span id="cb70-595"><a href="#cb70-595"></a>このように推定量にばらつきがある場合には，その推定量の分布を考える必要があります。</span>
-<span id="cb70-596"><a href="#cb70-596"></a>ここでは，その分布を**t分布**(t distribution)と仮定して，$t$値(t-value)を計算してみます。</span>
-<span id="cb70-597"><a href="#cb70-597"></a>$t$値は次のように定義されます。</span>
-<span id="cb70-598"><a href="#cb70-598"></a></span>
-<span id="cb70-599"><a href="#cb70-599"></a>$$</span>
-<span id="cb70-600"><a href="#cb70-600"></a>t = \frac{\bar{X} - \mu_0}{\sqrt{s^2 / n} } \stackrel{d}{\approx} N(0,1)</span>
-<span id="cb70-601"><a href="#cb70-601"></a>$$</span>
-<span id="cb70-602"><a href="#cb70-602"></a></span>
-<span id="cb70-603"><a href="#cb70-603"></a>ここで，$\bar X$は標本平均，$\mu_0$は帰無仮説(null hypothesis)の値で，ここでは$\mu_0 = 0$とします。$s^2$は標本分散，$n$は標本サイズです。</span>
-<span id="cb70-604"><a href="#cb70-604"></a>分子に注目すると，標本平均と帰無仮説の値の差となっており，もし標本平均が0に近いなら，$t$値は0に近い値になります。</span>
+<span id="cb70-591"><a href="#cb70-591"></a><span class="in">```{r}</span></span>
+<span id="cb70-592"><a href="#cb70-592"></a><span class="fu">mean</span>(sample_mean) <span class="co"># 標本平均の平均</span></span>
+<span id="cb70-593"><a href="#cb70-593"></a><span class="fu">mean</span>(sample_sd) <span class="co"># 標本分散の平均</span></span>
+<span id="cb70-594"><a href="#cb70-594"></a><span class="in">```</span></span>
+<span id="cb70-595"><a href="#cb70-595"></a></span>
+<span id="cb70-596"><a href="#cb70-596"></a>このように標本の数を無限に大きくしたとき、サンプルの平均の平均は母集団の平均10に一致するし，標本標準偏差は母集団の標準偏差4に一致する，というのが大数の法則です。</span>
+<span id="cb70-597"><a href="#cb70-597"></a></span>
+<span id="cb70-598"><a href="#cb70-598"></a><span class="fu">## $t$値の計算</span></span>
+<span id="cb70-599"><a href="#cb70-599"></a></span>
+<span id="cb70-600"><a href="#cb70-600"></a>先ほど計算した<span class="in">`firm_ID`</span>が1の企業の超過リターンの平均値は<span class="in">`r mean(stock_data_1_month$Re)`</span>でした。</span>
+<span id="cb70-601"><a href="#cb70-601"></a>これがゼロより大きいかどうかはすぐ分かりますが，この値はたまたま今手元にある1つのサンプルから計算された平均値なので，他の標本ではどうなるか分かりません。</span>
+<span id="cb70-602"><a href="#cb70-602"></a>このように推定量にばらつきがある場合には，その推定量の分布を考える必要があります。</span>
+<span id="cb70-603"><a href="#cb70-603"></a>ここでは，その分布を**t分布**(t distribution)と仮定して，$t$値(t-value)を計算してみます。</span>
+<span id="cb70-604"><a href="#cb70-604"></a>$t$値は次のように定義されます。</span>
 <span id="cb70-605"><a href="#cb70-605"></a></span>
-<span id="cb70-606"><a href="#cb70-606"></a><span class="in">```{r ch05_29}</span></span>
-<span id="cb70-607"><a href="#cb70-607"></a>Re_firm_ID_1 <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
-<span id="cb70-608"><a href="#cb70-608"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="co"># firm_IDが1の企業のデータを抽出</span></span>
-<span id="cb70-609"><a href="#cb70-609"></a>  <span class="fu">select</span>(Re) <span class="sc">|&gt;</span> <span class="co">#超過リターンのみ選択</span></span>
-<span id="cb70-610"><a href="#cb70-610"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># 欠損値を除去</span></span>
-<span id="cb70-611"><a href="#cb70-611"></a>  <span class="fu">unlist</span>() <span class="co"># データフレームをベクトルに変換</span></span>
+<span id="cb70-606"><a href="#cb70-606"></a>$$</span>
+<span id="cb70-607"><a href="#cb70-607"></a>t = \frac{\bar{X} - \mu_0}{\sqrt{s^2 / n} } \stackrel{d}{\approx} N(0,1)</span>
+<span id="cb70-608"><a href="#cb70-608"></a>$$</span>
+<span id="cb70-609"><a href="#cb70-609"></a></span>
+<span id="cb70-610"><a href="#cb70-610"></a>ここで，$\bar X$は標本平均，$\mu_0$は帰無仮説(null hypothesis)の値で，ここでは$\mu_0 = 0$とします。$s^2$は標本分散，$n$は標本サイズです。</span>
+<span id="cb70-611"><a href="#cb70-611"></a>分子に注目すると，標本平均と帰無仮説の値の差となっており，もし標本平均が0に近いなら，$t$値は0に近い値になります。</span>
 <span id="cb70-612"><a href="#cb70-612"></a></span>
-<span id="cb70-613"><a href="#cb70-613"></a>mu0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># 帰無仮説の値</span></span>
-<span id="cb70-614"><a href="#cb70-614"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(Re_firm_ID_1) <span class="co"># 標本サイズ</span></span>
-<span id="cb70-615"><a href="#cb70-615"></a></span>
-<span id="cb70-616"><a href="#cb70-616"></a>t_value <span class="ot">&lt;-</span> (<span class="fu">mean</span>(Re_firm_ID_1) <span class="sc">-</span> mu0) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(Re_firm_ID_1) <span class="sc">/</span> n) <span class="co"># $t$値の計算</span></span>
-<span id="cb70-617"><a href="#cb70-617"></a><span class="fu">print</span>(t_value)</span>
-<span id="cb70-618"><a href="#cb70-618"></a><span class="in">```</span></span>
+<span id="cb70-613"><a href="#cb70-613"></a><span class="in">```{r ch05_29}</span></span>
+<span id="cb70-614"><a href="#cb70-614"></a>Re_firm_ID_1 <span class="ot">&lt;-</span> stock_data <span class="sc">|&gt;</span></span>
+<span id="cb70-615"><a href="#cb70-615"></a>  <span class="fu">filter</span>(firm_ID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="co"># firm_IDが1の企業のデータを抽出</span></span>
+<span id="cb70-616"><a href="#cb70-616"></a>  <span class="fu">select</span>(Re) <span class="sc">|&gt;</span> <span class="co">#超過リターンのみ選択</span></span>
+<span id="cb70-617"><a href="#cb70-617"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># 欠損値を除去</span></span>
+<span id="cb70-618"><a href="#cb70-618"></a>  <span class="fu">unlist</span>() <span class="co"># データフレームをベクトルに変換</span></span>
 <span id="cb70-619"><a href="#cb70-619"></a></span>
-<span id="cb70-620"><a href="#cb70-620"></a></span>
-<span id="cb70-621"><a href="#cb70-621"></a><span class="fu">### 統計的検定の考え方</span></span>
+<span id="cb70-620"><a href="#cb70-620"></a>mu0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># 帰無仮説の値</span></span>
+<span id="cb70-621"><a href="#cb70-621"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(Re_firm_ID_1) <span class="co"># 標本サイズ</span></span>
 <span id="cb70-622"><a href="#cb70-622"></a></span>
-<span id="cb70-623"><a href="#cb70-623"></a>あなたがサイコロを投げるゲームをしていて、あるプレイヤーが非常に幸運だと主張しています。彼は6回サイコロを投げて、5回も「6」が出たとします。これはただの偶然なのか、それとも何か他の要因（例えば、サイコロがいかさまであるとか）が関与しているのでしょうか？</span>
-<span id="cb70-624"><a href="#cb70-624"></a></span>
-<span id="cb70-625"><a href="#cb70-625"></a>この問いに答えるために、我々は**統計的検定**(statistical test)を用いることができます。</span>
-<span id="cb70-626"><a href="#cb70-626"></a>まず**帰無仮説**(null hypothesis)を設定します。</span>
-<span id="cb70-627"><a href="#cb70-627"></a>この例では、帰無仮説は「サイコロは公正であり、すべての出目が等確率（$1/6$）で出る」とすることが適切です。</span>
-<span id="cb70-628"><a href="#cb70-628"></a></span>
-<span id="cb70-629"><a href="#cb70-629"></a>次に、この帰無仮説が真(true)である場合に、我々が観察した結果（5回の「6」）がどれほどあり得ないかを計算します。これが$p$値(p value)です。この場合、6回投げて5回「6」が出る確率を計算します。</span>
-<span id="cb70-630"><a href="#cb70-630"></a></span>
-<span id="cb70-631"><a href="#cb70-631"></a>これを計算すると、$p$値は非常に小さいことが分かり（つまり、この結果は帰無仮説の下ではほぼあり得ない），帰無仮説が棄却されます。</span>
-<span id="cb70-632"><a href="#cb70-632"></a>帰無仮説が棄却されるとは，**帰無仮説が正しいと仮定したときに，観測されたデータが得られる確率が小さいことを意味します**。</span>
-<span id="cb70-633"><a href="#cb70-633"></a>したがって、我々はこの結果が偶然生じたとは考えにくく、その代わりにサイコロがいかさまである、または何か他の非ランダムな要因が作用している可能性を強く疑うことになります。これが$p$値を用いて統計的検定の考え方です。</span>
-<span id="cb70-634"><a href="#cb70-634"></a></span>
-<span id="cb70-635"><a href="#cb70-635"></a>$p$値が$0.05$より小さい場合，帰無仮説は棄却され，対立仮説が採択される，というケースが多いです。</span>
-<span id="cb70-636"><a href="#cb70-636"></a>この場合，有意水準5%で帰無仮説は棄却されます。</span>
-<span id="cb70-637"><a href="#cb70-637"></a>有意水準は，帰無仮説が正しいと仮定したときに，観測されたデータが得られる確率が小さいと判断する基準値です。</span>
-<span id="cb70-638"><a href="#cb70-638"></a>有意水準は，5%や1%がよく使われます。</span>
-<span id="cb70-639"><a href="#cb70-639"></a></span>
-<span id="cb70-640"><a href="#cb70-640"></a>Rでは，<span class="in">`t.test()`</span>関数を使って，$t$値と$p$値を計算することができます。</span>
-<span id="cb70-641"><a href="#cb70-641"></a>ここでは，<span class="in">`t.test()`</span>関数を使って，<span class="in">`firm_ID`</span>が1の企業の超過リターンがゼロなのかどうなのか，を検定するために，$t$値と$p$値を計算してみましょう。</span>
-<span id="cb70-642"><a href="#cb70-642"></a></span>
-<span id="cb70-643"><a href="#cb70-643"></a><span class="in">```{r ch05_30}</span></span>
-<span id="cb70-644"><a href="#cb70-644"></a><span class="fu">t.test</span>(Re_firm_ID_1)</span>
-<span id="cb70-645"><a href="#cb70-645"></a><span class="in">```</span></span>
+<span id="cb70-623"><a href="#cb70-623"></a>t_value <span class="ot">&lt;-</span> (<span class="fu">mean</span>(Re_firm_ID_1) <span class="sc">-</span> mu0) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(Re_firm_ID_1) <span class="sc">/</span> n) <span class="co"># $t$値の計算</span></span>
+<span id="cb70-624"><a href="#cb70-624"></a><span class="fu">print</span>(t_value)</span>
+<span id="cb70-625"><a href="#cb70-625"></a><span class="in">```</span></span>
+<span id="cb70-626"><a href="#cb70-626"></a></span>
+<span id="cb70-627"><a href="#cb70-627"></a></span>
+<span id="cb70-628"><a href="#cb70-628"></a><span class="fu">### 統計的検定の考え方</span></span>
+<span id="cb70-629"><a href="#cb70-629"></a></span>
+<span id="cb70-630"><a href="#cb70-630"></a>あなたがサイコロを投げるゲームをしていて、あるプレイヤーが非常に幸運だと主張しています。彼は6回サイコロを投げて、5回も「6」が出たとします。これはただの偶然なのか、それとも何か他の要因（例えば、サイコロがいかさまであるとか）が関与しているのでしょうか？</span>
+<span id="cb70-631"><a href="#cb70-631"></a></span>
+<span id="cb70-632"><a href="#cb70-632"></a>この問いに答えるために、我々は**統計的検定**(statistical test)を用いることができます。</span>
+<span id="cb70-633"><a href="#cb70-633"></a>まず**帰無仮説**(null hypothesis)を設定します。</span>
+<span id="cb70-634"><a href="#cb70-634"></a>この例では、帰無仮説は「サイコロは公正であり、すべての出目が等確率（$1/6$）で出る」とすることが適切です。</span>
+<span id="cb70-635"><a href="#cb70-635"></a></span>
+<span id="cb70-636"><a href="#cb70-636"></a>次に、この帰無仮説が真(true)である場合に、我々が観察した結果（5回の「6」）がどれほどあり得ないかを計算します。これが$p$値(p value)です。この場合、6回投げて5回「6」が出る確率を計算します。</span>
+<span id="cb70-637"><a href="#cb70-637"></a></span>
+<span id="cb70-638"><a href="#cb70-638"></a>これを計算すると、$p$値は非常に小さいことが分かり（つまり、この結果は帰無仮説の下ではほぼあり得ない），帰無仮説が棄却されます。</span>
+<span id="cb70-639"><a href="#cb70-639"></a>帰無仮説が棄却されるとは，**帰無仮説が正しいと仮定したときに，観測されたデータが得られる確率が小さいことを意味します**。</span>
+<span id="cb70-640"><a href="#cb70-640"></a>したがって、我々はこの結果が偶然生じたとは考えにくく、その代わりにサイコロがいかさまである、または何か他の非ランダムな要因が作用している可能性を強く疑うことになります。これが$p$値を用いて統計的検定の考え方です。</span>
+<span id="cb70-641"><a href="#cb70-641"></a></span>
+<span id="cb70-642"><a href="#cb70-642"></a>$p$値が$0.05$より小さい場合，帰無仮説は棄却され，対立仮説が採択される，というケースが多いです。</span>
+<span id="cb70-643"><a href="#cb70-643"></a>この場合，有意水準5%で帰無仮説は棄却されます。</span>
+<span id="cb70-644"><a href="#cb70-644"></a>有意水準は，帰無仮説が正しいと仮定したときに，観測されたデータが得られる確率が小さいと判断する基準値です。</span>
+<span id="cb70-645"><a href="#cb70-645"></a>有意水準は，5%や1%がよく使われます。</span>
 <span id="cb70-646"><a href="#cb70-646"></a></span>
-<span id="cb70-647"><a href="#cb70-647"></a></span>
-<span id="cb70-648"><a href="#cb70-648"></a></span>
+<span id="cb70-647"><a href="#cb70-647"></a>Rでは，<span class="in">`t.test()`</span>関数を使って，$t$値と$p$値を計算することができます。</span>
+<span id="cb70-648"><a href="#cb70-648"></a>ここでは，<span class="in">`t.test()`</span>関数を使って，<span class="in">`firm_ID`</span>が1の企業の超過リターンがゼロなのかどうなのか，を検定するために，$t$値と$p$値を計算してみましょう。</span>
 <span id="cb70-649"><a href="#cb70-649"></a></span>
-<span id="cb70-650"><a href="#cb70-650"></a><span class="fu"># 線形回帰入門</span></span>
-<span id="cb70-651"><a href="#cb70-651"></a></span>
-<span id="cb70-652"><a href="#cb70-652"></a>年次財務データ<span class="in">`annual_data`</span>を使って線形回帰(linear regression)について学習します。</span>
-<span id="cb70-653"><a href="#cb70-653"></a>線形(linear)とは，$X$と$\beta$の積が線形であることを意味します。回帰(regression)とは，$X$と$\beta$の積が$Y$を説明することを意味します。</span>
-<span id="cb70-654"><a href="#cb70-654"></a>回帰は，2変数間の間で、一方の変数が他方の変数に対して影響を与えるという関係を想定できる場合に用いられます。</span>
-<span id="cb70-655"><a href="#cb70-655"></a>しかし因果関係を直接調べているのではないことに注意しましょう。</span>
+<span id="cb70-650"><a href="#cb70-650"></a><span class="in">```{r ch05_30}</span></span>
+<span id="cb70-651"><a href="#cb70-651"></a><span class="fu">t.test</span>(Re_firm_ID_1)</span>
+<span id="cb70-652"><a href="#cb70-652"></a><span class="in">```</span></span>
+<span id="cb70-653"><a href="#cb70-653"></a></span>
+<span id="cb70-654"><a href="#cb70-654"></a></span>
+<span id="cb70-655"><a href="#cb70-655"></a></span>
 <span id="cb70-656"><a href="#cb70-656"></a></span>
-<span id="cb70-657"><a href="#cb70-657"></a>影響を与える変数を説明変数(explanatory variable)や独立変数(independent variable)といい、</span>
-<span id="cb70-658"><a href="#cb70-658"></a>影響を与えられる変数を目的変数(response variable)や従属変数(dependent variable)といいます。</span>
-<span id="cb70-659"><a href="#cb70-659"></a>分野などでどっちを使うのかは異なりますが、ここでは説明変数と目的変数を使います。</span>
-<span id="cb70-660"><a href="#cb70-660"></a></span>
-<span id="cb70-661"><a href="#cb70-661"></a>線形関係を仮定した関係を式にすると，次のようになります。</span>
-<span id="cb70-662"><a href="#cb70-662"></a>$$</span>
-<span id="cb70-663"><a href="#cb70-663"></a>Y = \alpha + \beta X</span>
-<span id="cb70-664"><a href="#cb70-664"></a>$$</span>
-<span id="cb70-665"><a href="#cb70-665"></a>ここで，</span>
-<span id="cb70-666"><a href="#cb70-666"></a>$\alpha$は定数項(constant term)と呼ばれ，切片(intercept)とも呼ばれます。</span>
-<span id="cb70-667"><a href="#cb70-667"></a>$\beta$は回帰係数(regression coefficient)と呼ばれ，傾き(slope)とも呼ばれます。</span>
-<span id="cb70-668"><a href="#cb70-668"></a></span>
-<span id="cb70-669"><a href="#cb70-669"></a>実際のデータが上のモデルを満たす、つまりすべてのデータが直線上に並んでいるわけではないのです。</span>
-<span id="cb70-670"><a href="#cb70-670"></a>実際のデータとモデルとの間には**ずれ**があることを考慮して、上のモデルを次のように書き換えます。</span>
-<span id="cb70-671"><a href="#cb70-671"></a></span>
-<span id="cb70-672"><a href="#cb70-672"></a>$$</span>
-<span id="cb70-673"><a href="#cb70-673"></a>Y = \alpha + \beta X + u</span>
-<span id="cb70-674"><a href="#cb70-674"></a>$$</span>
-<span id="cb70-675"><a href="#cb70-675"></a>ここで$u$は誤差項(error term)とか観察不可能項(unobservable term)と呼ばれます。</span>
-<span id="cb70-676"><a href="#cb70-676"></a></span>
-<span id="cb70-677"><a href="#cb70-677"></a></span>
-<span id="cb70-678"><a href="#cb70-678"></a>線形回帰の目的は，$X$と$Y$の関係を表す$\alpha$と$\beta$を推定することです。</span>
-<span id="cb70-679"><a href="#cb70-679"></a>推定するために，観測できるデータを使います。</span>
-<span id="cb70-680"><a href="#cb70-680"></a>観測できるデータは$X$と$Y$のペアで$(X_i, Y_i)$と表記します。</span>
-<span id="cb70-681"><a href="#cb70-681"></a>このペアを**観測値**(observed value)と呼びます。</span>
-<span id="cb70-682"><a href="#cb70-682"></a>この観測値は，$X$と$Y$の関係を表す$\alpha$と$\beta$を推定するために使われます。</span>
-<span id="cb70-683"><a href="#cb70-683"></a>推定するために使われる$\alpha$と$\beta$を**推定値**(estimated value)と呼びます。</span>
-<span id="cb70-684"><a href="#cb70-684"></a>推定値は，$\hat{\alpha}$と$\hat{\beta}$と表記して，観察値と区別します。</span>
-<span id="cb70-685"><a href="#cb70-685"></a></span>
-<span id="cb70-686"><a href="#cb70-686"></a></span>
-<span id="cb70-687"><a href="#cb70-687"></a><span class="fu">## OLS推定</span></span>
-<span id="cb70-688"><a href="#cb70-688"></a></span>
-<span id="cb70-689"><a href="#cb70-689"></a>推定方法として最も有名なものが**最小二乗法**(ordinary least squares; OLS)です。</span>
-<span id="cb70-690"><a href="#cb70-690"></a>最小二乗法では，観測値と推定値の差の二乗の和が最小になるように$\alpha$と$\beta$を推定します。</span>
-<span id="cb70-691"><a href="#cb70-691"></a>このとき，観測値と推定値の差を**残差**(residual)と呼びます。</span>
-<span id="cb70-692"><a href="#cb70-692"></a>最小二乗法では，残差の二乗の和である**残差平方和**(sum of squared residuals; SSR)が最小になるように$\alpha$と$\beta$を推定します。</span>
+<span id="cb70-657"><a href="#cb70-657"></a><span class="fu"># 線形回帰入門</span></span>
+<span id="cb70-658"><a href="#cb70-658"></a></span>
+<span id="cb70-659"><a href="#cb70-659"></a>年次財務データ<span class="in">`annual_data`</span>を使って線形回帰(linear regression)について学習します。</span>
+<span id="cb70-660"><a href="#cb70-660"></a>線形(linear)とは，$X$と$\beta$の積が線形であることを意味します。回帰(regression)とは，$X$と$\beta$の積が$Y$を説明することを意味します。</span>
+<span id="cb70-661"><a href="#cb70-661"></a>回帰は，2変数間の間で、一方の変数が他方の変数に対して影響を与えるという関係を想定できる場合に用いられます。</span>
+<span id="cb70-662"><a href="#cb70-662"></a>しかし因果関係を直接調べているのではないことに注意しましょう。</span>
+<span id="cb70-663"><a href="#cb70-663"></a></span>
+<span id="cb70-664"><a href="#cb70-664"></a>影響を与える変数を説明変数(explanatory variable)や独立変数(independent variable)といい、</span>
+<span id="cb70-665"><a href="#cb70-665"></a>影響を与えられる変数を目的変数(response variable)や従属変数(dependent variable)といいます。</span>
+<span id="cb70-666"><a href="#cb70-666"></a>分野などでどっちを使うのかは異なりますが、ここでは説明変数と目的変数を使います。</span>
+<span id="cb70-667"><a href="#cb70-667"></a></span>
+<span id="cb70-668"><a href="#cb70-668"></a>線形関係を仮定した関係を式にすると，次のようになります。</span>
+<span id="cb70-669"><a href="#cb70-669"></a>$$</span>
+<span id="cb70-670"><a href="#cb70-670"></a>Y = \alpha + \beta X</span>
+<span id="cb70-671"><a href="#cb70-671"></a>$$</span>
+<span id="cb70-672"><a href="#cb70-672"></a>ここで，</span>
+<span id="cb70-673"><a href="#cb70-673"></a>$\alpha$は定数項(constant term)と呼ばれ，切片(intercept)とも呼ばれます。</span>
+<span id="cb70-674"><a href="#cb70-674"></a>$\beta$は回帰係数(regression coefficient)と呼ばれ，傾き(slope)とも呼ばれます。</span>
+<span id="cb70-675"><a href="#cb70-675"></a></span>
+<span id="cb70-676"><a href="#cb70-676"></a>実際のデータが上のモデルを満たす、つまりすべてのデータが直線上に並んでいるわけではないのです。</span>
+<span id="cb70-677"><a href="#cb70-677"></a>実際のデータとモデルとの間には**ずれ**があることを考慮して、上のモデルを次のように書き換えます。</span>
+<span id="cb70-678"><a href="#cb70-678"></a></span>
+<span id="cb70-679"><a href="#cb70-679"></a>$$</span>
+<span id="cb70-680"><a href="#cb70-680"></a>Y = \alpha + \beta X + u</span>
+<span id="cb70-681"><a href="#cb70-681"></a>$$</span>
+<span id="cb70-682"><a href="#cb70-682"></a>ここで$u$は誤差項(error term)とか観察不可能項(unobservable term)と呼ばれます。</span>
+<span id="cb70-683"><a href="#cb70-683"></a></span>
+<span id="cb70-684"><a href="#cb70-684"></a></span>
+<span id="cb70-685"><a href="#cb70-685"></a>線形回帰の目的は，$X$と$Y$の関係を表す$\alpha$と$\beta$を推定することです。</span>
+<span id="cb70-686"><a href="#cb70-686"></a>推定するために，観測できるデータを使います。</span>
+<span id="cb70-687"><a href="#cb70-687"></a>観測できるデータは$X$と$Y$のペアで$(X_i, Y_i)$と表記します。</span>
+<span id="cb70-688"><a href="#cb70-688"></a>このペアを**観測値**(observed value)と呼びます。</span>
+<span id="cb70-689"><a href="#cb70-689"></a>この観測値は，$X$と$Y$の関係を表す$\alpha$と$\beta$を推定するために使われます。</span>
+<span id="cb70-690"><a href="#cb70-690"></a>推定するために使われる$\alpha$と$\beta$を**推定値**(estimated value)と呼びます。</span>
+<span id="cb70-691"><a href="#cb70-691"></a>推定値は，$\hat{\alpha}$と$\hat{\beta}$と表記して，観察値と区別します。</span>
+<span id="cb70-692"><a href="#cb70-692"></a></span>
 <span id="cb70-693"><a href="#cb70-693"></a></span>
-<span id="cb70-694"><a href="#cb70-694"></a>$$</span>
-<span id="cb70-695"><a href="#cb70-695"></a>\min _{\alpha, \beta} \sum _{i=1}^n (Y_i - \alpha - \beta X_i)^2</span>
-<span id="cb70-696"><a href="#cb70-696"></a>$$</span>
-<span id="cb70-697"><a href="#cb70-697"></a></span>
-<span id="cb70-698"><a href="#cb70-698"></a><span class="in">```{r prep_regression}</span></span>
-<span id="cb70-699"><a href="#cb70-699"></a><span class="co"># 線形回帰分析のための事前準備</span></span>
-<span id="cb70-700"><a href="#cb70-700"></a><span class="co"># ch05_24ですでにME（時価総額）が結合されていることが前提</span></span>
-<span id="cb70-701"><a href="#cb70-701"></a></span>
-<span id="cb70-702"><a href="#cb70-702"></a>annual_data <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
-<span id="cb70-703"><a href="#cb70-703"></a>  <span class="fu">arrange</span>(firm_ID, year) <span class="sc">|&gt;</span> <span class="co"># 時系列順に並べ替え（lag計算に必須）</span></span>
-<span id="cb70-704"><a href="#cb70-704"></a>  <span class="fu">group_by</span>(firm_ID) <span class="sc">|&gt;</span></span>
-<span id="cb70-705"><a href="#cb70-705"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb70-706"><a href="#cb70-706"></a>    <span class="at">lag_ME =</span> <span class="fu">lag</span>(ME),</span>
-<span id="cb70-707"><a href="#cb70-707"></a>    <span class="at">lagged_BEME =</span> lagged_BE <span class="sc">/</span> lag_ME <span class="co"># ここでBEMEを計算</span></span>
-<span id="cb70-708"><a href="#cb70-708"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb70-709"><a href="#cb70-709"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb70-710"><a href="#cb70-710"></a><span class="in">```</span></span>
-<span id="cb70-711"><a href="#cb70-711"></a></span>
-<span id="cb70-712"><a href="#cb70-712"></a><span class="in">```{r ch05_31}</span></span>
-<span id="cb70-713"><a href="#cb70-713"></a>lm_sample_data <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
-<span id="cb70-714"><a href="#cb70-714"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2016</span>, firm_ID <span class="sc">&lt;=</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb70-715"><a href="#cb70-715"></a>  <span class="co"># lagged_BEMEは計算済みなので、selectで選ぶだけにする</span></span>
-<span id="cb70-716"><a href="#cb70-716"></a>  <span class="fu">select</span>(firm_ID, year, <span class="at">Re =</span> annual_Re, lagged_BEME) <span class="sc">|&gt;</span></span>
-<span id="cb70-717"><a href="#cb70-717"></a>  <span class="fu">drop_na</span>() <span class="co"># 欠損値を除去</span></span>
-<span id="cb70-718"><a href="#cb70-718"></a></span>
-<span id="cb70-719"><a href="#cb70-719"></a><span class="fu">ggplot</span>(lm_sample_data) <span class="sc">+</span></span>
-<span id="cb70-720"><a href="#cb70-720"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> lagged_BEME, <span class="at">y =</span> Re)) <span class="sc">+</span> <span class="co"># 散布図</span></span>
-<span id="cb70-721"><a href="#cb70-721"></a>  <span class="fu">xlab</span>(<span class="st">"簿価時価比率"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"超過リターン"</span>) <span class="sc">+</span> mystyle</span>
-<span id="cb70-722"><a href="#cb70-722"></a><span class="in">```</span></span>
-<span id="cb70-723"><a href="#cb70-723"></a></span>
+<span id="cb70-694"><a href="#cb70-694"></a><span class="fu">## OLS推定</span></span>
+<span id="cb70-695"><a href="#cb70-695"></a></span>
+<span id="cb70-696"><a href="#cb70-696"></a>推定方法として最も有名なものが**最小二乗法**(ordinary least squares; OLS)です。</span>
+<span id="cb70-697"><a href="#cb70-697"></a>最小二乗法では，観測値と推定値の差の二乗の和が最小になるように$\alpha$と$\beta$を推定します。</span>
+<span id="cb70-698"><a href="#cb70-698"></a>このとき，観測値と推定値の差を**残差**(residual)と呼びます。</span>
+<span id="cb70-699"><a href="#cb70-699"></a>最小二乗法では，残差の二乗の和である**残差平方和**(sum of squared residuals; SSR)が最小になるように$\alpha$と$\beta$を推定します。</span>
+<span id="cb70-700"><a href="#cb70-700"></a></span>
+<span id="cb70-701"><a href="#cb70-701"></a>$$</span>
+<span id="cb70-702"><a href="#cb70-702"></a>\min _{\alpha, \beta} \sum _{i=1}^n (Y_i - \alpha - \beta X_i)^2</span>
+<span id="cb70-703"><a href="#cb70-703"></a>$$</span>
+<span id="cb70-704"><a href="#cb70-704"></a></span>
+<span id="cb70-705"><a href="#cb70-705"></a><span class="in">```{r prep_regression}</span></span>
+<span id="cb70-706"><a href="#cb70-706"></a><span class="co"># 線形回帰分析のための事前準備</span></span>
+<span id="cb70-707"><a href="#cb70-707"></a><span class="co"># ch05_24ですでにME（時価総額）が結合されていることが前提</span></span>
+<span id="cb70-708"><a href="#cb70-708"></a></span>
+<span id="cb70-709"><a href="#cb70-709"></a>annual_data <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
+<span id="cb70-710"><a href="#cb70-710"></a>  <span class="fu">arrange</span>(firm_ID, year) <span class="sc">|&gt;</span> <span class="co"># 時系列順に並べ替え（lag計算に必須）</span></span>
+<span id="cb70-711"><a href="#cb70-711"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb70-712"><a href="#cb70-712"></a>    <span class="at">lag_ME =</span> <span class="fu">lag</span>(ME),</span>
+<span id="cb70-713"><a href="#cb70-713"></a>    <span class="at">lagged_BEME =</span> lagged_BE <span class="sc">/</span> lag_ME, <span class="co"># ここでBEMEを計算</span></span>
+<span id="cb70-714"><a href="#cb70-714"></a>    <span class="at">.by =</span> firm_ID</span>
+<span id="cb70-715"><a href="#cb70-715"></a>  )</span>
+<span id="cb70-716"><a href="#cb70-716"></a><span class="in">```</span></span>
+<span id="cb70-717"><a href="#cb70-717"></a></span>
+<span id="cb70-718"><a href="#cb70-718"></a><span class="in">```{r ch05_31}</span></span>
+<span id="cb70-719"><a href="#cb70-719"></a>lm_sample_data <span class="ot">&lt;-</span> annual_data <span class="sc">|&gt;</span></span>
+<span id="cb70-720"><a href="#cb70-720"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2016</span>, firm_ID <span class="sc">&lt;=</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb70-721"><a href="#cb70-721"></a>  <span class="co"># lagged_BEMEは計算済みなので、selectで選ぶだけにする</span></span>
+<span id="cb70-722"><a href="#cb70-722"></a>  <span class="fu">select</span>(firm_ID, year, <span class="at">Re =</span> annual_Re, lagged_BEME) <span class="sc">|&gt;</span></span>
+<span id="cb70-723"><a href="#cb70-723"></a>  <span class="fu">drop_na</span>() <span class="co"># 欠損値を除去</span></span>
 <span id="cb70-724"><a href="#cb70-724"></a></span>
-<span id="cb70-725"><a href="#cb70-725"></a><span class="in">```{r ch05_32}</span></span>
-<span id="cb70-726"><a href="#cb70-726"></a><span class="co"># ch05_32: 簿価時価比率と株式リターンの散布図に回帰直線を追加</span></span>
-<span id="cb70-727"><a href="#cb70-727"></a></span>
-<span id="cb70-728"><a href="#cb70-728"></a><span class="fu">ggplot</span>(lm_sample_data) <span class="sc">+</span></span>
-<span id="cb70-729"><a href="#cb70-729"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> lagged_BEME, <span class="at">y =</span> Re)) <span class="sc">+</span></span>
-<span id="cb70-730"><a href="#cb70-730"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> lagged_BEME, <span class="at">y =</span> Re), <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="co"># 回帰直線を追加するにはgeom_smooth()関数を用いる</span></span>
-<span id="cb70-731"><a href="#cb70-731"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"BE/ME at the End of Year t"</span>, <span class="at">y =</span> <span class="st">"Excess Return for Year t + 1"</span>) <span class="sc">+</span></span>
-<span id="cb70-732"><a href="#cb70-732"></a>  <span class="fu">theme_classic</span>()</span>
-<span id="cb70-733"><a href="#cb70-733"></a><span class="in">```</span></span>
-<span id="cb70-734"><a href="#cb70-734"></a></span>
-<span id="cb70-735"><a href="#cb70-735"></a></span>
-<span id="cb70-736"><a href="#cb70-736"></a><span class="in">```{r ch05_33}</span></span>
-<span id="cb70-737"><a href="#cb70-737"></a><span class="co"># ch05_33: lm()関数を用いた線形回帰</span></span>
-<span id="cb70-738"><a href="#cb70-738"></a></span>
-<span id="cb70-739"><a href="#cb70-739"></a>lm_results <span class="ot">&lt;-</span> <span class="fu">lm</span>(Re <span class="sc">~</span> lagged_BEME, <span class="at">data =</span> lm_sample_data) <span class="co"># 従属変数 ~ 独立変数</span></span>
-<span id="cb70-740"><a href="#cb70-740"></a><span class="fu">names</span>(lm_results)</span>
-<span id="cb70-741"><a href="#cb70-741"></a><span class="in">```</span></span>
-<span id="cb70-742"><a href="#cb70-742"></a></span>
-<span id="cb70-743"><a href="#cb70-743"></a></span>
-<span id="cb70-744"><a href="#cb70-744"></a><span class="in">```{r ch05_34}</span></span>
-<span id="cb70-745"><a href="#cb70-745"></a><span class="fu">print</span>(lm_results<span class="sc">$</span>coefficients)</span>
-<span id="cb70-746"><a href="#cb70-746"></a><span class="in">```</span></span>
-<span id="cb70-747"><a href="#cb70-747"></a></span>
+<span id="cb70-725"><a href="#cb70-725"></a><span class="fu">ggplot</span>(lm_sample_data) <span class="sc">+</span></span>
+<span id="cb70-726"><a href="#cb70-726"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> lagged_BEME, <span class="at">y =</span> Re)) <span class="sc">+</span> <span class="co"># 散布図</span></span>
+<span id="cb70-727"><a href="#cb70-727"></a>  <span class="fu">xlab</span>(<span class="st">"簿価時価比率"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"超過リターン"</span>) <span class="sc">+</span> mystyle</span>
+<span id="cb70-728"><a href="#cb70-728"></a><span class="in">```</span></span>
+<span id="cb70-729"><a href="#cb70-729"></a></span>
+<span id="cb70-730"><a href="#cb70-730"></a></span>
+<span id="cb70-731"><a href="#cb70-731"></a><span class="in">```{r ch05_32}</span></span>
+<span id="cb70-732"><a href="#cb70-732"></a><span class="co"># ch05_32: 簿価時価比率と株式リターンの散布図に回帰直線を追加</span></span>
+<span id="cb70-733"><a href="#cb70-733"></a></span>
+<span id="cb70-734"><a href="#cb70-734"></a><span class="fu">ggplot</span>(lm_sample_data) <span class="sc">+</span></span>
+<span id="cb70-735"><a href="#cb70-735"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> lagged_BEME, <span class="at">y =</span> Re)) <span class="sc">+</span></span>
+<span id="cb70-736"><a href="#cb70-736"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> lagged_BEME, <span class="at">y =</span> Re), <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="co"># 回帰直線を追加するにはgeom_smooth()関数を用いる</span></span>
+<span id="cb70-737"><a href="#cb70-737"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"BE/ME at the End of Year t"</span>, <span class="at">y =</span> <span class="st">"Excess Return for Year t + 1"</span>) <span class="sc">+</span></span>
+<span id="cb70-738"><a href="#cb70-738"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb70-739"><a href="#cb70-739"></a><span class="in">```</span></span>
+<span id="cb70-740"><a href="#cb70-740"></a></span>
+<span id="cb70-741"><a href="#cb70-741"></a></span>
+<span id="cb70-742"><a href="#cb70-742"></a><span class="in">```{r ch05_33}</span></span>
+<span id="cb70-743"><a href="#cb70-743"></a><span class="co"># ch05_33: lm()関数を用いた線形回帰</span></span>
+<span id="cb70-744"><a href="#cb70-744"></a></span>
+<span id="cb70-745"><a href="#cb70-745"></a>lm_results <span class="ot">&lt;-</span> <span class="fu">lm</span>(Re <span class="sc">~</span> lagged_BEME, <span class="at">data =</span> lm_sample_data) <span class="co"># 従属変数 ~ 独立変数</span></span>
+<span id="cb70-746"><a href="#cb70-746"></a><span class="fu">names</span>(lm_results)</span>
+<span id="cb70-747"><a href="#cb70-747"></a><span class="in">```</span></span>
 <span id="cb70-748"><a href="#cb70-748"></a></span>
-<span id="cb70-749"><a href="#cb70-749"></a><span class="in">```{r ch05_35}</span></span>
-<span id="cb70-750"><a href="#cb70-750"></a><span class="co"># ch05_35: broomパッケージのtidy()関数で係数の推定値に関する結果を確認</span></span>
-<span id="cb70-751"><a href="#cb70-751"></a><span class="fu">tidy</span>(lm_results)</span>
+<span id="cb70-749"><a href="#cb70-749"></a></span>
+<span id="cb70-750"><a href="#cb70-750"></a><span class="in">```{r ch05_34}</span></span>
+<span id="cb70-751"><a href="#cb70-751"></a><span class="fu">print</span>(lm_results<span class="sc">$</span>coefficients)</span>
 <span id="cb70-752"><a href="#cb70-752"></a><span class="in">```</span></span>
 <span id="cb70-753"><a href="#cb70-753"></a></span>
 <span id="cb70-754"><a href="#cb70-754"></a></span>
-<span id="cb70-755"><a href="#cb70-755"></a><span class="in">```{r ch05_36}</span></span>
-<span id="cb70-756"><a href="#cb70-756"></a><span class="fu">glance</span>(lm_results)</span>
-<span id="cb70-757"><a href="#cb70-757"></a><span class="in">```</span></span>
-<span id="cb70-758"><a href="#cb70-758"></a></span>
-<span id="cb70-759"><a href="#cb70-759"></a><span class="fu">## 対数回帰モデル</span></span>
+<span id="cb70-755"><a href="#cb70-755"></a><span class="in">```{r ch05_35}</span></span>
+<span id="cb70-756"><a href="#cb70-756"></a><span class="co"># ch05_35: broomパッケージのtidy()関数で係数の推定値に関する結果を確認</span></span>
+<span id="cb70-757"><a href="#cb70-757"></a><span class="fu">tidy</span>(lm_results)</span>
+<span id="cb70-758"><a href="#cb70-758"></a><span class="in">```</span></span>
+<span id="cb70-759"><a href="#cb70-759"></a></span>
 <span id="cb70-760"><a href="#cb70-760"></a></span>
-<span id="cb70-761"><a href="#cb70-761"></a>独立変数$X$が変化したときの従属変数$Y$への影響は一定(つまり傾きが一定)と仮定してきましたが、</span>
-<span id="cb70-762"><a href="#cb70-762"></a>実際には傾きが一定でない場合もあります。</span>
-<span id="cb70-763"><a href="#cb70-763"></a>回帰式が非線形であることが想定される場合、対処法として</span>
+<span id="cb70-761"><a href="#cb70-761"></a><span class="in">```{r ch05_36}</span></span>
+<span id="cb70-762"><a href="#cb70-762"></a><span class="fu">glance</span>(lm_results)</span>
+<span id="cb70-763"><a href="#cb70-763"></a><span class="in">```</span></span>
 <span id="cb70-764"><a href="#cb70-764"></a></span>
-<span id="cb70-765"><a href="#cb70-765"></a><span class="ss">- </span>多項式回帰(polynomial regression) ：独立変数に$X^2$とか$X^3$を加える</span>
-<span id="cb70-766"><a href="#cb70-766"></a><span class="ss">- </span>**対数回帰**(logarithmic regression) ：独立変数や従属変数の対数をとる</span>
-<span id="cb70-767"><a href="#cb70-767"></a></span>
-<span id="cb70-768"><a href="#cb70-768"></a>たとえば、独立変数を対数変換した場合は、次のようなモデルになる。</span>
-<span id="cb70-769"><a href="#cb70-769"></a></span>
-<span id="cb70-770"><a href="#cb70-770"></a>$$</span>
-<span id="cb70-771"><a href="#cb70-771"></a>Y_i = \beta_0 + \beta_1 \log (X_i) + \varepsilon_i</span>
-<span id="cb70-772"><a href="#cb70-772"></a>$$</span>
+<span id="cb70-765"><a href="#cb70-765"></a><span class="fu">## 対数回帰モデル</span></span>
+<span id="cb70-766"><a href="#cb70-766"></a></span>
+<span id="cb70-767"><a href="#cb70-767"></a>独立変数$X$が変化したときの従属変数$Y$への影響は一定(つまり傾きが一定)と仮定してきましたが、</span>
+<span id="cb70-768"><a href="#cb70-768"></a>実際には傾きが一定でない場合もあります。</span>
+<span id="cb70-769"><a href="#cb70-769"></a>回帰式が非線形であることが想定される場合、対処法として</span>
+<span id="cb70-770"><a href="#cb70-770"></a></span>
+<span id="cb70-771"><a href="#cb70-771"></a><span class="ss">- </span>多項式回帰(polynomial regression) ：独立変数に$X^2$とか$X^3$を加える</span>
+<span id="cb70-772"><a href="#cb70-772"></a><span class="ss">- </span>**対数回帰**(logarithmic regression) ：独立変数や従属変数の対数をとる</span>
 <span id="cb70-773"><a href="#cb70-773"></a></span>
-<span id="cb70-774"><a href="#cb70-774"></a></span>
+<span id="cb70-774"><a href="#cb70-774"></a>たとえば、独立変数を対数変換した場合は、次のようなモデルになる。</span>
 <span id="cb70-775"><a href="#cb70-775"></a></span>
-<span id="cb70-776"><a href="#cb70-776"></a><span class="in">```{r ch05_37, filename="線形・対数モデルによる推定"}</span></span>
-<span id="cb70-777"><a href="#cb70-777"></a><span class="fu">tidy</span>(<span class="fu">lm</span>(Re <span class="sc">~</span> <span class="fu">log</span>(lagged_BEME), <span class="at">data =</span> lm_sample_data)) <span class="co"># 右辺のみlog()関数で自然対数を取る</span></span>
-<span id="cb70-778"><a href="#cb70-778"></a><span class="in">```</span></span>
+<span id="cb70-776"><a href="#cb70-776"></a>$$</span>
+<span id="cb70-777"><a href="#cb70-777"></a>Y_i = \beta_0 + \beta_1 \log (X_i) + \varepsilon_i</span>
+<span id="cb70-778"><a href="#cb70-778"></a>$$</span>
 <span id="cb70-779"><a href="#cb70-779"></a></span>
-<span id="cb70-780"><a href="#cb70-780"></a>作成したデータフレームをcsvファイルとして保存するには，<span class="in">`write_csv()`</span>関数を用います。</span>
-<span id="cb70-781"><a href="#cb70-781"></a>前処理が終わった後や新しい変数を作った後に、データを保存しておくと便利です。</span>
-<span id="cb70-782"><a href="#cb70-782"></a>6章以降では、以下のデータを継続して使うので、csvファイルとして保存しておきます。</span>
-<span id="cb70-783"><a href="#cb70-783"></a></span>
-<span id="cb70-784"><a href="#cb70-784"></a><span class="in">```{r ch05_38, filename="データの保存"}</span></span>
-<span id="cb70-785"><a href="#cb70-785"></a><span class="fu">write_csv</span>(monthly_data, <span class="st">"data/ch05_output1.csv"</span>)</span>
-<span id="cb70-786"><a href="#cb70-786"></a><span class="fu">write_csv</span>(annual_data, <span class="st">"data/ch05_output2.csv"</span>)</span>
-<span id="cb70-787"><a href="#cb70-787"></a><span class="in">```</span></span>
+<span id="cb70-780"><a href="#cb70-780"></a></span>
+<span id="cb70-781"><a href="#cb70-781"></a></span>
+<span id="cb70-782"><a href="#cb70-782"></a><span class="in">```{r ch05_37, filename="線形・対数モデルによる推定"}</span></span>
+<span id="cb70-783"><a href="#cb70-783"></a><span class="fu">tidy</span>(<span class="fu">lm</span>(Re <span class="sc">~</span> <span class="fu">log</span>(lagged_BEME), <span class="at">data =</span> lm_sample_data)) <span class="co"># 右辺のみlog()関数で自然対数を取る</span></span>
+<span id="cb70-784"><a href="#cb70-784"></a><span class="in">```</span></span>
+<span id="cb70-785"><a href="#cb70-785"></a></span>
+<span id="cb70-786"><a href="#cb70-786"></a>作成したデータフレームをcsvファイルとして保存するには，<span class="in">`write_csv()`</span>関数を用います。</span>
+<span id="cb70-787"><a href="#cb70-787"></a>前処理が終わった後や新しい変数を作った後に、データを保存しておくと便利です。</span>
+<span id="cb70-788"><a href="#cb70-788"></a>6章以降では、以下のデータを継続して使うので、csvファイルとして保存しておきます。</span>
+<span id="cb70-789"><a href="#cb70-789"></a></span>
+<span id="cb70-790"><a href="#cb70-790"></a><span class="in">```{r ch05_38, filename="データの保存"}</span></span>
+<span id="cb70-791"><a href="#cb70-791"></a><span class="fu">write_csv</span>(monthly_data, <span class="st">"data/ch05_output1.csv"</span>)</span>
+<span id="cb70-792"><a href="#cb70-792"></a><span class="fu">write_csv</span>(annual_data, <span class="st">"data/ch05_output2.csv"</span>)</span>
+<span id="cb70-793"><a href="#cb70-793"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
