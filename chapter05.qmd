@@ -327,7 +327,7 @@ annual_stock_data <- stock_data |>
   summarise(
     annual_R = prod(1 + R) - 1, # B&H年次リターン
     annual_R_F = prod(1 + R_F) - 1, # 年次超過リターン
-    by = c(firm_ID, year) # 企業と年度でグループ化
+    .by = c(firm_ID, year) # 企業と年度でグループ化
   ) |>
   mutate(
     annual_Re = annual_R - annual_R_F # 年次超過リターン
@@ -360,7 +360,7 @@ nrow(stock_data) # 月次リターン・データの行数
 
 月次リターンの行数が上の年次データとは大きく異なっていることが分かります。
 
-::: {.callout .callout-info}
+:::{.callout .callout-info}
 **先読みバイアス**(look-ahead bias)とは、ある時点での情報を使って、その時点よりも未来の情報を使っていることを指します。12月末決算の会社のディスクロジャージャーは、最速で決算日後45日以内に出される決算短信か、3ヶ月以内に出される有価証券報告書があります。
 このため、年次データを使って同時期の年次リターンを計算すると、年次データの発表後に出される有価証券報告書の情報を使っていることになります。これを先読みバイアスといいます。
 :::
@@ -368,7 +368,10 @@ nrow(stock_data) # 月次リターン・データの行数
 
 ```{r ch05_18}
 annual_data <- annual_stock_data |>
-  full_join(financial_data, by = c("firm_ID", "year")) # firm_IDとyearのペアをキーとして設定
+  full_join(
+    financial_data, 
+    by = c("firm_ID", "year")
+  ) # firm_IDとyearのペアをキーとして設定
 ```
 
 
