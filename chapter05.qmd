@@ -1,0 +1,767 @@
+## 株式データの取得と可視化
+
+
+```{r setup}
+#| code-fold: true
+pacman::p_load(
+  tidyverse,
+  ggthemes,
+  ggpubr,
+  plotly,
+  patchwork,
+  Rsolnp,
+  e1071
+)
+
+mystyle <- list(
+  theme_economist_white(
+    base_family = "HiraKakuProN-W3"
+    ),
+  scale_colour_economist(),
+  theme(
+    text = element_text(size = 12),
+    axis.title = element_text(size = 12)
+  )
+)
+```
+
+## 株式データの取得と可視化
+
+前章では財務データを題材に、クロスセクションデータを扱うために必要なデータの取得と操作と可視化について学習しました。
+特に重要な操作として，`group_by()`関数と`mutate()`や`summarise()`関数の組み合わせて，グループごとの変数の値を計算する方法を学びました。
+本章では株式データを題材に，株式データの理解に必要な株式の基礎知識とともに，リターンの定義や計算について学び，最後には統計的推論と線形回帰分析についても学習します。
+
+<!-- 株式データの理解を深めるために，株式市場の仕組みを理解する必要があるので，重要用語の説明を行います。
+
+| 相場用語 | 解説 |
+|:-- |:-------- |
+| 成行注文 | 値段を指定せず，その時点の最良気配値で取引を希望すること |
+| 指値注文 | 特定の値段を指定して取引を希望すること |
+| 板 | その時点で有効な指値注文を売りと買いで分けて価格ごとにまとめた一覧表のこと |
+| 板寄せ方式 | 取引開始時に板情報(それまでに提出された売りと買いの注文)に 基づいて取引価格を決定する方法のこと |
+| ザラ場寄せ方式 | 取引時間(ザラ場)中に新規注文と板情報に基づいて取引価格を決 定する方法のこと(図 5.1 を参照) |
+| 歩み値 | 取引時間中の売買履歴(約定価格や出来高)に関する時系列データのこと |
+| 証拠金 | 信用取引を行う際に資金の貸し手に差し入れる担保のこと |
+| 値洗い | 保有するポートフォリオ(ポジション)の価値を時価で再評価すること |
+| 追証 | 値洗いの結果，追加の証拠金を求められること |
+| 逆日歩 | 信用売りが殺到し株不足となった銘柄でショート・セラーが追加で 支払う費用のこと |
+| 踏み上げ | 株価上昇で損失を抱えたショート・セラー(2.2.3 節を参照)のロス カットが一段の株高を招くこと | -->
+
+
+### 株価データのダウンロードと読み込み
+
+いままでと同じように、`readr`パッケージの`read_csv()`関数でCSVファイルを読み込みます。
+ここでは、`ch05_stock_data.csv`を使います。
+```{r ch05_01}
+stock_data <- read_csv("data/ch05_stock_data.csv")
+print(stock_data)
+```
+9変数，95,040行という大規模なデータが読み込まれました。
+紙面の都合上、長い変数名を短く省略します。変数名を変えるには、`dplyr::rename()`を使います。
+```{r rename}
+stock_data <- stock_data |>
+  rename(
+    n_shares = shares_outstanding,
+    adj_coef = adjustment_coefficient
+  )
+```
+
+読み込まれたデータ`stock_data`の中には以下の変数が含まれています。
+
+|     列名       |  データ型    |           説明        |
+| :------------ | :--------- | :-------------------- |
+| `year`        | 数値型`dbl` | 年度                   |
+| `month`       | 数値型`dbl` | 月                     |
+| `month_ID`    | 数値型`dbl` | 月ID                   |
+| `firm_ID`     | 数値型`dbl` | 企業ID                 |
+| `stock_price` | 数値型`dbl` | 月末時点での終値         |
+| `DPS`         | 数値型`dbl` | 一株当たり配当額         |
+| `n_shares`    | 数値型`int` | 月末時点での発行済株式数  |
+| `adj_coef`    | 数値型`int` | 調整係数               |
+| `R_F`         | 数値型`dbl` | 月次無リスク金利         |
+
+`year`〜`firm_ID`までは，時系列や企業の特定に必要なキーとなり，
+`stock_price`から`R_F`が分析する対象となる株価や配当，発行済株式数，調整係数，無リスク金利となります。
+7列目の`n_shares`は発行済株式数です。
+発行済株式数は随時，新株発行や自社株買い，株式分割で変動するため，株式数の変化を調整するためのデータとして`adj_coef`があります。
+旧株式1に対して新株式2となる株式分割が行われた場合，この調整係数は2となります。
+
+このような大規模データを前にした場合，とりあえずデータの構造を把握することから始めます。
+ここでは基本関数よりも多機能な`tidyverse`の`dplyr`パッケージに含まれる`glimpse`関数を使って，データの構造を確認してみます。
+
+```{r}
+glimpse(stock_data)
+```
+
+データの型が`dbl`という初めて出てきた型になってますが，これは`double`の略で，数値型の一種です。`double`は64ビットの浮動小数点数を表し，小数点以下15桁までの精度を持ちます。
+
+::: {.callout-tip}
+## 数値型の種類
+
+数値型`numeric`は，`double`と`int`のどちらかになります。
+`int`は整数(integer)型で，32ビットの整数を表し，小数点以下は切り捨てられます。
+`dbl`は`int`の上位互換で，小数点以下の桁数が多い場合に使われます。
+:::
+
+たとえば，`firm_ID`が74，`month_ID`が29から32（つまり2017年5月から8月）のデータを抽出してみます。
+
+```{r ch05_04}
+stock_data |>
+  filter(firm_ID == 74 , month_ID %in% 29:32) |> # filterで条件を指定
+  select(year, firm_ID, month, month_ID,stock_price, DPS, n_shares, adj_coef) # selectで必要な変数を指定
+```
+
+出力された結果の2行の`adj_coef`が2となっており、同時に`n_shares`が倍になっていることから、この会社は1株を2株に株式分割していることがわかります。
+
+## 時価総額とリターンの計算
+
+時価総額(market capitalization)を計算するためには、株式数に株価を掛けて計算します。
+新しい変数を作成するときは`dplyr`パッケージの`mutate()`関数を使います。
+`mutate()`で時価総額を表す新しい変数`ME`を作成します。
+
+```{r ch05_05}
+stock_data <- stock_data |>
+  mutate(ME = stock_price * n_shares) # 時価総額
+```
+
+次に時価総額のヒストグラムを作成してみます。
+前節で学習した内容に加えて、いろいろ見た目の指定を増やしてみます。
+
+```{r ch05_06}
+# 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定する
+
+library(scales) # 軸の表記を変えるパッケージを追加
+
+g <- ggplot(stock_data) + aes(x = ME)
+g <- g + geom_histogram() #基本設定
+g <- g + xlab("Market Equity") + ylab("Count") #軸ラベル
+g <- g + scale_x_continuous(
+  limits = c(0, quantile(stock_data$ME, 0.95)), # x軸の範囲
+  labels = label_comma(scale = 1e-6) # x軸の表記を百万円単位に
+  ) + xlab("時価総額") + ylab("度数") +  mystyle
+print(g) # グラフを出力
+```
+
+### トータル・リターンと超過リターンの計算
+
+ある株式の$t$期のトータル・リターン$R_t$は、次式で定義されます。
+
+$$
+R_t = \frac{(\text{株価}_t + \text{1株当り配当}_t) \times \text{調整係数}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
+$$
+
+たいていの場合，1株当り配当$DPS_t$はゼロで，調整係数$adjustment\_coefficient_t$は1となるため，次式のように簡略化できます。
+
+$$
+R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
+$$
+
+銘柄ごとにリターンを計算するので，`group_by()`と`mutate()`を使って計算します。ここでは，`firm_ID`ごとにトータルリターン`R`と，
+トータルリターンから無リスク利子率を除いた超過リターン`Re`を計算しています。
+
+```{r ch05_07}
+stock_data <- stock_data |>
+  group_by(firm_ID) |> # 企業ごとに
+  mutate( # 新しい変数を作成
+    # トータルリターン
+    R = ( (stock_price + DPS) * adj_coef - lag(stock_price)) / lag(stock_price),
+    Re = R - R_F # 月次超過リターン
+  ) |>
+  ungroup() # グループ化を解除
+```
+
+ここまでの処理で`stock_data`に時価総額`ME`，トータルリターン`R`，超過リターン`Re`が追加されました。
+以下では，このデータを使って探索的データ分析を行います。
+
+### 株式データの探索的データ分析
+
+探索的データ分析という名の，とりあえず何も考えずに目の前のデータから何が分かるのかを調べ倒してみる，という分析を行います。
+
+とりあえず，`summary()`で基本統計量を確認します。
+
+```{r ch05_10}
+summary(stock_data)
+```
+
+さらに，分散と標準偏差も計算します。データには欠損値が含まれているため，`na.rm = TRUE`オプションをつけています。
+教科書とは違いますが，`dplyr::summarize()`関数を使って一気に複数の統計量を計算します。
+ここでは，`stock_data <- stock_data`としていないため，`stock_data`には新しい変数は追加されず，結果を表示するだけです。
+
+```{r ch05_11}
+stock_data |>
+  summarise(
+    var_R = var(R, na.rm = TRUE), # 総リターンの分散
+    sd_R  = sd(R, na.rm = TRUE), # 総リターンの標準偏差
+    var_Re = var(Re, na.rm = TRUE), # 超過リターンの分散
+    sd_Re = sd(Re, na.rm = TRUE) # 超過リターンの標準偏差
+  )
+```
+
+データの分布の形を表す統計量である，3次のモーメントである歪度(skewness)と4次のモーメントである尖度(kurtosis)も計算してみます。
+たとえば確率変数$x$の歪度は
+$$
+\text{歪度} = \frac 1n \sum _{i = 1}^n \left( \frac{x_i - \bar x}{\hat \sigma_x} \right) ^3
+$$
+で表され，正の値をとるとき分布が右に歪んでいる(裾が右に長い)ことを示している。
+尖度は，
+$$
+\text{尖度} = \frac 1n \sum _{i = 1}^n \left( \frac{x_i - \bar x}{\hat \sigma_x} \right) ^4
+$$
+で定義され，尖度が3のとき，正規分布と同じ尖度を持つことを示し，3より小さいとき，正規分布よりとがった分布をしていることを示します。
+
+歪度と尖度を計算するには，`e1071`パッケージの`skewness()`関数を使います。
+```{r ch05_12}
+stock_data |>
+  summarise(
+    skewness_R = skewness(R, na.rm = TRUE), # 総リターンの歪度
+    kurtosis_R = kurtosis(R, na.rm = TRUE), # 総リターンの尖度
+    skewness_Re = skewness(Re, na.rm = TRUE), # 超過リターンの歪度
+    kurtosis_Re = kurtosis(Re, na.rm = TRUE) # 超過リターンの尖度
+  )
+```
+
+トータルリターンの歪度が$0.507 >0$なので，右に裾の広い分布となっており，尖度が$1.27 < 3$なので正規分布よりもとがった形となっていることがわかります。
+
+図でも確認するために，トータルリターン`R`のヒストグラムを書いてみます。
+
+```{r ch05_14}
+ggplot(stock_data) +
+  aes(x = R) + geom_histogram() + # トータルリターンのヒストグラム
+  xlab("Monthly Stock Return") + ylab("Count") # 軸ラベル
+```
+
+トータルリターンのヒストグラムに正規分布のグラフを重ねてみると，次のようになります。
+```{r}
+# トータルリターン
+R <- stock_data$R
+
+# 正規分布データ作成
+m <- mean(stock_data$R, na.rm = TRUE)
+sd <- sd(stock_data$R, na.rm = TRUE)
+x <- rnorm(95040, mean = m, sd = sd)
+
+df <- data.frame(R,x) |> drop_na() # 欠損値削除
+df <- df |> pivot_longer(everything())
+```
+
+```{r}
+# トータルリターン
+R <- stock_data$R
+# 平均と標準偏差を計算
+m <- mean(stock_data$R, na.rm = TRUE)
+s <- sd(stock_data$R, na.rm = TRUE)
+
+ggplot(stock_data) +
+  aes(x = R) +
+  # y軸を密度(density)に設定
+  geom_histogram(aes(y = after_stat(density)), bins = 100, alpha = 0.4, fill = "blue") +
+  # 正規分布の曲線を追加
+  stat_function(fun = dnorm, args = list(mean = m, sd = s), color = "red", size = 1) +
+  xlab("Monthly Stock Return") + ylab("Density") +
+  mystyle
+```
+
+トータルリターンと正規分布のヒストグラムを書いてみる。
+
+```{r}
+# dev="quartz_pdf"
+g <- ggplot(df) + aes(x = value, fill = name, group = name) +
+  geom_histogram(bins = 100, alpha = 0.4, position="identity") +
+  xlab("Monthly Stock Return") + ylab("Count")
+g <- g + annotate( # 位置を指定して文字列を追加
+  geom = "text", x = 0.3, y = 900, label = "fat tail") +
+  annotate(# 始点や終点などを指定して矢印を追加
+  geom = "segment", x = 0.3, xend = 0.3,
+  y = 800, yend = 300,
+  color = "black",  size = 0.5,
+  arrow = arrow(length = unit(0.3, "cm"))
+  )
+g <- g + annotate( # 位置を指定して文字列を追加
+  geom = "text", x = 0.3, y = 4200,
+  label = "Sharp shape"
+  ) +
+  annotate(# 始点や終点などを指定して矢印を追加
+  geom = "segment", x = 0.2, xend = 0.1,
+  y = 4200, yend = 4200,
+  color = "black", size = 0.5,
+  arrow = arrow(length = unit(0.3, "cm"))
+  )
+g <- g + mystyle
+print(g)
+```
+歪度と尖度の結果と整合的に、赤色で表されているトータルリターンのヒストグラムは正規分布よりも右に裾が長く，尖度も正規分布よりもとがった形となっています。
+
+# リターンの累積
+
+## バイ・アンド・ホールド・リターンの考え方
+
+**バイ・アンド・ホールド・リターン**(buy-and-hold-return)は，ある時点で株式を購入し，そのまま保有し続けたときのリターンのことを指します。
+たとえば，$12$月末に株式を購入し，$3$月末に売却したときの、バイ・アンド・ホールド・リターンの累積は，次式で計算できます。ただし配当は無視します。
+$$
+\begin{aligned}
+\left ( \frac{W_{\text{3月}}}{W_{\text{12月}}} \right) =
+\underbrace{\left ( \frac{W_{\text{1月}}}{W_{\text{12月}}} \right)}_{1 + R_{\text{1月}}} \times
+\underbrace{\left ( \frac{W_{\text{2月}}}{W_{\text{1月}}} \right)}_{1 + R_{\text{2月}}} \times
+\underbrace{\left ( \frac{W_{\text{3月}}}{W_{\text{2月}}} \right)}_{1 + R_{\text{3月}}} \times
+\end{aligned}
+$$
+
+一般的に、月次で$t$時点から$T$時点までの年次リターンは、
+
+$$
+\left ( \frac{W_{\text{翌年12月末}}}{W_{\text{12月末}}} \right) = \prod_{t = \text{1月}}^{\text{12月}} (1 + R_t)
+$$
+
+と計算できます。
+
+## 年次リターンの計算
+
+では、`stock_data`をもとに年次リターンを計算してみましょう。
+
+
+```{r ch05_15}
+annual_stock_data <- stock_data |>
+  group_by(firm_ID, year) |> # firm_IDとyearごとにグループ化
+  summarise(
+    annual_R = prod(1 + R) - 1, # B&H年次リターン
+    annual_R_F = prod(1 + R_F) - 1 # 年次超過リターン
+  ) |>
+  mutate(annual_Re = annual_R - annual_R_F) |> # 年次超過リターン
+  ungroup()
+head(annual_stock_data)
+```
+
+# 株式データと財務データを組み合わせた分析
+
+ここでは，株式データと財務データを組み合わせて分析を行います。
+
+## データの結合
+
+複数のデータフレームを結合する際に重要なところは、
+
+1. データの頻度の違い
+2. タイミングの一致
+
+となる。
+今まで使ってきた財務データは年次データであるのに対して，株式データは月次データであるため，データの頻度が異なります。
+確認してみましょう。
+
+
+```{r ch05_17}
+financial_data <- readr::read_csv("data/ch04_output.csv")
+nrow(financial_data) # 年次財務データの行数
+nrow(annual_stock_data) # 年次リターン・データの行数
+nrow(stock_data) # 月次リターン・データの行数
+```
+
+月次リターンの行数が上の年次データとは大きく異なっていることが分かります。
+
+::: {.callout .callout-info}
+**先読みバイアス**(look-ahead bias)とは、ある時点での情報を使って、その時点よりも未来の情報を使っていることを指します。12月末決算の会社のディスクロジャージャーは、最速で決算日後45日以内に出される決算短信か、3ヶ月以内に出される有価証券報告書があります。
+このため、年次データを使って同時期の年次リターンを計算すると、年次データの発表後に出される有価証券報告書の情報を使っていることになります。これを先読みバイアスといいます。
+:::
+
+
+```{r ch05_18}
+annual_data <- annual_stock_data |>
+  full_join(financial_data, by = c("firm_ID", "year")) # firm_IDとyearのペアをキーとして設定
+```
+
+
+```{r ch05_19}
+annual_data <- annual_stock_data |>
+  full_join(financial_data) # キーを省略した場合，列名が同じ変数がキーになる
+```
+
+```{r ch05_20}
+monthly_data <- stock_data |>
+  full_join(financial_data, by = c("firm_ID", "year")) # firm_IDとyearのペアをキーとして設定
+```
+
+
+## バブルチャート
+
+```{r ch05_24}
+annual_data <- stock_data |>
+  filter(month == 12) |> # 12月のみ
+  select(year, firm_ID, ME) |> # 変数を選択
+  full_join(annual_data, ., by = c("year", "firm_ID")) |> # 年次データと結合
+  mutate(ME = ME / 1e6)
+```
+
+```{r ch05_25}
+year2015 <- annual_data |>
+   filter(
+      year == 2015, # 2015年のみ
+      firm_ID %in% 2:20, # firm_IDが2から20のデータを抽出
+      X > 0 # 対数を取るため当期純利益が正のデータのみ抽出
+      )
+
+ggplot(year2015) +
+  aes(x = log(sales), y = log(X), size = ME, alpha = 0.4) +
+  geom_point() + # バブルチャートを描くにはsize引数を指定
+  scale_size(range = c(1, 20), name = "Market Equity") + # rangeでバブルの最小最大面積を指定
+  scale_x_continuous(limits = c(8, 14)) + # 両軸の範囲を指定
+  scale_y_continuous(limits = c(2, 11)) + mystyle
+```
+
+# 統計的推論入門
+
+## リターン・データに関する仮定
+
+統計的推論の内容に入る前に、`firm_ID`が1の企業の超過リターン`Re`のデータを眺めてみます。
+
+```{r ch05_27}
+stock_data_1_month <- stock_data |>
+  filter(firm_ID == 1) |>
+  select(month_ID, Re, R)
+ggplot(stock_data_1_month) +
+  aes(x = month_ID, y = Re) + # 軸の設定
+  geom_line() + mystyle # 折れ線グラフ
+```
+
+このようなデータは時系列データと呼ばれ、ある個体(ここでは`firm_ID`が1の企業)の一定期間にわたって観測したデータのことを指します。
+
+::: {.callout-important title="仮定"}
+月次超過リターンの時系列データは、何らかの確率分布(モデル)から独立に生成されている。
+:::
+
+1. 株価そのものでは無く変化率であるリターンをモデル化する理由
+
+株価それ自体は株式分割などの要因でも変化するし、会社の成長に応じて上昇するため、その成長率をモデル化する方が、投資のリスクに対するリターンをより明確に評価することができるからである。
+
+2. 月次リターンではなく月次超過リターンをモデルかする理由
+
+投資リスクを取って得られる追加的なリターンであるリスクプレミアムを明確に評価するために、無リスク金利を差し引いた超過リターンをモデル化します。
+
+3. 月次超過リターンが独立であるとする理由
+
+半強度の効率的市場であれば、過去の情報はすでに株価に織り込まれているので、過去の超過リターンは将来の超過リターンと無関係である、とし、超過リターンに系列相関はない、と仮定します。
+しかし、アノマリーの存在などにより、現実には系列相関があると考えられますが、モデルが複雑になるので、ここでは独立の仮定をおいて、モデルを単純化します。
+
+4. 月次超過リターンが正規分布に従うとする理由
+
+正規分布を仮定するといろいろ計算が楽になる、という理由とともに、
+株価の動きは多くの独立した事象の結果であると考えられ、中心極限定理により、超過リターンは正規分布に従うと考えられます。
+
+これらの仮定を受け入れると、超過リターンの確率分布は次式で表されます。
+
+$$
+Re_t \sim N(\mu, \sigma^2)
+$$
+
+これにより、母集団分布に対して統計的推論が可能になります。
+`firm 1`の超過リターンのヒストグラムを書いてみます。
+
+```{r}
+ggplot(stock_data_1_month) + aes(x = Re) + # データと変数
+  geom_histogram()
+```
+
+サンプルサイズが小さいため凸凹しているけれど、もっとサンプルを増やせば、正規分布に近い形をとるはずです。
+
+
+## 推定量と推定値の違い
+
+推定量(estimator)とは、母集団分布の母数(パラメータ)を推定するために使われる統計量のことです。
+推定値(estimates)とは、推定量に実際のデータを代入して計算した値のことです。
+たとえば母集団分布が正規分布$N(\mu, \sigma^2)$に従うと仮定すると、母数は$\mu$と$\sigma^2$の2つです。この母数を推定するために使われる統計量が、それぞれ標本平均$\bar x$と標本分散$s^2$です。
+このときの推定値とは、実際に観察された標本から計算された標本平均$\bar x$と標本分散$s^2$のことを指します。
+
+次の問題を考えます。
+
+::: {.callout-important title="問題"}
+`firm_ID`が1の銘柄の月次リターン$R_{i,t}^e$は、期待値の意味で、ゼロより大きいのだろうか？
+:::
+
+ここで「期待値の意味で」というのは平均的に、と言い換えても問題ないです。
+企業1の月次超過リターンの平均は0より大きい、ということは、企業1の月次リターンは平均的に無リスク利子率よりも大きいかどうか、を比べるということです。
+
+この問題を解くために、まずは母集団分布の母数である期待値$\mu$を推定する必要があります。
+期待値$\mu$を推定するために使われる推定量は標本平均$\bar x$なので、ここで標本平均を計算します。
+
+```{r}
+stock_data_1_month |>
+  summarise(
+    mean_Re = mean(Re, na.rm = TRUE)
+  )
+```
+
+企業1の平均月次超過リターン`mean_Re`が$0.0291$となりました。
+これだけみるとゼロより大きい値ですが、これは母集団から抽出された1つのサンプルの平均ですので、他のサンプルの平均がゼロを超えるかどうかは分かりません。
+
+### 大数の法則
+
+母集団から無限個の標本(sample)を抽出して、それぞれの標本平均(sample mean)を計算すると、その標本平均の平均は母集団の期待値$\mu$に一致することが知られています。これを対数の法則(law of large number)といいます。
+
+数式よりも前にシミュレーションで確認してみましょう。
+まずは、母集団分布を平均が10、標準偏差が2の正規分布$N(10, 4)$として、母集団から100のデータを抽出して標本を1つ作ります。そしてその標本の平均を計算します。
+
+```{r}
+set.seed(123) # 乱数の種を固定
+size <- 100 # 標本サイズ
+# 母集団のパラメータの設定
+mu <- 10 # 平均
+sigma <- 4 # 標準偏差
+population <- rnorm(size, mu, sigma) # 母集団からサンプルを抽出
+mean(population) # 標本平均
+```
+平均は`r mean(population)`となりました。
+母集団の平均10とは異なる数値になっています。
+もう一度別の標本でやってみると、
+
+```{r}
+population <- rnorm(size, mu, sigma) # 母集団からサンプルを抽出
+mean(population) # 標本平均
+```
+
+また違う平均が計算されました。
+この作業を何度も何度も繰り返し、標本平均をたくさん計算します。
+ここでは、100個のデータをもつ標本を100個作って、それぞれの標本平均を計算します。
+
+```{r}
+n_sample <- 100 # サンプル数
+sample_mean <- rep(NA, n_sample) # 標本平均を格納するベクトル
+sample_sd <- rep(NA, n_sample) # 標本分散を格納するベクトル
+for(i in 1:n_sample){
+  population <- rnorm(size, mu, sigma) # 母集団からサンプルを抽出
+  sample_mean[i] <- mean(population) # 標本平均を計算
+  sample_sd[i] <- sd(population)
+}
+```
+
+サンプルの平均が100個計算できたので、ヒストグラムを書いてみます。
+
+```{r }
+ggplot() + aes(x = sample_mean) + geom_histogram() + mystyle
+```
+あまり正規分布のようには見えません。
+ではサンプルの平均の平均を計算してみます。
+
+```{r}
+mean(sample_mean) # 標本平均の平均
+```
+
+母集団の平均10に近い値になっていることが分かります。もっとサンプルの数を増やしてみます。
+データの数が100のサンプルを1,000,000個(100万個)抽出して、それぞれのサンプルの平均値を計算します。
+
+```{r}
+n_sample <- 10^6
+# 標本平均のシミュレーション
+sample_mean <- replicate(n_sample, mean(rnorm(size, mu, sigma)))
+# 標本標準偏差のシミュレーション（必要な場合）
+sample_sd <- replicate(n_sample, sd(rnorm(size, mu, sigma)))
+# 作図
+ggplot() + aes(x = sample_mean) + geom_histogram() + mystyle
+```
+
+ほぼ正規分布のような形をしていることが分かります。ではサンプルの平均の平均を計算してみます。
+
+```{r}
+mean(sample_mean) # 標本平均の平均
+mean(sample_sd) # 標本分散の平均
+```
+
+このように標本の数を無限に大きくしたとき、サンプルの平均の平均は母集団の平均10に一致するし，標本標準偏差は母集団の標準偏差4に一致する，というのが大数の法則です。
+
+## $t$値の計算
+
+先ほど計算した`firm_ID`が1の企業の超過リターンの平均値は`r mean(stock_data_1_month$Re)`でした。
+これがゼロより大きいかどうかはすぐ分かりますが，この値はたまたま今手元にある1つのサンプルから計算された平均値なので，他の標本ではどうなるか分かりません。
+このように推定量にばらつきがある場合には，その推定量の分布を考える必要があります。
+ここでは，その分布を**t分布**(t distribution)と仮定して，$t$値(t-value)を計算してみます。
+$t$値は次のように定義されます。
+
+$$
+t = \frac{\bar{X} - \mu_0}{\sqrt{s^2 / n} } \stackrel{d}{\approx} N(0,1)
+$$
+
+ここで，$\bar X$は標本平均，$\mu_0$は帰無仮説(null hypothesis)の値で，ここでは$\mu_0 = 0$とします。$s^2$は標本分散，$n$は標本サイズです。
+分子に注目すると，標本平均と帰無仮説の値の差となっており，もし標本平均が0に近いなら，$t$値は0に近い値になります。
+
+```{r ch05_29}
+Re_firm_ID_1 <- stock_data |>
+  filter(firm_ID == 1) |> # firm_IDが1の企業のデータを抽出
+  select(Re) |> #超過リターンのみ選択
+  drop_na() |> # 欠損値を除去
+  unlist() # データフレームをベクトルに変換
+
+mu0 <- 0 # 帰無仮説の値
+n <- length(Re_firm_ID_1) # 標本サイズ
+
+t_value <- (mean(Re_firm_ID_1) - mu0) / sqrt(var(Re_firm_ID_1) / n) # $t$値の計算
+print(t_value)
+```
+
+
+### 統計的検定の考え方
+
+あなたがサイコロを投げるゲームをしていて、あるプレイヤーが非常に幸運だと主張しています。彼は6回サイコロを投げて、5回も「6」が出たとします。これはただの偶然なのか、それとも何か他の要因（例えば、サイコロがいかさまであるとか）が関与しているのでしょうか？
+
+この問いに答えるために、我々は**統計的検定**(statistical test)を用いることができます。
+まず**帰無仮説**(null hypothesis)を設定します。
+この例では、帰無仮説は「サイコロは公正であり、すべての出目が等確率（$1/6$）で出る」とすることが適切です。
+
+次に、この帰無仮説が真(true)である場合に、我々が観察した結果（5回の「6」）がどれほどあり得ないかを計算します。これが$p$値(p value)です。この場合、6回投げて5回「6」が出る確率を計算します。
+
+これを計算すると、$p$値は非常に小さいことが分かり（つまり、この結果は帰無仮説の下ではほぼあり得ない），帰無仮説が棄却されます。
+帰無仮説が棄却されるとは，**帰無仮説が正しいと仮定したときに，観測されたデータが得られる確率が小さいことを意味します**。
+したがって、我々はこの結果が偶然生じたとは考えにくく、その代わりにサイコロがいかさまである、または何か他の非ランダムな要因が作用している可能性を強く疑うことになります。これが$p$値を用いて統計的検定の考え方です。
+
+$p$値が$0.05$より小さい場合，帰無仮説は棄却され，対立仮説が採択される，というケースが多いです。
+この場合，有意水準5%で帰無仮説は棄却されます。
+有意水準は，帰無仮説が正しいと仮定したときに，観測されたデータが得られる確率が小さいと判断する基準値です。
+有意水準は，5%や1%がよく使われます。
+
+Rでは，`t.test()`関数を使って，$t$値と$p$値を計算することができます。
+ここでは，`t.test()`関数を使って，`firm_ID`が1の企業の超過リターンがゼロなのかどうなのか，を検定するために，$t$値と$p$値を計算してみましょう。
+
+```{r ch05_30}
+t.test(Re_firm_ID_1)
+```
+
+
+
+
+# 線形回帰入門
+
+年次財務データ`annual_data`を使って線形回帰(linear regression)について学習します。
+線形(linear)とは，$X$と$\beta$の積が線形であることを意味します。回帰(regression)とは，$X$と$\beta$の積が$Y$を説明することを意味します。
+回帰は，2変数間の間で、一方の変数が他方の変数に対して影響を与えるという関係を想定できる場合に用いられます。
+しかし因果関係を直接調べているのではないことに注意しましょう。
+
+影響を与える変数を説明変数(explanatory variable)や独立変数(independent variable)といい、
+影響を与えられる変数を目的変数(response variable)や従属変数(dependent variable)といいます。
+分野などでどっちを使うのかは異なりますが、ここでは説明変数と目的変数を使います。
+
+線形関係を仮定した関係を式にすると，次のようになります。
+$$
+Y = \alpha + \beta X
+$$
+ここで，
+$\alpha$は定数項(constant term)と呼ばれ，切片(intercept)とも呼ばれます。
+$\beta$は回帰係数(regression coefficient)と呼ばれ，傾き(slope)とも呼ばれます。
+
+実際のデータが上のモデルを満たす、つまりすべてのデータが直線上に並んでいるわけではないのです。
+実際のデータとモデルとの間には**ずれ**があることを考慮して、上のモデルを次のように書き換えます。
+
+$$
+Y = \alpha + \beta X + u
+$$
+ここで$u$は誤差項(error term)とか観察不可能項(unobservable term)と呼ばれます。
+
+
+線形回帰の目的は，$X$と$Y$の関係を表す$\alpha$と$\beta$を推定することです。
+推定するために，観測できるデータを使います。
+観測できるデータは$X$と$Y$のペアで$(X_i, Y_i)$と表記します。
+このペアを**観測値**(observed value)と呼びます。
+この観測値は，$X$と$Y$の関係を表す$\alpha$と$\beta$を推定するために使われます。
+推定するために使われる$\alpha$と$\beta$を**推定値**(estimated value)と呼びます。
+推定値は，$\hat{\alpha}$と$\hat{\beta}$と表記して，観察値と区別します。
+
+
+## OLS推定
+
+推定方法として最も有名なものが**最小二乗法**(ordinary least squares; OLS)です。
+最小二乗法では，観測値と推定値の差の二乗の和が最小になるように$\alpha$と$\beta$を推定します。
+このとき，観測値と推定値の差を**残差**(residual)と呼びます。
+最小二乗法では，残差の二乗の和である**残差平方和**(sum of squared residuals; SSR)が最小になるように$\alpha$と$\beta$を推定します。
+
+$$
+\min _{\alpha, \beta} \sum _{i=1}^n (Y_i - \alpha - \beta X_i)^2
+$$
+
+```{r prep_regression}
+# 線形回帰分析のための事前準備
+# ch05_24ですでにME（時価総額）が結合されていることが前提
+
+annual_data <- annual_data |>
+  arrange(firm_ID, year) |> # 時系列順に並べ替え（lag計算に必須）
+  group_by(firm_ID) |>
+  mutate(
+    lag_ME = lag(ME),
+    lagged_BEME = lagged_BE / lag_ME # ここでBEMEを計算
+  ) |>
+  ungroup()
+```
+
+```{r ch05_31}
+lm_sample_data <- annual_data |>
+  filter(year == 2016, firm_ID <= 10) |>
+  # lagged_BEMEは計算済みなので、selectで選ぶだけにする
+  select(firm_ID, year, Re = annual_Re, lagged_BEME) |>
+  drop_na() # 欠損値を除去
+
+ggplot(lm_sample_data) +
+  geom_point(aes(x = lagged_BEME, y = Re)) + # 散布図
+  xlab("簿価時価比率") + ylab("超過リターン") + mystyle
+```
+
+
+```{r ch05_32}
+# ch05_32: 簿価時価比率と株式リターンの散布図に回帰直線を追加
+
+ggplot(lm_sample_data) +
+  geom_point(aes(x = lagged_BEME, y = Re)) +
+  geom_smooth(aes(x = lagged_BEME, y = Re), method = "lm", se = FALSE, color = "black") + # 回帰直線を追加するにはgeom_smooth()関数を用いる
+  labs(x = "BE/ME at the End of Year t", y = "Excess Return for Year t + 1") +
+  theme_classic()
+```
+
+
+```{r ch05_33}
+# ch05_33: lm()関数を用いた線形回帰
+
+lm_results <- lm(Re ~ lagged_BEME, data = lm_sample_data) # 従属変数 ~ 独立変数
+names(lm_results)
+```
+
+
+```{r ch05_34}
+print(lm_results$coefficients)
+```
+
+
+```{r ch05_35}
+# ch05_35: broomパッケージのtidy()関数で係数の推定値に関する結果を確認
+#install.packages("broom")
+library(broom)
+tidy(lm_results)
+```
+
+
+```{r ch05_36}
+glance(lm_results)
+```
+
+## 対数回帰モデル
+
+独立変数$X$が変化したときの従属変数$Y$への影響は一定(つまり傾きが一定)と仮定してきましたが、
+実際には傾きが一定でない場合もあります。
+回帰式が非線形であることが想定される場合、対処法として
+
+- 多項式回帰(polynomial regression) ：独立変数に$X^2$とか$X^3$を加える
+- **対数回帰**(logarithmic regression) ：独立変数や従属変数の対数をとる
+
+たとえば、独立変数を対数変換した場合は、次のようなモデルになる。
+
+$$
+Y_i = \beta_0 + \beta_1 \log (X_i) + \varepsilon_i
+$$
+
+
+
+```{r ch05_37}
+# ch05_37: 線形・対数モデルによる推定
+tidy(lm(Re ~ log(lagged_BEME), data = lm_sample_data)) # 右辺のみlog()関数で自然対数を取る
+```
+
+作成したデータフレームをcsvファイルとして保存するには，`write_csv()`関数を用います。
+前処理が終わった後や新しい変数を作った後に、データを保存しておくと便利です。
+6章以降では、以下のデータを継続して使うので、csvファイルとして保存しておきます。
+
+```{r ch05_38}
+# ch05_38: データの保存
+write_csv(monthly_data, "ch05_output1.csv")
+write_csv(annual_data, "ch05_output2.csv")
+```

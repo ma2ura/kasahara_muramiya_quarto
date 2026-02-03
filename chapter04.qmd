@@ -31,48 +31,46 @@ mystyle <- list(
 
 ### 財務データの入手先
 
-- **EDINET**：金融庁が運営する電子開示システムで，全上場企業の法定開示資料をデータベースとして提供
-- **TDnet**：東京証券取引所が運営する電子開示システムで，上場企業の決算短信をデータベースとして提供
+- **EDINET**：全上場企業の法定開示資料データベース，XBRL形式も提供
+- **TDnet**：上場企業の決算短信データベース, XBRL形式も提供
 
-XBRL(eXtensible Business Reporting Language)形式で財務諸表などの主要情報を公開しています。XBRLからデータを読み込むスキルは本書の枠を超えるため，ここでは練習用データで分析しますが、立命館大学では日経NEEDSを利用して財務データを収集します。
+**XBRL**(eXtensible Business Reporting Language)形式で財務諸表などの主要情報を公開しています。
+XBRL形式を学習しておくと，EDINETやTDnetから直接データを取得してRで分析することもできるので便利ですが，なかなか面倒なことが多いので，大学生なら大学が契約してくれているデータベースを活用しましょう。
 
 ## Rを利用した財務データの分析
 
 ### tidyverseパッケージの概要
 
-tidyverseとは，R神Wickham氏が基本コンセプトを設定し，**整然データ**(tidy data)に対して一貫した記法でデータを扱えるパッケージ群です。
+`tidyverse`とは，R神Wickham氏が基本コンセプトを設定し，**整然データ**(tidy data)に対して一貫した記法でデータを扱えるパッケージ群です。
 インストールと読み込みは以下の通りです。
 
 ```{r ch04_01}
-#install.packages("pacman") # 初回だけ
-pacman::p_load(tidyverse) # 読み込み
+#install.packages("pacman") # まだなら1回だけ実行
+pacman::p_load(tidyverse)
 ```
 
 `tidyverse`パッケージを読み込むことで，次の代表的なパッケージが読み出されます。
-よく使うものは以下のものになります。
 
-
-- `ggplot2` データの可視化　めっちゃ使う
 - `dplyr` データハンドリング　めっちゃ使う
 - `tidyr` tidyデータにもっていく　使う
 - `readr` データを読み込む めっちゃ使う
+- `forcats` ファクター型変数の操作　めっちゃ使う
+- `ggplot2` データの可視化　めっちゃ使う
 - `purrr` 関数型プログラミングで使う　慣れてくると使う
 - `tibble` data.frameではなくtibbleにする　あまり使わない
 - `stringr` 文字列の加工・操作　ちょいちょい使う
-- `forcats` ファクター型変数の操作　そんなに使わない
 
 ### 財務データの読み込み
 
-サポートサイトにある練習用のデータセット`ch04_financial_data.csv`をダウンロードして，作業ディレクトリに置きます。
+準備として，サポートサイトにある練習用のデータセット`ch04_financial_data.csv`をダウンロードして，作業ディレクトリに置いておきましょう。
 
 :::{.column-margin}
 作業ディレクトリの場所を確認するには`getwd()`を使います。
 作業ディレクトリを変更するときは，`setwd()`で作業ディレクトリを絶対パスで指定するとよいでしょう。
 :::
 
-いままではcsvデータを読み込むために，基本関数の`read.csv()`を使ってきましたが、より高速かつオプション指定が柔軟なtidyverse関数群の1つである`readr`パッケージの`read_csv()`関数を使います。
-readとcsvの間がピリオド`.`からアンダースコア`_`に変わっているので注意してください。
-`readr`パッケージの`read_csv()`関数は，
+`readr`パッケージの`read_csv()`関数を使って，CSVファイルを読み込みます。
+`read_csv()`関数は，
 
 1. データの読み込みが高速かつ型の推論が柔軟
 2. 基本の`data.frame`ではなく，その拡張版である`tibble`で返す
@@ -102,26 +100,24 @@ head(financial_data, 5) # 最初の5行
 - `FE` : 金融資産(financial assets)
 - `FO` : 金融負債(financial obligations)
 
-このデータフレームの構造を確認します。
+このデータフレームの構造を`dplyr`パッケージの`glimpse()`を使って確認します。
 
 ```{r}
 glimpse(financial_data)
 ```
 
-変数はすべて数値型`double`になっていますが、`firm_ID`と`industry_ID`はカテゴリーを表す変数ですので、数値型ではなくファクター型に変換します。ついでに`year`は年度という時間を尺度なので、数値型ではなく`factor`型に変換します。ここで重要なのは、`year`はただのファクター型ではなく、順序のあるファクター型とすることです。
-
-ここでは`as.factor()`を使います。
+変数はすべて数値型`double`になっていますが、`firm_ID`と`industry_ID`はカテゴリーを表す変数ですので、数値型ではなくファクター型に変換します。ついでに`year`は年度という時間を尺度なので、数値型ではなく`factor`型に変換します。
+ここで重要なのは、`year`はただのファクター型ではなく、順序のあるファクター型とすることです。
+ここでは`forcats`パッケージの`as_factor()`を使います。
 
 ```{r ch04_03}
 # firm_IDとindustry_IDをfactor型に変換
 financial_data <- financial_data |>
   mutate(
-	year = as.factor(year),
-	firm_ID = as.factor(firm_ID),
-	industry_ID = as.factor(industry_ID)
+		year = as_factor(year),
+		firm_ID = as_factor(firm_ID),
+		industry_ID = as_factor(industry_ID)
   )
-# 確認
-glimpse(financial_data)
 ```
 
 ## 探索的データ分析
