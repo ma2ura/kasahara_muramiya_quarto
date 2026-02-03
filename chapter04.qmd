@@ -1,4 +1,4 @@
-## 第4章 財務データの取得と可視化
+## 財務データの取得と可視化
 
 
 ```{r setup}
@@ -20,34 +20,35 @@ mystyle <- list(
 )
 ```
 
-# ディスクロージャー制度の概要とデータの入手先
+## ディスクロージャー制度の概要とデータの入手先
 
-## 4.1.1 法定開示と適時開示
+### 法定開示と適時開示
 
 |  | 年次開示 | 四半期開示 | 重要事実 |
 | --- | --- | --- | --- |
 | 法定開示 | 有価証券報告書 | 四半期報告書 | 臨時報告書 |
 | 適時開示 | 決算短信 | 四半期決算短信 | 適時開示 |
 
-## 4.1.2 財務データの入手先
+### 財務データの入手先
 
 - **EDINET**：金融庁が運営する電子開示システムで，全上場企業の法定開示資料をデータベースとして提供
 - **TDnet**：東京証券取引所が運営する電子開示システムで，上場企業の決算短信をデータベースとして提供
 
 XBRL(eXtensible Business Reporting Language)形式で財務諸表などの主要情報を公開しています。XBRLからデータを読み込むスキルは本書の枠を超えるため，ここでは練習用データで分析しますが、立命館大学では日経NEEDSを利用して財務データを収集します。
 
-# 4.2 Rを利用した財務データの分析
+## Rを利用した財務データの分析
 
-## 4.2.1 tidyverseパッケージの概要
+### tidyverseパッケージの概要
 
-tidyverseとは，R神Wickham氏が基本コンセプトを設定し，tidyデータに対して一貫した記法でデータを扱えるパッケージ群です。
+tidyverseとは，R神Wickham氏が基本コンセプトを設定し，**整然データ**(tidy data)に対して一貫した記法でデータを扱えるパッケージ群です。
 インストールと読み込みは以下の通りです。
 
 ```{r ch04_01}
-#install.packages("tidyverse") # 初回だけ
-library(tidyverse) # 毎回読み込み。めんどくさいときは.Rprofileに書き込む
+#install.packages("pacman") # 初回だけ
+pacman::p_load(tidyverse) # 読み込み
 ```
-tidyverseパッケージを読み込むことで，次の代表的なパッケージが読み出されます。
+
+`tidyverse`パッケージを読み込むことで，次の代表的なパッケージが読み出されます。
 よく使うものは以下のものになります。
 
 
@@ -60,28 +61,31 @@ tidyverseパッケージを読み込むことで，次の代表的なパッケ�
 - `stringr` 文字列の加工・操作　ちょいちょい使う
 - `forcats` ファクター型変数の操作　そんなに使わない
 
-## 4.2.2 財務データの読み込み
+### 財務データの読み込み
 
 サポートサイトにある練習用のデータセット`ch04_financial_data.csv`をダウンロードして，作業ディレクトリに置きます。
+
+:::{.column-margin}
 作業ディレクトリの場所を確認するには`getwd()`を使います。
 作業ディレクトリを変更するときは，`setwd()`で作業ディレクトリを絶対パスで指定するとよいでしょう。
+:::
 
-いままではcsvデータを読み込むために，基本関数の`read.csv()`を使ってきましたが、より高速かつオプション指定が柔軟なtidyverse関数群の1つである`readr`パッケージの`read_csv()`関数を使います。readとcsvの間がピリオド`.`からアンダースコア`_`に変わっているので注意してください。
+いままではcsvデータを読み込むために，基本関数の`read.csv()`を使ってきましたが、より高速かつオプション指定が柔軟なtidyverse関数群の1つである`readr`パッケージの`read_csv()`関数を使います。
+readとcsvの間がピリオド`.`からアンダースコア`_`に変わっているので注意してください。
 `readr`パッケージの`read_csv()`関数は，
 
 1. データの読み込みが高速かつ型の推論が柔軟
 2. 基本の`data.frame`ではなく，その拡張版である`tibble`で返す
 3. 列名を勝手に変換しない。
-4. 文字列を勝手にファクター型にしない（`read.csv()`だと勝手にファクターになる)。
+4. 文字列を勝手にファクター型にしない(`read.csv()`だと勝手にファクターになる)。
 
 という利点があります。
 
-```{r ch04_02}
-financial_data <- read_csv("data/ch04_financial_data.csv") # readrを使用
-
+```{r ch04_02, filename = "データの読み込み"}
+financial_data <- read_csv("data/ch04_financial_data.csv")
 nrow(financial_data) # 行数
 ncol(financial_data) # 列数
-head(financial_data,5) # 最初の5行
+head(financial_data, 5) # 最初の5行
 ```
 
 この`financial_data`には、11個の変数に観測値が7920個あることがわかります。
@@ -110,32 +114,34 @@ glimpse(financial_data)
 
 ```{r ch04_03}
 # firm_IDとindustry_IDをfactor型に変換
-financial_data$year <- factor(financial_data$year,
-							ordered = TRUE,
-							levels = c(2015, 2016, 2017, 2018, 2019, 2020)
-							)
-financial_data$firm_ID <- as.factor(financial_data$firm_ID)
-financial_data$industry_ID <- as.factor(financial_data$industry_ID)
-
+financial_data <- financial_data |>
+  mutate(
+	year = as.factor(year),
+	firm_ID = as.factor(firm_ID),
+	industry_ID = as.factor(industry_ID)
+  )
 # 確認
 glimpse(financial_data)
 ```
 
-# 4.3 探索的データ分析
+## 探索的データ分析
 
-## 4.3.1 データセットの概要確認
+### データセットの概要確認
 
 データセットを操作するまえに，データの概要を大まかにつかむ必要があり，この作業を探索的データ分析(exploratory data analysis)といいます。
 仮説などを持たず，とりあえず特徴や構造を理解するための方法です。
+データセットの概要を確認するために，`skimr`パッケージの`skim()`関数を用います。
 
 :::{.callout-tips}
 引数の型に応じて自動的に最適な結果を返す機能を**多態性** (polymorphism)といい，多態性をもつ関数を**総称関数**(generic function)という。
 :::
 
 ```{r ch04_05}
-summary(financial_data)
+skimr::skim(financial_data)
 ```
+
 さらに，データセットのある変数に含まれる固有な要素を抽出するには，`unique()`関数を用います。
+
 ```{r ch04_06}
 unique(financial_data$year) # financial_dataのyear変数に含まれる固有要素
 # 2015, 2016, 2017, 2018, 2019, 2020
@@ -143,9 +149,11 @@ unique(financial_data$year) # financial_dataのyear変数に含まれる固有�
 
 固有要素の数を確認するには，`unique()`関数で取り出した要素の数を`length()`関数で返します。
 企業-年の企業数と年度数を確認するには次のようにします。
-```{r ch04_07}
-length(unique(financial_data$firm_ID)) # 1515を返す
-length(unique(financial_data$industry_ID)) # 10
+```{r ch04_07, filename = "企業数と産業数の確認"}
+sort(unique(financial_data$year))
+
+financial_data$firm_ID |> n_distinct()
+financial_data$industry_ID |> n_distinct()
 ```
 よってこのデータには10の産業、1515の企業があることが分かります。
 
