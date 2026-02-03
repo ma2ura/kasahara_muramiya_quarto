@@ -16,8 +16,8 @@ mystyle <- list(
 )
 
 knitr::opts_chunk$set(
-  class.source = "numberLines lineAnchors",
-  class.output = "numberLines lineAnchors chunkout"
+  class.source = "numberLines lineAnchors"
+#   class.output = "numberLines lineAnchors chunkout"
   )
 ```
 
@@ -705,6 +705,9 @@ class(firm_data$industry)
 
 `forcats`パッケージには非常に便利な関数がたくさんあるので，ぜひドキュメントを参照してみてください。代表的なものに
 
+- `as_factor()` : 他の型から因子型に変換
+- `fct_inorder()` : 出現順にレベルを設定
+- `fct_order()` : 頻度順にレベルを設定
 - `fct_relevel()` : レベルの順序を変更
 - `fct_recode()` : レベルの名前を変更
 - `fct_collapse()` : レベルをまとめる

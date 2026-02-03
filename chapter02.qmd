@@ -1013,7 +1013,7 @@ points(x = 10, y = 10, lwd = 3, col = "darkblue", pch = 16) #最適消費点
 
 リスクとリターンの無差別曲線
 
-![無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定](img/KM_fig_2-12.jpg)
+<!-- ![無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定](img/KM_fig_2-12.jpg) -->
 
 複数ポートフォリオを比べるとき，この図の左上のものほど高リターン低リスクに対応するので、より高い効用水準が実現する。
 また無差別曲線の**局所的な傾き**は、その投資家が追加的なリスクを引き受けるうえで要求するリスクプレミアムを表す。
@@ -1085,7 +1085,8 @@ $$
 \mu_P = R_F + \frac{\mu_M - R_F}{\sigma_M} \sigma_P
 $$
 
-![CAPM](img/KM_fig_2-13.png)
+<!-- ![CAPM](img/KM_fig_2-13.png) -->
+
 前の章で用いたパラメータをそのまま考えます。
 接点ポートフォリオの保有比率は概ね47%を銘柄Aに、53%を銘柄Bに投資する結果となりました。CAPMの第一命題によると、均衡した市場における銘柄AとBの時価総額比率は約0.47対0.53になっていなければなりません。
 この命題に従えば、投資家は各銘柄の期待リターンや分散から接点ポートフォリオを計算する必要はなく、単に時価総額加重で市場ポートフォリオを保有すればよいことになります。
@@ -1245,10 +1246,10 @@ frontier_data <- tibble(
 # --- 左図: 資本市場線 (CML) ---
 p_cml <- ggplot() +
   # 効率的フロンティア（双曲線）
-  geom_path(data = frontier_data, aes(x = Sigma, y = Mu), 
+  geom_path(data = frontier_data, aes(x = Sigma, y = Mu),
             color = "gray70", size = 1) +
   # 資本市場線 (CML): 切片Rf, 接点を通る直線
-  geom_abline(intercept = Rf, slope = (mu_M - Rf) / sig_M, 
+  geom_abline(intercept = Rf, slope = (mu_M - Rf) / sig_M,
               color = "darkblue", linetype = "solid", size = 0.8) +
   # 各資産のポイント
   geom_point(data = assets, aes(x = Sigma, y = Mu, color = Asset), size = 3) +
@@ -1266,12 +1267,12 @@ p_cml <- ggplot() +
 # --- 右図: 証券市場線 (SML) ---
 p_sml <- ggplot() +
   # 証券市場線 (SML): 切片Rf, 傾き(Rm-Rf)
-  geom_abline(intercept = Rf, slope = (mu_M - Rf), 
+  geom_abline(intercept = Rf, slope = (mu_M - Rf),
               color = "darkred", linetype = "solid", size = 0.8) +
   # 各資産のポイント
   geom_point(data = assets, aes(x = Beta, y = Mu, color = Asset), size = 3) +
   # 補助線 (市場PFのベータ=1を示す線)
-  geom_segment(aes(x = 1, xend = 1, y = 0, yend = mu_M), 
+  geom_segment(aes(x = 1, xend = 1, y = 0, yend = mu_M),
                linetype = "dashed", color = "gray") +
   # Rfの点
   geom_point(aes(x = 0, y = Rf), color = "black", size = 2) +
@@ -1307,16 +1308,16 @@ p_combined
 
 統計学における分散の定義は，$N$個の確率変数$R_1,R_2,\cdots,R_N$の共分散行列$\Sigma$の対角成分の和である。
 $$
-\begin{align*}
+\begin{aligned}
 \sigma^2=\sum_{i=1}^N\sum_{j=1}^N\sigma_{ij}=\sum_{i=1}^N\sigma_{ii}
-\end{align*}
+\end{aligned}
 $$
 ここで，$\sigma_{ij}$は$R_i$と$R_j$の共分散であり，$\sigma_{ii}$は$R_i$の分散である。
 共分散行列$\Sigma$は対称行列であり，対角成分は分散を表す。
 また，$R_i$と$R_j$の共分散は$\sigma_{ij}=\sigma_{ji}$である。
 共分散行列の対角成分以外の成分は共分散を表す。
 $$
-\begin{align*}
+\begin{aligned}
 \Sigma=
 \begin{bmatrix}
 \sigma_{11} & \sigma_{12} & \cdots & \sigma_{1N} \\
@@ -1324,7 +1325,7 @@ $$
 \vdots & \vdots & \ddots & \vdots \\
 \sigma_{N1} & \sigma_{N2} & \cdots & \sigma_{NN} \\
 \end{bmatrix}
-\end{align*}
+\end{aligned}
 $$
 
 上のは，$N$個の確率変数の共分散行列の定義である。Copilotで作成しました。
