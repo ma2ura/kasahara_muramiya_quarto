@@ -31,48 +31,46 @@ mystyle <- list(
 
 ### 財務データの入手先
 
-- **EDINET**：金融庁が運営する電子開示システムで，全上場企業の法定開示資料をデータベースとして提供
-- **TDnet**：東京証券取引所が運営する電子開示システムで，上場企業の決算短信をデータベースとして提供
+- **EDINET**：全上場企業の法定開示資料データベース，XBRL形式も提供
+- **TDnet**：上場企業の決算短信データベース, XBRL形式も提供
 
-XBRL(eXtensible Business Reporting Language)形式で財務諸表などの主要情報を公開しています。XBRLからデータを読み込むスキルは本書の枠を超えるため，ここでは練習用データで分析しますが、立命館大学では日経NEEDSを利用して財務データを収集します。
+**XBRL**(eXtensible Business Reporting Language)形式で財務諸表などの主要情報を公開しています。
+XBRL形式を学習しておくと，EDINETやTDnetから直接データを取得してRで分析することもできるので便利ですが，なかなか面倒なことが多いので，大学生なら大学が契約してくれているデータベースを活用しましょう。
 
 ## Rを利用した財務データの分析
 
 ### tidyverseパッケージの概要
 
-tidyverseとは，R神Wickham氏が基本コンセプトを設定し，**整然データ**(tidy data)に対して一貫した記法でデータを扱えるパッケージ群です。
+`tidyverse`とは，R神Wickham氏が基本コンセプトを設定し，**整然データ**(tidy data)に対して一貫した記法でデータを扱えるパッケージ群です。
 インストールと読み込みは以下の通りです。
 
 ```{r ch04_01}
-#install.packages("pacman") # 初回だけ
-pacman::p_load(tidyverse) # 読み込み
+#install.packages("pacman") # まだなら1回だけ実行
+pacman::p_load(tidyverse)
 ```
 
 `tidyverse`パッケージを読み込むことで，次の代表的なパッケージが読み出されます。
-よく使うものは以下のものになります。
 
-
-- `ggplot2` データの可視化　めっちゃ使う
 - `dplyr` データハンドリング　めっちゃ使う
 - `tidyr` tidyデータにもっていく　使う
 - `readr` データを読み込む めっちゃ使う
+- `forcats` ファクター型変数の操作　めっちゃ使う
+- `ggplot2` データの可視化　めっちゃ使う
 - `purrr` 関数型プログラミングで使う　慣れてくると使う
 - `tibble` data.frameではなくtibbleにする　あまり使わない
 - `stringr` 文字列の加工・操作　ちょいちょい使う
-- `forcats` ファクター型変数の操作　そんなに使わない
 
 ### 財務データの読み込み
 
-サポートサイトにある練習用のデータセット`ch04_financial_data.csv`をダウンロードして，作業ディレクトリに置きます。
+準備として，サポートサイトにある練習用のデータセット`ch04_financial_data.csv`をダウンロードして，作業ディレクトリに置いておきましょう。
 
 :::{.column-margin}
 作業ディレクトリの場所を確認するには`getwd()`を使います。
 作業ディレクトリを変更するときは，`setwd()`で作業ディレクトリを絶対パスで指定するとよいでしょう。
 :::
 
-いままではcsvデータを読み込むために，基本関数の`read.csv()`を使ってきましたが、より高速かつオプション指定が柔軟なtidyverse関数群の1つである`readr`パッケージの`read_csv()`関数を使います。
-readとcsvの間がピリオド`.`からアンダースコア`_`に変わっているので注意してください。
-`readr`パッケージの`read_csv()`関数は，
+`readr`パッケージの`read_csv()`関数を使って，CSVファイルを読み込みます。
+`read_csv()`関数は，
 
 1. データの読み込みが高速かつ型の推論が柔軟
 2. 基本の`data.frame`ではなく，その拡張版である`tibble`で返す
@@ -102,26 +100,24 @@ head(financial_data, 5) # 最初の5行
 - `FE` : 金融資産(financial assets)
 - `FO` : 金融負債(financial obligations)
 
-このデータフレームの構造を確認します。
+このデータフレームの構造を`dplyr`パッケージの`glimpse()`を使って確認します。
 
 ```{r}
 glimpse(financial_data)
 ```
 
-変数はすべて数値型`double`になっていますが、`firm_ID`と`industry_ID`はカテゴリーを表す変数ですので、数値型ではなくファクター型に変換します。ついでに`year`は年度という時間を尺度なので、数値型ではなく`factor`型に変換します。ここで重要なのは、`year`はただのファクター型ではなく、順序のあるファクター型とすることです。
-
-ここでは`as.factor()`を使います。
+変数はすべて数値型`double`になっていますが、`firm_ID`と`industry_ID`はカテゴリーを表す変数ですので、数値型ではなくファクター型に変換します。ついでに`year`は年度という時間を尺度なので、数値型ではなく`factor`型に変換します。
+ここで重要なのは、`year`はただのファクター型ではなく、順序のあるファクター型とすることです。
+ここでは`forcats`パッケージの`as_factor()`を使います。
 
 ```{r ch04_03}
 # firm_IDとindustry_IDをfactor型に変換
 financial_data <- financial_data |>
   mutate(
-	year = as.factor(year),
-	firm_ID = as.factor(firm_ID),
-	industry_ID = as.factor(industry_ID)
+		year = as_factor(year),
+		firm_ID = as_factor(firm_ID),
+		industry_ID = as_factor(industry_ID)
   )
-# 確認
-glimpse(financial_data)
 ```
 
 ## 探索的データ分析
@@ -200,18 +196,18 @@ financial_data <- drop_na(financial_data) # 欠損行を削除した上でデー
 ## 4.4.1 条件にあうデータの抽出方法
 
 教科書では複数の方法が紹介されているが，このメモではtidyverseパッケージを用いた方法だけ取り上げます。具体的には，データベース操作のパッケージである`dplyr`の中の`filter()`関数について説明します。
-さらに`magrittr`を用いたパイプ演算子`%>%`を用いたデータの受け渡しの記法を活用して，可読性の高いソースコードを書くことも紹介します。
+さらに`magrittr`を用いたパイプ演算子`|>`を用いたデータの受け渡しの記法を活用して，可読性の高いソースコードを書くことも紹介します。
 ここでは`dplyr`パッケージの`filter()`関数であることを明示的に示すため、`dplyr::filter()`と書いていますが、`dplyr`パッケージを読み込んでいる場合は`filter()`と書いても同じです。
 
 ```{r ch04-13}
-financial_data_2015 <- financial_data %>%
+financial_data_2015 <- financial_data |>
 	dplyr::filter(year == 2015) # year変数が2015のデータを抽出
 ```
 
 `filter()`で条件を満たすデータのみを取り出し，それを`financial_data_2015`に代入している。
 
-パイプ演算子%>%は**左のオブジェクトを右の関数の第1引数に代入**する，という処理を行います。
-つまり，`x %>% filter(year == 2015)`は，`filter(x, year == 2015)`と同じ意味になります。
+パイプ演算子|>は**左のオブジェクトを右の関数の第1引数に代入**する，という処理を行います。
+つまり，`x |> filter(year == 2015)`は，`filter(x, year == 2015)`と同じ意味になります。
 パイプ演算子を使うことで，データが次の処理に受け渡されていくプロセスが読みやすくなります。たとえば、
 
 1. 欠損値を除去して，
@@ -222,12 +218,16 @@ financial_data_2015 <- financial_data %>%
 というよく使いそうな処理を行いたい場合，tidyverseなら次のように書きます。
 
 ```{r, eval = FALSE}
-financial_data %>%
-	drop_na() %>% # 欠損値を除去し，
-	filter(year == 2015) %>% # 2015年のデータを抽出し，
-	mutate(ROE = earnings / equity) %>% # ROEを計算し，
-	group_by(industry) %>% # 業種コードごとに
-	summarise(mean_ROE = mean(ROE)) # mean()で平均値を計算
+financial_data |>
+	drop_na() |> # 欠損値を除去し，
+	filter(year == 2015) |> # 2015年のデータを抽出し，
+	mutate(
+		ROE = earnings / equity
+		) |> # ROEを計算し，
+	summarise(
+		mean_ROE = mean(ROE), # mean()で平均値を計算
+		by = industry_ID # 産業ごとに
+	) 
 ```
 
 基本関数の場合は、
@@ -343,21 +343,27 @@ print(g)
 もっとデータを加工して、データの特徴をつかむグラフを作成してみます。
 データを加工するために、非常に便利なパッケージであるtidyverseの`dplyr`を用いたデータ加工を説明します。`dplyr`でよく使う関数に、
 
-- `group_by()`
 - `summarise()`
 - `mutate()`
 - `filter()`
 
-があります。これらの関数を組み合わせることで、データの加工が非常に簡単にできます。たとえば、`financial_data`に含まれる売上高を年度ごとに集計してみましょう。`dplyr`の`group_by()`関数を使うと、変数を指定してデータをグループ化することができます。たとえば、`year`を指定すると、年度ごとにデータをグループ化します。
-`group_by()`でグループ化したあとに、`summarise()`関数を使って平均や分散などの統計量を計算します。
+があります。これらの関数を組み合わせることで、データの加工が非常に簡単にできます。
+特定の変数ごとにデータをグループ化するには，`mutate()`関数や`summarise()`関数の中で、`.by = c(vars)`という引数を用います。
+
+:::{.column-margin}
+以前は、`dplyr`パッケージの`group_by()`関数を用いてグループ化を行っていましたが、複数の変数でグループ化を行ったとき、`ungroup()`関数でグループ化を解除する必要があり、また全てのグループ化を解除するにも手間でした。
+`dplyr`の新しいバージョンでは、`group_by`を用いずに、`summarise()`や`mutate()`関数の中で`.by`引数を用いることで、グループ化と集計を一度に行うことができ、また処理後はグループ化が完全に解除されるので、コードがシンプルになります。
+:::
+
+たとえば、`financial_data`に含まれる売上高を年度ごとに集計してみましょう。
 
 ```{r ch04_17}
-N_firms_by_year <- financial_data %>%
-	group_by(year) %>% # 年度ごとにグループ化
+N_firms_by_year <- financial_data |>
 	summarize( # 以下の統計量を計算
 		N_firms = n(), # データ個数 n()
-		mean_sales = mean(sales) # 売上高の年度平均 mean()
-)
+		mean_sales = mean(sales), # 売上高の年度平均 mean()
+		.by = year # year変数ごとにグループ化
+	)
 ```
 
 これで`N_firms_by_year`というオブジェクトに、`financial_data`を年度ごとにグループ化して、年度ごとの企業数`N_firms`と平均売上高`mean_sale`を計算したデータが入っています。
@@ -398,7 +404,7 @@ x軸にファクター型を指定する場合、`group = 1`を指定しない�
 
 # 4.6 変数の作成とヒストグラムによる可視化
 
-`tidyverse`の`dplyr`パッケージの`mutate()`関数を用いれば，パイプ演算子`%>%`を用いて可読性の高いシンプルな書き方で、新しい変数を作成することができます。
+`tidyverse`の`dplyr`パッケージの`mutate()`関数を用いれば，パイプ演算子`|>`を用いて可読性の高いシンプルな書き方で、新しい変数を作成することができます。
 
 ::: {.callout-tips}
 ## キーボードショートカット
@@ -426,7 +432,7 @@ $$
 この計算を行い，新しい変数`BE`をデータフレームに加えるには，`dplyr::mutate()`を使います。
 
 ```{r ch04_27}
-financial_data <- financial_data %>%
+financial_data <- financial_data |>
 	mutate(
 		BE = (OA - OL) - (FO - FA) # 新たなBE変数が加わる
 	)
@@ -437,7 +443,7 @@ financial_data <- financial_data %>%
 ただ，クロスセクションのデータで普通に`lag()`関数を用いると，次のように別の企業のデータを参照してしまいます。
 
 ```{r}
-financial_data <- financial_data %>%
+financial_data <- financial_data |>
 	mutate(
 		lag_BE = lag(BE),
 		ROE = X / lag_BE # これはダメ
@@ -447,28 +453,26 @@ head(financial_data, 10)[,c("firm_ID", "year", "BE","lag_BE","ROE")]
 ```
 
 結果の`firm_ID`が2の企業の2015年のROEを計算するには，1期前の企業1の2014年の株主資本を参照する必要があるけれど，2014年のデータは存在しないため、企業2の2015年度のROEは欠損値`NA`になっている必要があるのに、`lag()`関数が1つ前の企業1の2020年の株主資本を参照してしまっています。
-ROEを企業ごとに計算するために，`dplyr::group_by()`を使って，計算を企業群ごとに行うことで、この問題を解決できます。
+ROEを企業ごとに計算するために，`mutate()`関数の引数として、`.by = firm_ID`を指定します。
 
 ```{r}
-financial_data <- financial_data %>%
-	group_by(firm_ID) %>% # firm_IDごとに以下の処理を繰り返す
+financial_data <- financial_data |>
 	mutate(
 		lagged_BE = lag(BE), # lag関数で前期の値を取り出す
-		ROE = X / lagged_BE # これはOK
-	) %>%
-	ungroup() # group化を解除
+		ROE = X / lagged_BE, # これはOK
+		.by = firm_ID # firm_IDごとにグループ化
+	)
 head(financial_data, 10)[,c("firm_ID", "year", "BE","lagged_BE","ROE")]
 ```
 
 2015年のROEが欠損値になっており、正しい計算ができています。
 クロスセクション分析における`lag()`関数の問題点を分かりやすくするために、上のように`lagged_BE`変数と`ROE`変数を別々に作成しましたが、通常は次のように書きます。
 ```{r ch04_29}
-financial_data <- financial_data %>%
-	group_by(firm_ID) %>% # firm_IDごとに以下の処理を繰り返す
+financial_data <- financial_data |>
 	mutate(
-		ROE = X / lag(BE) # これで一気に計算する方がOK
-	) %>%
-	ungroup() # group化を解除
+		ROE = X / lag(BE), # これで一気に計算する方がOK
+		.by = firm_ID # firm_IDごとにグループ化
+	)
 ```
 
 これでROEの計算ができので、次にROEのヒストグラムを作ってみます。
@@ -488,20 +492,20 @@ g <- g + geom_vline(xintercept = 0, color = "red") # x軸に縦線を引く
 print(g)
 ```
 
-# 4.7 グループごとの集計とランク付け
+## 4.7 グループごとの集計とランク付け
 
-## 4.7.1 産業ごとのROE平均値と棒グラフによる可視化
+### 4.7.1 産業ごとのROE平均値と棒グラフによる可視化
 
-グループごとに平均値を出すといった処理は，`dplyr`の`group_by()`と`summarise()`を用いることで簡単にできます。
-
-ここでは、産業ごとにROEの平均値と標準偏差を求めてみます。ROEには欠損値が含まれているため、`mean()`関数を使うと`NA`が返ってきます。`NA`を無視して平均値を計算するには、`mean()`関数のオプション`na.rm = TRUE`を指定します。
+グループごとに平均値を出すといった処理は，`dplyr::summarise()`の引数で`.by=var`を指定すれば簡単です。
+ここでは、産業ごとにROEの平均値と標準偏差を求めてみます。
+ROEには欠損値が含まれているため、`mean()`関数を使うと`NA`が返ってきます。`NA`を無視して平均値を計算するには、`mean()`関数のオプション`na.rm = TRUE`を指定します。
 
 ```{r ch04_31}
-df_ind <- financial_data %>%
-	group_by(industry_ID) %>% # 集計したいグループを指定
+df_ind <- financial_data |>
 	summarize(
 		mean_ROE = mean(ROE, na.rm = TRUE), # 産業平均
-		sd_ROE = sd(ROE, na.rm = TRUE)　# 産業標準偏差
+		sd_ROE = sd(ROE, na.rm = TRUE),　# 産業標準偏差
+		.by = industry_ID # 産業ごとにグループ化
 	)
 glimpse(df_ind)
 ```
@@ -540,18 +544,17 @@ ROEを大きい順にならべて、一番大きい企業に1、2番目の企業
 
 ```{r}
 # 2020年度の産業内のROEランキングの変数を作成
-ROE_rank_data <- financial_data %>%
-	filter(year == 2020) %>% # 2020年度データを抽出
-	select(firm_ID, industry_ID, ROE) %>% # 必要な変数を選択
-	group_by(industry_ID) %>% # 産業コードごとに以下の処理を実行
-	mutate(
-		ROE_rank = rank(desc(ROE)) # ROE_rank変数を降順で作成
-	) %>%
-	ungroup()# グループ化を解除
+ROE_rank_data <- financial_data |>
+	filter(year == 2020) |> 
+	select(firm_ID, industry_ID, ROE) |> 
+	mutate(  # summarize を mutate に変更
+		ROE_rank = rank(desc(ROE)), 
+		.by = industry_ID 
+	)
 
-ROE_rank_data %>%
-	filter(ROE_rank == 1) %>% # 各産業のランク1のものを抽出
-	arrange(desc(ROE)) %>%  # ROEが大きい順
+ROE_rank_data |>
+	filter(ROE_rank == 1) |> # 各産業のランク1のものを抽出
+	arrange(desc(ROE)) |>  # ROEが大きい順
 	knitr::kable(booktabs = TRUE, # ここから下は表の装飾
 		caption = "2020年度産業別ROEランキング第1位企業",
 		position = "h!" # 表示場所はここに
@@ -587,11 +590,9 @@ $$
 
 いくつかの変数は，元のデータには含まれていないので，与えられたデータから計算する必要があります。
 `dplyr::mutate()`関数を用いて新しい変数を作成し，データフレームに追加します。
-`lag()`で前期末(つまり当期首)の値を取得するため，`group_by()`関数で企業ごとにグループ化しています。
 
 ```{r}
-financial_data <- financial_data %>%
-	group_by(firm_ID) %>% # 企業IDごとに以下の計算を行う。
+financial_data <- financial_data |>
 	mutate(
 		NOA = OA - OL, # 純事業資産 = 事業資産 - 事業負債
 		RNOA = OX / lag(NOA), # 会計上の事業リターン
@@ -600,9 +601,9 @@ financial_data <- financial_data %>%
 		NFO = FO - FA, # 純金融負債 = 金融負債 - 金融資産
 		lagged_FLEV = lag(NFO) / lagged_BE, #期首財務レバレッジ
 		NBC = NFE / lag(NFO), # 債権者のリターン net borrowing cost
-		ROE_DuPont = RNOA + lagged_FLEV * (RNOA - NBC) # 上級デュポン・モデルによるROE
-	) %>%
-	ungroup()
+		ROE_DuPont = RNOA + lagged_FLEV * (RNOA - NBC), # 上級デュポン・モデルによるROE
+		.by = firm_ID # 企業ごとにグループ化
+	)
 ```
 
 ROEの分解式が合っているかどうかを確認するため，`all.equal()`関数を使って，第1引数と第2引数が等しいかどうかを判定してみます。
@@ -627,7 +628,7 @@ all.equal(financial_data$ROE, financial_data$ROE_DuPont)
 あまり多くの箱ひげ図を作っても見づらくなるので，最終年度のデータ で，産業IDが2〜6までの企業に限定します。
 
 ```{r}
-df_2020 <- financial_data %>%
+df_2020 <- financial_data |>
 	filter(
 		year == 2020, # 最終年度
 		industry_ID %in% 2:6 # 産業コードが2から6
@@ -645,11 +646,11 @@ print(g)
 次に産業ごとに `ATO`(純事業資産回転率)と `PM`(売上高事業利益率)がどう分布しているか散布図を書いてみます。
 ここでは異常値の影響を受けにくい統計量である中央値(median)を計算し，散布図を作成してみます。
 ```{r}
-df_ind_median <- financial_data %>%
-	group_by(industry_ID) %>%
+df_ind_median <- financial_data |>
 	summarise(
 		median_ATO = median(ATO, na.rm = TRUE), # ATOの中央値
-		median_PM = median(PM, na.rm = TRUE) # PMの中央値
+		median_PM = median(PM, na.rm = TRUE), # PMの中央値
+		.by = industry_ID # 産業ごとにグループ化
 	)
 
 g <- ggplot(df_ind_median) +
