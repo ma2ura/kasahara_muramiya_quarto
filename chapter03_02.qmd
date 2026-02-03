@@ -54,11 +54,11 @@ $$
 $$
 
 ここで，$(1+y) =Y$とおいて式を変形していく。 $$
-\begin{align*}
+\begin{aligned}
 -100 + \frac{40}{Y} + \frac{50}{Y^2}+ \frac{60}{Y^3} &= 0\\
 \Longleftrightarrow  -100Y^3 + 40 Y^2 + 50Y + 60 &= 0\\
 \Longleftrightarrow  60 + 50Y + 40 Y^2 - 100Y^3 &= 0\\
-\end{align*}
+\end{aligned}
 $$
 
 この式を解くための関数である`polyroot()`関数がある。 `polyroot()`関数は，多項式の係数ベクトルをとる。 ついでに`round()`関数をつかって小数点以下第4位で四捨五入します。

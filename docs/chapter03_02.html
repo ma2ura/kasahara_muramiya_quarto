@@ -522,11 +522,11 @@ PV = -100 + \frac{40}{(1+y)} + \frac{50}{(1+y)^2}+ \frac{60}{(1+y)^3}
 -100 + \frac{40}{(1+y)} + \frac{50}{(1+y)^2}+ \frac{60}{(1+y)^3} = 0
 </span></p>
 <p>ここで，<span class="math inline">(1+y) =Y</span>とおいて式を変形していく。 <span class="math display">
-\begin{align*}
+\begin{aligned}
 -100 + \frac{40}{Y} + \frac{50}{Y^2}+ \frac{60}{Y^3} &amp;= 0\\
 \Longleftrightarrow  -100Y^3 + 40 Y^2 + 50Y + 60 &amp;= 0\\
 \Longleftrightarrow  60 + 50Y + 40 Y^2 - 100Y^3 &amp;= 0\\
-\end{align*}
+\end{aligned}
 </span></p>
 <p>この式を解くための関数である<code><a href="https://rdrr.io/r/base/polyroot.html">polyroot()</a></code>関数がある。 <code><a href="https://rdrr.io/r/base/polyroot.html">polyroot()</a></code>関数は，多項式の係数ベクトルをとる。 ついでに<code><a href="https://rdrr.io/r/base/Round.html">round()</a></code>関数をつかって小数点以下第4位で四捨五入します。</p>
 <div class="cell" data-layout-align="center">
@@ -1770,11 +1770,11 @@ FV(n) = \left ( \frac{1+R}{n}\right )^{Tn} P.
 <span id="cb97-54"><a href="#cb97-54"></a>$$</span>
 <span id="cb97-55"><a href="#cb97-55"></a></span>
 <span id="cb97-56"><a href="#cb97-56"></a>ここで，$(1+y) =Y$とおいて式を変形していく。 $$</span>
-<span id="cb97-57"><a href="#cb97-57"></a>\begin{align*}</span>
+<span id="cb97-57"><a href="#cb97-57"></a>\begin{aligned}</span>
 <span id="cb97-58"><a href="#cb97-58"></a>-100 + \frac{40}{Y} + \frac{50}{Y^2}+ \frac{60}{Y^3} &amp;= 0<span class="sc">\\</span></span>
 <span id="cb97-59"><a href="#cb97-59"></a>\Longleftrightarrow  -100Y^3 + 40 Y^2 + 50Y + 60 &amp;= 0<span class="sc">\\</span></span>
 <span id="cb97-60"><a href="#cb97-60"></a>\Longleftrightarrow  60 + 50Y + 40 Y^2 - 100Y^3 &amp;= 0<span class="sc">\\</span></span>
-<span id="cb97-61"><a href="#cb97-61"></a>\end{align*}</span>
+<span id="cb97-61"><a href="#cb97-61"></a>\end{aligned}</span>
 <span id="cb97-62"><a href="#cb97-62"></a>$$</span>
 <span id="cb97-63"><a href="#cb97-63"></a></span>
 <span id="cb97-64"><a href="#cb97-64"></a>この式を解くための関数である<span class="in">`polyroot()`</span>関数がある。 <span class="in">`polyroot()`</span>関数は，多項式の係数ベクトルをとる。 ついでに<span class="in">`round()`</span>関数をつかって小数点以下第4位で四捨五入します。</span>

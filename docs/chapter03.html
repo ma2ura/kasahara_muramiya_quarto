@@ -389,7 +389,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter03_02.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">第3章 R言語入門 後半</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -401,13 +401,13 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter05.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">第5章 株式データの取得と可視化</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">株式データの取得と可視化</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter06.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">第6章 ファクターモデルの導入</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">ファクターモデルの導入</span></span></a>
   </div>
 </li>
     </ul>
@@ -1103,10 +1103,10 @@ nickname       How About a Twenty-Six      </code></pre>
 <span id="cb81-2"><a href="#cb81-2"></a>(res_for <span class="ot">&lt;-</span> <span class="fu">system.time</span>(<span class="fu">calc_PV_for</span>(CF)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  0.042   0.000   0.042 </code></pre>
+  0.044   0.002   0.046 </code></pre>
 </div>
 </div>
-<p>0.042 秒かかりました。 次に、ベクトル化した計算結果を見てみましょう。</p>
+<p>0.046 秒かかりました。 次に、ベクトル化した計算結果を見てみましょう。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r numberLines lineAnchors number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1"></a>calc_PV_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(CF, <span class="at">R =</span> <span class="fl">0.1</span>){</span>
 <span id="cb83-2"><a href="#cb83-2"></a>    year <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span>(<span class="fu">length</span>(CF) <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 年度のベクトル</span></span>
@@ -1121,10 +1121,10 @@ nickname       How About a Twenty-Six      </code></pre>
 <span id="cb84-2"><a href="#cb84-2"></a>(res_vec <span class="ot">&lt;-</span> <span class="fu">system.time</span>(<span class="fu">calc_PV_vec</span>(CF)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  0.010   0.001   0.010 </code></pre>
+  0.010   0.002   0.013 </code></pre>
 </div>
 </div>
-<p>0.01 秒と、<code>for</code>文を使った場合に比べて、約 4.2 倍高速化されました。これがベクトル化による実行速度の効率化です。 とはいえ、演算に時間がかかるような大規模データや複雑なシミュレーションをするようになるまで、ベクトル化の恩恵はそれほど大きくないので、まずは読みやすく、確実に動くプログラムを書くことを心がけましょう。</p>
+<p>0.013 秒と、<code>for</code>文を使った場合に比べて、約 3.54 倍高速化されました。これがベクトル化による実行速度の効率化です。 とはいえ、演算に時間がかかるような大規模データや複雑なシミュレーションをするようになるまで、ベクトル化の恩恵はそれほど大きくないので、まずは読みやすく、確実に動くプログラムを書くことを心がけましょう。</p>
 </section></section><section id="演習" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="演習">
 <span class="header-section-number">3.5</span> 演習</h2>
 <p>各自でやってみてください。</p>
@@ -1745,8 +1745,8 @@ nickname       How About a Twenty-Six      </code></pre>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./chapter03_02.html" class="pagination-link" aria-label="第3章 R言語入門 後半">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">第3章 R言語入門 後半</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./chapter03_02.html" class="pagination-link" aria-label="R言語入門 後半">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">

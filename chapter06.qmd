@@ -179,8 +179,7 @@ ggplot(factor_data) + aes(x = R_Me) + geom_histogram() +
 
 市場ポートフォリオの累積グロス・リターンを計算します。
 
-```{r ch06_09}
-#| label:  市場ポートフォリオの累積リターンの可視化 (1)
+```{r ch06_09, filename="市場ポートフォリオの累積リターンの可視化 (1)"}
 df_g <- factor_data %>%
   mutate(
     gross_R_M = 1 + R_M, # rに1足してグラスリターン
