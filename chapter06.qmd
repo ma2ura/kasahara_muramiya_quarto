@@ -1,10 +1,13 @@
 ## ファクターモデルの導入
 
 ```{r setup}
+# パッケージの読み込み
 pacman::p_load(
-  tidyverse, ggthemes, ggpubr, plotly, patchwork, Rsolnp, broom
+  tidyverse, # 便利なパッケージ群 
+  ggthemes, # ggplot2のテーマ集
+  broom # モデルの整形
 )
-
+# グラフのスタイル設定
 mystyle <- list(
   theme_economist_white(
     base_family = "HiraKakuProN-W3"
@@ -24,39 +27,37 @@ mystyle <- list(
 
 ## 市場ポートフォリオの構築
 
+**市場ポートフォリオ**(market portfolio)とは，**市場に存在する全ての危険資産を時価総額比率で保有したポートフォリオ**をいいます。
 
-市場ポートフォリオ (market portfolio)とは，**市場に存在する全ての危険資産を時価総額比率で保有したポートフォリオ**をいいます。
+:::{.column-margin}
 厳密には，リスク資産には株式や債券に代表される金融資産の他、不動産や貴金属などの実物資産も含まれますが、実用上はTOPIXやS&P500といった株価指数と同一視されることが多いです。
-
-ここでは，データとして入手可能な**全銘柄の時価総額と個別銘柄の時価総額の比率をウェイト**として市場ポートフォリオを構築します。
-
+:::
 
 
+**入手可能な全銘柄の前年末時価総額$\sum ME_{j,t-1}$と個別銘柄の時価総額 $ME_{i,t-1}$ の比率**をウェイト $w_{i,t}^M$ として市場ポートフォリオを構築します。
 
+$$
+w_{i,t}^M = \frac{ME_{i,t-1}^{12\text{月}}}{\sum_{j = 1}^N ME_{j,t-1}^{12\text{月}}}
+$$
 
-毎年1月に年次リバランスを想定し，前年度末の時価総額に比例した保有比率の計算をします。
+株価は日々変動するため、時価総額も変動します。
+そのため、毎年1月に時価の変動で崩れた比率をリセットするために、市場ポートフォリオの中身を入れ替える**リバランス**を行います。
+
+では練習用データで市場ポートフォリオを構築してみましょう。
 
 ```{r package}
 monthly_data <- read_csv("data/ch05_output1.csv")
 annual_data <- read_csv("data/ch05_output2.csv")
 ```
 
-ここでもデータの構造を確認しておきます。
-`monthly_data`は**月次の**株価の終値，一株当り配当額，発行済株式数，調整係数，無リスク利子率，時価総額といった株式データが収録されています。
-`annual_data`は**年次の**売上高や当期純利益など財務データが収録されています。
+`monthly_data`は**月次の**株式データが収録されており、
+`annual_data`は**年次の**財務データが収録されています。
+データの構造を確認しておきます。
 
 ```{r data_check}
 glimpse(monthly_data)
 glimpse(annual_data)
 ```
-
-市場ポートフォリオの構築に用いるウェイトは次のように計算します。$ME_{i,t}$は$t$期末における銘柄$i$の時価総額を表します。
-分母は，$N$個ある全銘柄の時価総額を合計しています。
-$$
-w_{i,t}^M = \frac{ME_{i,t-1}^{12\text{月}}}{\sum_{j = 1}^N ME_{j,t-1}^{12\text{月}}}
-$$
-
-![図6.1 市場ポートフォリオを作成する際の各銘柄の保有比率](img/KM_fig_6-1.png)
 
 この銘柄ごとの保有比率を計算するために，前年度末の時価総額を計算し，`lagged_ME`に代入します。
 `annual_data`は2015年から2020年のデータが入っています。
@@ -64,10 +65,10 @@ $$
 
 ```{r ch06_02}
 annual_data <- annual_data |>
-    arrange(firm_ID, year) |> # firm_IDとyearでソート
+    arrange(firm_ID, year) |> # firm_IDとyearで並び換え
     mutate(
-      lagged_ME = lag(ME), # 前期末時価総額
-      .by = firm_ID
+      .by = firm_ID, # 企業ごと
+      lagged_ME = lag(ME) # 前期末時価総額
       ) 
 ```
 
@@ -85,22 +86,37 @@ annual_data <- annual_data |>
 ```{r ch06_03}
 annual_data <- annual_data |>
     mutate(
-        w_M = lagged_ME / sum(lagged_ME, na.rm = TRUE), # ウェイト
-        .by = year
-        )
+      .by = year, # 年度ごとに
+      # ウェイト
+      w_M = lagged_ME / sum(lagged_ME, na.rm = TRUE) 
+    )
 ```
 
 2015年の`lagged_ME`は欠損値なので，`w_M`も欠損値になっていますが，2015年のデータはもう使わないので無視します。
 
-次に，2016年以降の欠損値の行を削除するのではなく，保有比率`w_M`をゼロに置き換えることで投資しないことを表します。
+次に，<span class="markp">2016年以降の欠損値の行を削除するのではなく，保有比率`w_M`をゼロに置き換えることで投資しないことを表します</span>。
 `mutate()`と`replace()`を用いて変数の置き換えをします。
 
 ```{r ch06_04}
 annual_data <- annual_data |>
     mutate( # w_Mの欠損値を0に置き換える
-        w_M = replace(w_M, year >= 2016 & is.na(w_M), 0)
+        w_M = replace(
+          w_M, 
+          year >= 2016 & is.na(w_M), 
+          0
+        )
     )
 ```
+
+この処理は、
+
+1. `annual_data`に`annual_data`を代入し直す
+2. `mutate()`関数で変数を変換する
+3. `replace()`関数で`w_M`の値を置き換える
+      1. `w_M`に対して、`replace()`関数を適用し、
+      2. `year >= 2016` かつ
+      3. 欠損値かどうかを判定する関数`is.na()`を使って判別した`w_M`が欠損値の場合に、
+      4. `w_M`の値を`0`に置き換える
 
 `replace()`関数は，第1引数のデータに対して，第2引数の条件を満たす要素を，第3引数の値に置き換えます。
 ここでは，`w_M`に対して，`year`が2016以上で，かつ`w_M`が欠損値の場合の`w_M`を0に置き換えています。
@@ -110,7 +126,7 @@ annual_data <- annual_data |>
 ```{r ch06_05}
 annual_data |>
     summarise(
-        weight_sum = sum(w_M),
+        weight_sum = round(sum(w_M), digits = 2
         .by = year
     )
 ```

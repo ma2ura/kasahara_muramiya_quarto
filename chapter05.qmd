@@ -3,15 +3,11 @@
 
 ```{r setup, filename="パッケージの読み込みとテーマ"}
 pacman::p_load(
-  tidyverse,
-  ggthemes,
-  ggpubr,
-  plotly,
-  patchwork,
-  Rsolnp,
-  e1071,
-  broom,
-  scales
+  tidyverse, # 便利なパッケージ群
+  ggthemes, # ggplot2のテーマ集
+  e1071, # 機械学習アルゴリズム
+  broom, # モデルの整形
+  scales # 軸のスケール調整
 )
 
 mystyle <- list(
@@ -20,8 +16,8 @@ mystyle <- list(
     ),
   scale_colour_economist(),
   theme(
-    text = element_text(size = 12),
-    axis.title = element_text(size = 12)
+    text = element_text(size = 10),
+    axis.title = element_text(size = 10)
   )
 )
 ```
@@ -112,8 +108,8 @@ stock_data |>
   filter(firm_ID == 74 , month_ID %in% 29:32) |>
   # 特定の変数を抽出
   select(
-    year, firm_ID, month, month_ID, 
-    stock_price, DPS, n_shares, adj_coef
+    year, firm_ID, month_ID, 
+    stock_price, n_shares, adj_coef
   )
 ```
 
@@ -139,7 +135,7 @@ stock_data <- stock_data |>
 ```{r ch05_06, filename="時価総額のヒストグラム"}
 # 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定
 g <- ggplot(stock_data) + aes(x = ME) + 
-  geom_histogram() + #基本設定
+  geom_histogram() + # ヒストグラムを描く
   scale_x_continuous( # 軸の範囲と表記方法の指定
     limits = c(0, quantile(stock_data$ME, 0.95)),
     labels = label_comma(scale = 1e-6)
@@ -155,7 +151,7 @@ $$
 R_t = \frac{(\text{株価}_t + \text{1株当り配当}_t) \times \text{調整係数}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
 $$
 
-たいていの場合，1株当り配当$DPS_t$はゼロで，調整係数$adjustment\_coefficient_t$は1となるため，次式のように簡略化できます。
+たいていの場合，1株当り配当$\text{1株当り配当}_t$はゼロで，調整係数は1となるため，次式のように簡略化できます。
 
 $$
 R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
@@ -230,22 +226,11 @@ stock_data |>
 ```{r ch05_14}
 ggplot(stock_data) +
   aes(x = R) + geom_histogram() + # トータルリターンのヒストグラム
-  xlab("Monthly Stock Return") + ylab("Count") # 軸ラベル
+  xlab("月次株式リターン") + ylab("度数") + mystyle# 軸ラベル
 ```
 
 トータルリターンのヒストグラムに正規分布のグラフを重ねてみると，次のようになります。
-```{r}
-# トータルリターン
-R <- stock_data$R
 
-# 正規分布データ作成
-m <- mean(stock_data$R, na.rm = TRUE)
-sd <- sd(stock_data$R, na.rm = TRUE)
-x <- rnorm(95040, mean = m, sd = sd)
-
-df <- data.frame(R,x) |> drop_na() # 欠損値削除
-df <- df |> pivot_longer(everything())
-```
 
 ```{r}
 # トータルリターン
@@ -257,42 +242,28 @@ s <- sd(stock_data$R, na.rm = TRUE)
 ggplot(stock_data) +
   aes(x = R) +
   # y軸を密度(density)に設定
-  geom_histogram(aes(y = after_stat(density)), bins = 100, alpha = 0.4, fill = "blue") +
+  geom_histogram(aes(y = after_stat(density)), bins = 100, alpha = 0.3, fill = "gray50") +
+  geom_density(color = "blue", linewidth = 1) +  # 密度曲線を追加
   # 正規分布の曲線を追加
-  stat_function(fun = dnorm, args = list(mean = m, sd = s), color = "red", size = 1) +
-  xlab("Monthly Stock Return") + ylab("Density") +
+  stat_function(
+    fun = dnorm, args = list(mean = m, sd = s), 
+    color = "red", linetype = "dashed", linewidth = 1) +
+  xlab("月次株式リターン") + ylab("密度") + mystyle
+```
+
+
+歪度と尖度の結果と整合的に、実際のトータル・リターンのデータの確率密度(青い線)と正規分布(赤い点線)を比べてみると、実際のデータは右に裾が長く，尖度も正規分布よりもとがった形となっていることが分かります。
+
+より厳密にデータが正規分布にしたがっているかを確認するために，Q-Qプロットを描いてみます。
+
+```{r qqplot, filename="Q-Qプロット"}
+ggplot(stock_data) +
+  aes(sample = R) +
+  stat_qq() + 
+  stat_qq_line(color = "red") +
+  labs(x = "理論上の分位点", y = "サンプルの分位点") +
   mystyle
 ```
-
-トータルリターンと正規分布のヒストグラムを書いてみる。
-
-```{r}
-# dev="quartz_pdf"
-g <- ggplot(df) + aes(x = value, fill = name, group = name) +
-  geom_histogram(bins = 100, alpha = 0.4, position="identity") +
-  xlab("Monthly Stock Return") + ylab("Count")
-g <- g + annotate( # 位置を指定して文字列を追加
-  geom = "text", x = 0.3, y = 900, label = "fat tail") +
-  annotate(# 始点や終点などを指定して矢印を追加
-  geom = "segment", x = 0.3, xend = 0.3,
-  y = 800, yend = 300,
-  color = "black",  size = 0.5,
-  arrow = arrow(length = unit(0.3, "cm"))
-  )
-g <- g + annotate( # 位置を指定して文字列を追加
-  geom = "text", x = 0.3, y = 4200,
-  label = "Sharp shape"
-  ) +
-  annotate(# 始点や終点などを指定して矢印を追加
-  geom = "segment", x = 0.2, xend = 0.1,
-  y = 4200, yend = 4200,
-  color = "black", size = 0.5,
-  arrow = arrow(length = unit(0.3, "cm"))
-  )
-g <- g + mystyle
-print(g)
-```
-歪度と尖度の結果と整合的に、赤色で表されているトータルリターンのヒストグラムは正規分布よりも右に裾が長く，尖度も正規分布よりもとがった形となっています。
 
 # リターンの累積
 

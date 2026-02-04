@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.8.26">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Soichi Matsuura">
-<title>5&nbsp; 財務データの取得と可視化 – 実証会計・ファイナンスの勉強ノート</title>
+<title>4&nbsp; 財務データの取得と可視化 – 実証会計・ファイナンスの勉強ノート</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -63,7 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./chapter05.html" rel="next">
-<link href="./chapter03_02.html" rel="prev">
+<link href="./chapter03.html" rel="prev">
 <link href="./img/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -165,7 +165,7 @@ window.Quarto = {
   typesetMath
 };
 </script>
-<meta name="twitter:title" content="5&nbsp; 財務データの取得と可視化 – 実証会計・ファイナンスの勉強ノート">
+<meta name="twitter:title" content="4&nbsp; 財務データの取得と可視化 – 実証会計・ファイナンスの勉強ノート">
 <meta name="twitter:description" content="">
 <meta name="twitter:image" content="chapter04_files/figure-html/unnamed-chunk-5-1.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -339,7 +339,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter04.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter04.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -388,26 +388,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./chapter03_02.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./chapter04.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter05.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">株式データの取得と可視化</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">株式データの取得と可視化</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chapter06.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">ファクターモデルの導入</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">ファクターモデルの導入</span></span></a>
   </div>
 </li>
     </ul>
@@ -419,63 +413,63 @@ window.Quarto = {
    
   <ul>
 <li>
-<a href="#%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%83%AD%E3%83%BC%E3%82%B8%E3%83%A3%E3%83%BC%E5%88%B6%E5%BA%A6%E3%81%AE%E6%A6%82%E8%A6%81%E3%81%A8%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88" id="toc-ディスクロージャー制度の概要とデータの入手先" class="nav-link active" data-scroll-target="#%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%83%AD%E3%83%BC%E3%82%B8%E3%83%A3%E3%83%BC%E5%88%B6%E5%BA%A6%E3%81%AE%E6%A6%82%E8%A6%81%E3%81%A8%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88"><span class="header-section-number">5.1</span> ディスクロージャー制度の概要とデータの入手先</a>
+<a href="#%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%83%AD%E3%83%BC%E3%82%B8%E3%83%A3%E3%83%BC%E5%88%B6%E5%BA%A6%E3%81%AE%E6%A6%82%E8%A6%81%E3%81%A8%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88" id="toc-ディスクロージャー制度の概要とデータの入手先" class="nav-link active" data-scroll-target="#%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%83%AD%E3%83%BC%E3%82%B8%E3%83%A3%E3%83%BC%E5%88%B6%E5%BA%A6%E3%81%AE%E6%A6%82%E8%A6%81%E3%81%A8%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88"><span class="header-section-number">4.1</span> ディスクロージャー制度の概要とデータの入手先</a>
   <ul class="collapse">
-<li><a href="#%E6%B3%95%E5%AE%9A%E9%96%8B%E7%A4%BA%E3%81%A8%E9%81%A9%E6%99%82%E9%96%8B%E7%A4%BA" id="toc-法定開示と適時開示" class="nav-link" data-scroll-target="#%E6%B3%95%E5%AE%9A%E9%96%8B%E7%A4%BA%E3%81%A8%E9%81%A9%E6%99%82%E9%96%8B%E7%A4%BA"><span class="header-section-number">5.1.1</span> 法定開示と適時開示</a></li>
-  <li><a href="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88" id="toc-財務データの入手先" class="nav-link" data-scroll-target="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88"><span class="header-section-number">5.1.2</span> 財務データの入手先</a></li>
+<li><a href="#%E6%B3%95%E5%AE%9A%E9%96%8B%E7%A4%BA%E3%81%A8%E9%81%A9%E6%99%82%E9%96%8B%E7%A4%BA" id="toc-法定開示と適時開示" class="nav-link" data-scroll-target="#%E6%B3%95%E5%AE%9A%E9%96%8B%E7%A4%BA%E3%81%A8%E9%81%A9%E6%99%82%E9%96%8B%E7%A4%BA"><span class="header-section-number">4.1.1</span> 法定開示と適時開示</a></li>
+  <li><a href="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88" id="toc-財務データの入手先" class="nav-link" data-scroll-target="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%85%A5%E6%89%8B%E5%85%88"><span class="header-section-number">4.1.2</span> 財務データの入手先</a></li>
   </ul>
 </li>
   <li>
-<a href="#r%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%88%86%E6%9E%90" id="toc-rを利用した財務データの分析" class="nav-link" data-scroll-target="#r%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%88%86%E6%9E%90"><span class="header-section-number">5.2</span> Rを利用した財務データの分析</a>
+<a href="#r%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%88%86%E6%9E%90" id="toc-rを利用した財務データの分析" class="nav-link" data-scroll-target="#r%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%88%86%E6%9E%90"><span class="header-section-number">4.2</span> Rを利用した財務データの分析</a>
   <ul class="collapse">
-<li><a href="#tidyverse%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E6%A6%82%E8%A6%81" id="toc-tidyverseパッケージの概要" class="nav-link" data-scroll-target="#tidyverse%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E6%A6%82%E8%A6%81"><span class="header-section-number">5.2.1</span> tidyverseパッケージの概要</a></li>
-  <li><a href="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF" id="toc-財務データの読み込み" class="nav-link" data-scroll-target="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF"><span class="header-section-number">5.2.2</span> 財務データの読み込み</a></li>
+<li><a href="#tidyverse%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E6%A6%82%E8%A6%81" id="toc-tidyverseパッケージの概要" class="nav-link" data-scroll-target="#tidyverse%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E6%A6%82%E8%A6%81"><span class="header-section-number">4.2.1</span> tidyverseパッケージの概要</a></li>
+  <li><a href="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF" id="toc-財務データの読み込み" class="nav-link" data-scroll-target="#%E8%B2%A1%E5%8B%99%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF"><span class="header-section-number">4.2.2</span> 財務データの読み込み</a></li>
   </ul>
 </li>
   <li>
-<a href="#%E6%8E%A2%E7%B4%A2%E7%9A%84%E3%83%87%E3%83%BC%E3%82%BF%E5%88%86%E6%9E%90" id="toc-探索的データ分析" class="nav-link" data-scroll-target="#%E6%8E%A2%E7%B4%A2%E7%9A%84%E3%83%87%E3%83%BC%E3%82%BF%E5%88%86%E6%9E%90"><span class="header-section-number">5.3</span> 探索的データ分析</a>
+<a href="#%E6%8E%A2%E7%B4%A2%E7%9A%84%E3%83%87%E3%83%BC%E3%82%BF%E5%88%86%E6%9E%90" id="toc-探索的データ分析" class="nav-link" data-scroll-target="#%E6%8E%A2%E7%B4%A2%E7%9A%84%E3%83%87%E3%83%BC%E3%82%BF%E5%88%86%E6%9E%90"><span class="header-section-number">4.3</span> 探索的データ分析</a>
   <ul class="collapse">
-<li><a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E3%81%AE%E6%A6%82%E8%A6%81%E7%A2%BA%E8%AA%8D" id="toc-データセットの概要確認" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E3%81%AE%E6%A6%82%E8%A6%81%E7%A2%BA%E8%AA%8D"><span class="header-section-number">5.3.1</span> データセットの概要確認</a></li>
+<li><a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E3%81%AE%E6%A6%82%E8%A6%81%E7%A2%BA%E8%AA%8D" id="toc-データセットの概要確認" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E3%81%AE%E6%A6%82%E8%A6%81%E7%A2%BA%E8%AA%8D"><span class="header-section-number">4.3.1</span> データセットの概要確認</a></li>
   </ul>
 </li>
-  <li><a href="#%E6%AC%A0%E6%90%8D%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86" id="toc-欠損データの処理" class="nav-link" data-scroll-target="#%E6%AC%A0%E6%90%8D%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86"><span class="header-section-number">5.4</span> 4.3.2 欠損データの処理</a></li>
+  <li><a href="#%E6%AC%A0%E6%90%8D%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86" id="toc-欠損データの処理" class="nav-link" data-scroll-target="#%E6%AC%A0%E6%90%8D%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86"><span class="header-section-number">4.4</span> 4.3.2 欠損データの処理</a></li>
   <li>
-<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの抽出とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">6</span> 4.4 データの抽出とヒストグラムによる可視化</a>
+<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの抽出とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">5</span> 4.4 データの抽出とヒストグラムによる可視化</a>
   <ul class="collapse">
-<li><a href="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95" id="toc-条件にあうデータの抽出方法" class="nav-link" data-scroll-target="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95"><span class="header-section-number">6.1</span> 4.4.1 条件にあうデータの抽出方法</a></li>
+<li><a href="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95" id="toc-条件にあうデータの抽出方法" class="nav-link" data-scroll-target="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95"><span class="header-section-number">5.1</span> 4.4.1 条件にあうデータの抽出方法</a></li>
   <li>
-<a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-ヒストグラムによる売上高の可視化" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">6.2</span> 4.4.2 ヒストグラムによる売上高の可視化</a>
+<a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-ヒストグラムによる売上高の可視化" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">5.2</span> 4.4.2 ヒストグラムによる売上高の可視化</a>
   <ul class="collapse">
-<li><a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ヒストグラム" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">6.2.1</span> ヒストグラム</a></li>
-  <li><a href="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ggplotでヒストグラム" class="nav-link" data-scroll-target="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">6.2.2</span> ggplotでヒストグラム</a></li>
-  </ul>
-</li>
-  </ul>
-</li>
-  <li>
-<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの集計と折れ線グラフによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">7</span> 4.5 データの集計と折れ線グラフによる可視化</a>
-  <ul class="collapse">
-<li><a href="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88" id="toc-dplyrを用いた集計" class="nav-link" data-scroll-target="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88"><span class="header-section-number">7.1</span> 4.5.3 dplyrを用いた集計</a></li>
-  <li><a href="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-折れ線グラフによる上場企業数の可視化" class="nav-link" data-scroll-target="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">7.2</span> 4.5.4 折れ線グラフによる上場企業数の可視化</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-変数の作成とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">8</span> 4.6 変数の作成とヒストグラムによる可視化</a>
-  <ul class="collapse">
-<li><a href="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88" id="toc-キーボードショートカット" class="nav-link" data-scroll-target="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88"><span class="header-section-number">8.1</span> キーボードショートカット</a></li>
-  <li>
-<a href="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91" id="toc-グループごとの集計とランク付け" class="nav-link" data-scroll-target="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91"><span class="header-section-number">8.2</span> 4.7 グループごとの集計とランク付け</a>
-  <ul class="collapse">
-<li><a href="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-産業ごとのroe平均値と棒グラフによる可視化" class="nav-link" data-scroll-target="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">8.2.1</span> 4.7.1 産業ごとのROE平均値と棒グラフによる可視化</a></li>
+<li><a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ヒストグラム" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">5.2.1</span> ヒストグラム</a></li>
+  <li><a href="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ggplotでヒストグラム" class="nav-link" data-scroll-target="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">5.2.2</span> ggplotでヒストグラム</a></li>
   </ul>
 </li>
   </ul>
 </li>
   <li>
-<a href="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-上級デュポンモデルによるroeの分析とその可視化" class="nav-link" data-scroll-target="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">9</span> 4.8 上級デュポン・モデルによるROEの分析とその可視化</a>
+<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの集計と折れ線グラフによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">6</span> 4.5 データの集計と折れ線グラフによる可視化</a>
   <ul class="collapse">
-<li><a href="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-箱ひげ図による産業別比較" class="nav-link" data-scroll-target="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">9.1</span> 4.8.2 箱ひげ図による産業別比較</a></li>
-  <li><a href="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-散布図による産業別比較" class="nav-link" data-scroll-target="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">9.2</span> 4.8.3 散布図による産業別比較</a></li>
+<li><a href="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88" id="toc-dplyrを用いた集計" class="nav-link" data-scroll-target="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88"><span class="header-section-number">6.1</span> 4.5.3 dplyrを用いた集計</a></li>
+  <li><a href="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-折れ線グラフによる上場企業数の可視化" class="nav-link" data-scroll-target="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">6.2</span> 4.5.4 折れ線グラフによる上場企業数の可視化</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-変数の作成とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">7</span> 4.6 変数の作成とヒストグラムによる可視化</a>
+  <ul class="collapse">
+<li><a href="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88" id="toc-キーボードショートカット" class="nav-link" data-scroll-target="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88"><span class="header-section-number">7.1</span> キーボードショートカット</a></li>
+  <li>
+<a href="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91" id="toc-グループごとの集計とランク付け" class="nav-link" data-scroll-target="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91"><span class="header-section-number">7.2</span> 4.7 グループごとの集計とランク付け</a>
+  <ul class="collapse">
+<li><a href="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-産業ごとのroe平均値と棒グラフによる可視化" class="nav-link" data-scroll-target="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">7.2.1</span> 4.7.1 産業ごとのROE平均値と棒グラフによる可視化</a></li>
+  </ul>
+</li>
+  </ul>
+</li>
+  <li>
+<a href="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-上級デュポンモデルによるroeの分析とその可視化" class="nav-link" data-scroll-target="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">8</span> 4.8 上級デュポン・モデルによるROEの分析とその可視化</a>
+  <ul class="collapse">
+<li><a href="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-箱ひげ図による産業別比較" class="nav-link" data-scroll-target="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">8.1</span> 4.8.2 箱ひげ図による産業別比較</a></li>
+  <li><a href="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-散布図による産業別比較" class="nav-link" data-scroll-target="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">8.2</span> 4.8.3 散布図による産業別比較</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -483,7 +477,7 @@ window.Quarto = {
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span>
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">財務データの取得と可視化</span>
 </h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
@@ -516,10 +510,10 @@ window.Quarto = {
 <span id="cb1-15"><a href="#cb1-15"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<section id="ディスクロージャー制度の概要とデータの入手先" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="ディスクロージャー制度の概要とデータの入手先">
-<span class="header-section-number">5.1</span> ディスクロージャー制度の概要とデータの入手先</h2>
-<section id="法定開示と適時開示" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="法定開示と適時開示">
-<span class="header-section-number">5.1.1</span> 法定開示と適時開示</h3>
+<section id="ディスクロージャー制度の概要とデータの入手先" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="ディスクロージャー制度の概要とデータの入手先">
+<span class="header-section-number">4.1</span> ディスクロージャー制度の概要とデータの入手先</h2>
+<section id="法定開示と適時開示" class="level3" data-number="4.1.1"><h3 data-number="4.1.1" class="anchored" data-anchor-id="法定開示と適時開示">
+<span class="header-section-number">4.1.1</span> 法定開示と適時開示</h3>
 <table class="caption-top table">
 <thead><tr class="header">
 <th></th>
@@ -541,8 +535,8 @@ window.Quarto = {
 <td>適時開示</td>
 </tr>
 </tbody>
-</table></section><section id="財務データの入手先" class="level3" data-number="5.1.2"><h3 data-number="5.1.2" class="anchored" data-anchor-id="財務データの入手先">
-<span class="header-section-number">5.1.2</span> 財務データの入手先</h3>
+</table></section><section id="財務データの入手先" class="level3" data-number="4.1.2"><h3 data-number="4.1.2" class="anchored" data-anchor-id="財務データの入手先">
+<span class="header-section-number">4.1.2</span> 財務データの入手先</h3>
 <ul>
 <li>
 <strong>EDINET</strong>：全上場企業の法定開示資料データベース，XBRL形式も提供</li>
@@ -550,10 +544,10 @@ window.Quarto = {
 <strong>TDnet</strong>：上場企業の決算短信データベース, XBRL形式も提供</li>
 </ul>
 <p><strong>XBRL</strong>(eXtensible Business Reporting Language)形式で財務諸表などの主要情報を公開しています。 XBRL形式を学習しておくと，EDINETやTDnetから直接データを取得してRで分析することもできるので便利ですが，なかなか面倒なことが多いので，大学生なら大学が契約してくれているデータベースを活用しましょう。</p>
-</section></section><section id="rを利用した財務データの分析" class="level2 page-columns page-full" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="rを利用した財務データの分析">
-<span class="header-section-number">5.2</span> Rを利用した財務データの分析</h2>
-<section id="tidyverseパッケージの概要" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="tidyverseパッケージの概要">
-<span class="header-section-number">5.2.1</span> tidyverseパッケージの概要</h3>
+</section></section><section id="rを利用した財務データの分析" class="level2 page-columns page-full" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="rを利用した財務データの分析">
+<span class="header-section-number">4.2</span> Rを利用した財務データの分析</h2>
+<section id="tidyverseパッケージの概要" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="tidyverseパッケージの概要">
+<span class="header-section-number">4.2.1</span> tidyverseパッケージの概要</h3>
 <p><code>tidyverse</code>とは，R神Wickham氏が基本コンセプトを設定し，<strong>整然データ</strong>(tidy data)に対して一貫した記法でデータを扱えるパッケージ群です。 インストールと読み込みは以下の通りです。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#install.packages("pacman") # まだなら1回だけ実行</span></span>
@@ -577,8 +571,8 @@ window.Quarto = {
 <code>tibble</code> data.frameではなくtibbleにする　あまり使わない</li>
 <li>
 <code>stringr</code> 文字列の加工・操作　ちょいちょい使う</li>
-</ul></section><section id="財務データの読み込み" class="level3 page-columns page-full" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="財務データの読み込み">
-<span class="header-section-number">5.2.2</span> 財務データの読み込み</h3>
+</ul></section><section id="財務データの読み込み" class="level3 page-columns page-full" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="財務データの読み込み">
+<span class="header-section-number">4.2.2</span> 財務データの読み込み</h3>
 <p>準備として，サポートサイトにある練習用のデータセット<code>ch04_financial_data.csv</code>をダウンロードして，作業ディレクトリに置いておきましょう。</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -672,10 +666,10 @@ $ FO          &lt;dbl&gt; 2480.72, 3959.70, 6159.02, 10123.91, 11362.22, 13772.1
 <span id="cb11-6"><a href="#cb11-6"></a>        <span class="at">industry_ID =</span> <span class="fu">as_factor</span>(industry_ID)</span>
 <span id="cb11-7"><a href="#cb11-7"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section></section><section id="探索的データ分析" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="探索的データ分析">
-<span class="header-section-number">5.3</span> 探索的データ分析</h2>
-<section id="データセットの概要確認" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="データセットの概要確認">
-<span class="header-section-number">5.3.1</span> データセットの概要確認</h3>
+</section></section><section id="探索的データ分析" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="探索的データ分析">
+<span class="header-section-number">4.3</span> 探索的データ分析</h2>
+<section id="データセットの概要確認" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="データセットの概要確認">
+<span class="header-section-number">4.3.1</span> データセットの概要確認</h3>
 <p>データセットを操作するまえに，データの概要を大まかにつかむ必要があり，この作業を探索的データ分析(exploratory data analysis)といいます。 仮説などを持たず，とりあえず特徴や構造を理解するための方法です。 データセットの概要を確認するために，<code>skimr</code>パッケージの<code>skim()</code>関数を用います。</p>
 <div class="callout-tips">
 <p>引数の型に応じて自動的に最適な結果を返す機能を<strong>多態性</strong> (polymorphism)といい，多態性をもつ関数を<strong>総称関数</strong>(generic function)という。</p>
@@ -937,8 +931,8 @@ Levels: 2015 2016 2017 2018 2019 2020</code></pre>
 </div>
 </div>
 <p>よってこのデータには10の産業、1515の企業があることが分かります。</p>
-</section></section><section id="欠損データの処理" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="欠損データの処理">
-<span class="header-section-number">5.4</span> 4.3.2 欠損データの処理</h2>
+</section></section><section id="欠損データの処理" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="欠損データの処理">
+<span class="header-section-number">4.4</span> 4.3.2 欠損データの処理</h2>
 <p>ほとんどのデータセットには，欠損値(<code>NA</code>)が含まれているため，この欠損値の処理は非常に重要になります。 欠損値の有無を確認するためには，<code><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases()</a></code>関数を用いるのが便利です。 欠損値が含まれていると<code>FALSE</code>を返し，欠損値がないと<code>TRUE</code>を返します。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">head</span>(<span class="fu">complete.cases</span>(financial_data)) <span class="co"># 最初の６行の結果を表示</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -982,10 +976,10 @@ Note
 <p>さらに欠損値についての議論では，<a href="https://www.amazon.co.jp/gp/product/400029847X/ref=dbs_a_def_rwt_bibl_vppi_i3">星野・岡田 (2016)「欠測データの統計科学―医学と社会科学への応用」</a>岩波書店がめちゃめちゃ有用です。</p>
 </div>
 </div>
-</section><section id="データの抽出とヒストグラムによる可視化" class="level1" data-number="6"><h1 data-number="6">
-<span class="header-section-number">6</span> 4.4 データの抽出とヒストグラムによる可視化</h1>
-<section id="条件にあうデータの抽出方法" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="条件にあうデータの抽出方法">
-<span class="header-section-number">6.1</span> 4.4.1 条件にあうデータの抽出方法</h2>
+</section><section id="データの抽出とヒストグラムによる可視化" class="level1" data-number="5"><h1 data-number="5">
+<span class="header-section-number">5</span> 4.4 データの抽出とヒストグラムによる可視化</h1>
+<section id="条件にあうデータの抽出方法" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="条件にあうデータの抽出方法">
+<span class="header-section-number">5.1</span> 4.4.1 条件にあうデータの抽出方法</h2>
 <p>教科書では複数の方法が紹介されているが，このメモではtidyverseパッケージを用いた方法だけ取り上げます。具体的には，データベース操作のパッケージである<code>dplyr</code>の中の<code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code>関数について説明します。 さらに<code>magrittr</code>を用いたパイプ演算子<code>|&gt;</code>を用いたデータの受け渡しの記法を活用して，可読性の高いソースコードを書くことも紹介します。 ここでは<code>dplyr</code>パッケージの<code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code>関数であることを明示的に示すため、<code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>と書いていますが、<code>dplyr</code>パッケージを読み込んでいる場合は<code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code>と書いても同じです。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>financial_data_2015 <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
@@ -1022,10 +1016,10 @@ Note
 <span id="cb33-6"><a href="#cb33-6"></a>        <span class="at">FUN =</span> mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>となりますので、上の方が読みやすいことがわかります。</p>
-</section><section id="ヒストグラムによる売上高の可視化" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="ヒストグラムによる売上高の可視化">
-<span class="header-section-number">6.2</span> 4.4.2 ヒストグラムによる売上高の可視化</h2>
-<section id="ヒストグラム" class="level3" data-number="6.2.1"><h3 data-number="6.2.1" class="anchored" data-anchor-id="ヒストグラム">
-<span class="header-section-number">6.2.1</span> ヒストグラム</h3>
+</section><section id="ヒストグラムによる売上高の可視化" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="ヒストグラムによる売上高の可視化">
+<span class="header-section-number">5.2</span> 4.4.2 ヒストグラムによる売上高の可視化</h2>
+<section id="ヒストグラム" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="ヒストグラム">
+<span class="header-section-number">5.2.1</span> ヒストグラム</h3>
 <p>ヒストグラム(histogram)は，データの分布を可視化するためのグラフです。 ヒストグラムは，連続データを区間に分けて，区間ごとのデータの個数を棒グラフで表現したものです。したがってヒストグラムの棒の高さは、その区間に含まれるデータの個数を表します。</p>
 <p>たとえば、例として生徒100人の身長データがあるとします。 この身長データをRで生成するには，<code><a href="https://rdrr.io/r/stats/Normal.html">rnorm()</a></code>関数を使います。</p>
 <div class="cell" data-layout-align="center">
@@ -1073,8 +1067,8 @@ Note
 </div>
 </div>
 <p>どのヒストグラムがデータの特徴を最も良く表しているのか、を考えて区間幅を設定しましょう。</p>
-</section><section id="ggplotでヒストグラム" class="level3" data-number="6.2.2"><h3 data-number="6.2.2" class="anchored" data-anchor-id="ggplotでヒストグラム">
-<span class="header-section-number">6.2.2</span> ggplotでヒストグラム</h3>
+</section><section id="ggplotでヒストグラム" class="level3" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="ggplotでヒストグラム">
+<span class="header-section-number">5.2.2</span> ggplotでヒストグラム</h3>
 <p>ヒストグラムを書くためには，基本関数の<code><a href="https://rdrr.io/r/graphics/hist.html">hist()</a></code>が最も簡単ですが，より高性能な<code>ggplot2</code>を用いたヒストグラムの書き方を説明します。 ここでは、上で作成した2015年のデータ<code>financial_data_2015</code>を使って、売上高のヒストグラムを書きます。</p>
 <p><code>ggplot2</code>の書き方は少し特殊ですが、慣れてくると非常に便利です。 <code>ggplot2</code>ではレイヤー(階層)を上から重ねていくようにグラフを作っていきます。 まず<code>ggplot()</code>関数でグラフの土台を作ります。<code>ggplot()</code>に入れるデータの型は<code>data.frame</code>でなければならないので注意しましょう。</p>
 <div class="cell" data-layout-align="center">
@@ -1154,10 +1148,10 @@ Note
 </div>
 </div>
 <p>うまくいきました。</p>
-</section></section></section><section id="データの集計と折れ線グラフによる可視化" class="level1 page-columns page-full" data-number="7"><h1 data-number="7">
-<span class="header-section-number">7</span> 4.5 データの集計と折れ線グラフによる可視化</h1>
-<section id="dplyrを用いた集計" class="level2 page-columns page-full" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="dplyrを用いた集計">
-<span class="header-section-number">7.1</span> 4.5.3 dplyrを用いた集計</h2>
+</section></section></section><section id="データの集計と折れ線グラフによる可視化" class="level1 page-columns page-full" data-number="6"><h1 data-number="6">
+<span class="header-section-number">6</span> 4.5 データの集計と折れ線グラフによる可視化</h1>
+<section id="dplyrを用いた集計" class="level2 page-columns page-full" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="dplyrを用いた集計">
+<span class="header-section-number">6.1</span> 4.5.3 dplyrを用いた集計</h2>
 <p>もっとデータを加工して、データの特徴をつかむグラフを作成してみます。 データを加工するために、非常に便利なパッケージであるtidyverseの<code>dplyr</code>を用いたデータ加工を説明します。<code>dplyr</code>でよく使う関数に、</p>
 <ul>
 <li><code>summarise()</code></li>
@@ -1210,8 +1204,8 @@ Note
 <p>関数型プログラミング(functional programming)は，現代的なプログラミング・パラダイムの1種であり，定義された関数を用いて各データに対して行いたい処理を切り分ける。Rでは<code>apply</code>系関数として，様々な関数が用意されている。<code>tidyverse</code>群では，<code>purrr</code>がある。ちょっと難しいですがpurrr超便利</p>
 </div>
 </div>
-</section><section id="折れ線グラフによる上場企業数の可視化" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="折れ線グラフによる上場企業数の可視化">
-<span class="header-section-number">7.2</span> 4.5.4 折れ線グラフによる上場企業数の可視化</h2>
+</section><section id="折れ線グラフによる上場企業数の可視化" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="折れ線グラフによる上場企業数の可視化">
+<span class="header-section-number">6.2</span> 4.5.4 折れ線グラフによる上場企業数の可視化</h2>
 <p>データの成形が終わったので，折れ線グラフを作っていきます。 ここではx軸(横軸)を年度<code>year</code>，y軸(縦軸)を上場企業数<code>N_firms</code>とする折れ線グラフを作ってみます。 折れ線グラフを作るには<code>geom_line()</code>関数を使います。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(N_firms_by_year) <span class="sc">+</span></span>
@@ -1227,11 +1221,11 @@ Note
 </div>
 </div>
 <p>ここで突然現れた<code>group = 1</code>という<code>aes()</code>のオプションですが、これはすべてのデータが同じグループに属していることを指定しています。 x軸にファクター型を指定する場合、<code>group = 1</code>を指定しないと、x軸の値ごとに別のグループとして認識されてしまい、折れ線グラフがうまく描けません。</p>
-</section></section><section id="変数の作成とヒストグラムによる可視化" class="level1" data-number="8"><h1 data-number="8">
-<span class="header-section-number">8</span> 4.6 変数の作成とヒストグラムによる可視化</h1>
+</section></section><section id="変数の作成とヒストグラムによる可視化" class="level1" data-number="7"><h1 data-number="7">
+<span class="header-section-number">7</span> 4.6 変数の作成とヒストグラムによる可視化</h1>
 <p><code>tidyverse</code>の<code>dplyr</code>パッケージの<code>mutate()</code>関数を用いれば，パイプ演算子<code>|&gt;</code>を用いて可読性の高いシンプルな書き方で、新しい変数を作成することができます。</p>
-<section id="キーボードショートカット" class="level2 callout-tips" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="キーボードショートカット">
-<span class="header-section-number">8.1</span> キーボードショートカット</h2>
+<section id="キーボードショートカット" class="level2 callout-tips" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="キーボードショートカット">
+<span class="header-section-number">7.1</span> キーボードショートカット</h2>
 <p>Macなら<code>command + shift + m</code>でパイプ演算子が入力できます。 Windowsなら<code>ctrl + shift + m</code>です。</p>
 </section><p>ここでは，ROE(Return on Equity)を計算してみます。 ROEの定義は，</p>
 <p><span class="math display">
@@ -1330,10 +1324,10 @@ BE_t = \underbrace{(OA_t - OL_t)}_{NOA_t} - \underbrace{(FO_t - FA_t)}_{NFO_t}
 </div>
 </div>
 </div>
-<section id="グループごとの集計とランク付け" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="グループごとの集計とランク付け">
-<span class="header-section-number">8.2</span> 4.7 グループごとの集計とランク付け</h2>
-<section id="産業ごとのroe平均値と棒グラフによる可視化" class="level3" data-number="8.2.1"><h3 data-number="8.2.1" class="anchored" data-anchor-id="産業ごとのroe平均値と棒グラフによる可視化">
-<span class="header-section-number">8.2.1</span> 4.7.1 産業ごとのROE平均値と棒グラフによる可視化</h3>
+<section id="グループごとの集計とランク付け" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="グループごとの集計とランク付け">
+<span class="header-section-number">7.2</span> 4.7 グループごとの集計とランク付け</h2>
+<section id="産業ごとのroe平均値と棒グラフによる可視化" class="level3" data-number="7.2.1"><h3 data-number="7.2.1" class="anchored" data-anchor-id="産業ごとのroe平均値と棒グラフによる可視化">
+<span class="header-section-number">7.2.1</span> 4.7.1 産業ごとのROE平均値と棒グラフによる可視化</h3>
 <p>グループごとに平均値を出すといった処理は，<code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code>の引数で<code>.by=var</code>を指定すれば簡単です。 ここでは、産業ごとにROEの平均値と標準偏差を求めてみます。 ROEには欠損値が含まれているため、<code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>関数を使うと<code>NA</code>が返ってきます。<code>NA</code>を無視して平均値を計算するには、<code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>関数のオプション<code>na.rm = TRUE</code>を指定します。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>df_ind <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
@@ -1478,8 +1472,8 @@ $ sd_ROE      &lt;dbl&gt; 0.09264764, 0.09530125, 0.05569899, 0.04676826, 0.0485
 </table>
 </div>
 </div>
-</section></section></section><section id="上級デュポンモデルによるroeの分析とその可視化" class="level1" data-number="9"><h1 data-number="9">
-<span class="header-section-number">9</span> 4.8 上級デュポン・モデルによるROEの分析とその可視化</h1>
+</section></section></section><section id="上級デュポンモデルによるroeの分析とその可視化" class="level1" data-number="8"><h1 data-number="8">
+<span class="header-section-number">8</span> 4.8 上級デュポン・モデルによるROEの分析とその可視化</h1>
 <p>上級デュポン・モデルとは，次式で表されるROEの分解式です。</p>
 <p><span class="math display">
 \begin{aligned}
@@ -1514,8 +1508,8 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 </div>
 </div>
 <p>となり，差の平均は<span class="math inline">4.396878 \times 10^{-6}</span>となり，ほぼ0となっていることから，上級デュポン・モデルの分解式が正しいことが確認できます。 完全にゼロにならない理由は計算の過程で生じる丸め誤差によるものです。</p>
-<section id="箱ひげ図による産業別比較" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="箱ひげ図による産業別比較">
-<span class="header-section-number">9.1</span> 4.8.2 箱ひげ図による産業別比較</h2>
+<section id="箱ひげ図による産業別比較" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="箱ひげ図による産業別比較">
+<span class="header-section-number">8.1</span> 4.8.2 箱ひげ図による産業別比較</h2>
 <p>産業別で利ざや<code>PM</code>がどのように分布しているのかを調べるために，箱ひげ図(box plot)を作ってみます。 箱ひげ図は，データの分布を可視化するためのグラフで，第1四分位点，中央値，第3四分位点，(異常値をのぞく)最大値，(異常値をのぞく)最小値を表現できる，非常に情報量の多いグラフです。</p>
 <p><code>ggplot2</code>パッケージの<code>geom_boxplot()</code>関数を用いることで，データフレームから箱ひげ図を作図できます。</p>
 <p>先に作成したデータフレーム<code>financial_data</code>を用いて，<code>PM</code>の箱ひげ図を作成してみましょう。 あまり多くの箱ひげ図を作っても見づらくなるので，最終年度のデータ で，産業IDが2〜6までの企業に限定します。</p>
@@ -1537,8 +1531,8 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 </div>
 </div>
 <p>箱ひげ図から，産業ごとに利ざやの分布が異なることがわかります。とりわけ産業3は利ざやの散らばりが大きく，産業4は非常に散らばりが小さいことが分かります。</p>
-</section><section id="散布図による産業別比較" class="level2" data-number="9.2"><h2 data-number="9.2" class="anchored" data-anchor-id="散布図による産業別比較">
-<span class="header-section-number">9.2</span> 4.8.3 散布図による産業別比較</h2>
+</section><section id="散布図による産業別比較" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="散布図による産業別比較">
+<span class="header-section-number">8.2</span> 4.8.3 散布図による産業別比較</h2>
 <p>次に産業ごとに <code>ATO</code>(純事業資産回転率)と <code>PM</code>(売上高事業利益率)がどう分布しているか散布図を書いてみます。 ここでは異常値の影響を受けにくい統計量である中央値(median)を計算し，散布図を作成してみます。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a>df_ind_median <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
@@ -2061,13 +2055,13 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
     }
   });
   </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./chapter03_02.html" class="pagination-link" aria-label="R言語入門 後半">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">R言語入門 後半</span></span>
+      <a href="./chapter03.html" class="pagination-link" aria-label="R言語入門">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R言語入門</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./chapter05.html" class="pagination-link" aria-label="株式データの取得と可視化">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">株式データの取得と可視化</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">株式データの取得と可視化</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
