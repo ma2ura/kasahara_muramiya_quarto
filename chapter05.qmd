@@ -1,16 +1,13 @@
 ## 株式データの取得と可視化
 
 
-```{r setup}
-#| code-fold: true
+```{r setup, filename="パッケージの読み込みとテーマ"}
 pacman::p_load(
-  tidyverse,
-  ggthemes,
-  ggpubr,
-  plotly,
-  patchwork,
-  Rsolnp,
-  e1071
+  tidyverse, # 便利なパッケージ群
+  ggthemes, # ggplot2のテーマ集
+  e1071, # 機械学習アルゴリズム
+  broom, # モデルの整形
+  scales # 軸のスケール調整
 )
 
 mystyle <- list(
@@ -19,16 +16,14 @@ mystyle <- list(
     ),
   scale_colour_economist(),
   theme(
-    text = element_text(size = 12),
-    axis.title = element_text(size = 12)
+    text = element_text(size = 10),
+    axis.title = element_text(size = 10)
   )
 )
 ```
 
-## 株式データの取得と可視化
-
 前章では財務データを題材に、クロスセクションデータを扱うために必要なデータの取得と操作と可視化について学習しました。
-特に重要な操作として，`group_by()`関数と`mutate()`や`summarise()`関数の組み合わせて，グループごとの変数の値を計算する方法を学びました。
+特に重要な操作として，`mutate()`や`summarise()`関数で、`.by = var`を指定することでグループごとの変数の値を計算する方法を学びました。
 本章では株式データを題材に，株式データの理解に必要な株式の基礎知識とともに，リターンの定義や計算について学び，最後には統計的推論と線形回帰分析についても学習します。
 
 <!-- 株式データの理解を深めるために，株式市場の仕組みを理解する必要があるので，重要用語の説明を行います。
@@ -52,13 +47,13 @@ mystyle <- list(
 
 いままでと同じように、`readr`パッケージの`read_csv()`関数でCSVファイルを読み込みます。
 ここでは、`ch05_stock_data.csv`を使います。
-```{r ch05_01}
+```{r ch05_01, filename="株式データの読み込み"}
 stock_data <- read_csv("data/ch05_stock_data.csv")
 print(stock_data)
 ```
 9変数，95,040行という大規模なデータが読み込まれました。
 紙面の都合上、長い変数名を短く省略します。変数名を変えるには、`dplyr::rename()`を使います。
-```{r rename}
+```{r rename, filename="変数名の変更"}
 stock_data <- stock_data |>
   rename(
     n_shares = shares_outstanding,
@@ -105,10 +100,15 @@ glimpse(stock_data)
 
 たとえば，`firm_ID`が74，`month_ID`が29から32（つまり2017年5月から8月）のデータを抽出してみます。
 
-```{r ch05_04}
+```{r ch05_04, filename="データの抽出"}
 stock_data |>
-  filter(firm_ID == 74 , month_ID %in% 29:32) |> # filterで条件を指定
-  select(year, firm_ID, month, month_ID,stock_price, DPS, n_shares, adj_coef) # selectで必要な変数を指定
+  # 条件を満たすデータをfilter()で抽出
+  filter(firm_ID == 74 , month_ID %in% 29:32) |>
+  # 特定の変数を抽出
+  select(
+    year, firm_ID, month_ID,
+    stock_price, n_shares, adj_coef
+  )
 ```
 
 出力された結果の2行の`adj_coef`が2となっており、同時に`n_shares`が倍になっていることから、この会社は1株を2株に株式分割していることがわかります。
@@ -119,25 +119,24 @@ stock_data |>
 新しい変数を作成するときは`dplyr`パッケージの`mutate()`関数を使います。
 `mutate()`で時価総額を表す新しい変数`ME`を作成します。
 
-```{r ch05_05}
+```{r ch05_05, filename="時価総額の計算"}
 stock_data <- stock_data |>
-  mutate(ME = stock_price * n_shares) # 時価総額
+  mutate(
+    ME = stock_price * n_shares # 時価総額
+    )
 ```
 
 次に時価総額のヒストグラムを作成してみます。
 前節で学習した内容に加えて、いろいろ見た目の指定を増やしてみます。
+`scale()`関数を使って軸の範囲や表記方法を細かく指定します。
 
-```{r ch05_06}
-# 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定する
-
-library(scales) # 軸の表記を変えるパッケージを追加
-
-g <- ggplot(stock_data) + aes(x = ME)
-g <- g + geom_histogram() #基本設定
-g <- g + xlab("Market Equity") + ylab("Count") #軸ラベル
-g <- g + scale_x_continuous(
-  limits = c(0, quantile(stock_data$ME, 0.95)), # x軸の範囲
-  labels = label_comma(scale = 1e-6) # x軸の表記を百万円単位に
+```{r ch05_06, filename="時価総額のヒストグラム"}
+# 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定
+g <- ggplot(stock_data) + aes(x = ME) +
+  geom_histogram() + # ヒストグラムを描く
+  scale_x_continuous( # 軸の範囲と表記方法の指定
+    limits = c(0, quantile(stock_data$ME, 0.95)),
+    labels = label_comma(scale = 1e-6)
   ) + xlab("時価総額") + ylab("度数") +  mystyle
 print(g) # グラフを出力
 ```
@@ -150,24 +149,22 @@ $$
 R_t = \frac{(\text{株価}_t + \text{1株当り配当}_t) \times \text{調整係数}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
 $$
 
-たいていの場合，1株当り配当$DPS_t$はゼロで，調整係数$adjustment\_coefficient_t$は1となるため，次式のように簡略化できます。
+たいていの場合，1株当り配当$\text{1株当り配当}_t$はゼロで，調整係数は1となるため，次式のように簡略化できます。
 
 $$
 R_t = \frac{\text{株価}_t - \text{株価}_{t-1}}{\text{株価}_{t-1}}
 $$
 
-銘柄ごとにリターンを計算するので，`group_by()`と`mutate()`を使って計算します。ここでは，`firm_ID`ごとにトータルリターン`R`と，
-トータルリターンから無リスク利子率を除いた超過リターン`Re`を計算しています。
+銘柄ごとにリターンを計算するので，`mutate()`と`.by = firm_ID`を使って計算します。
+ここでは，`firm_ID`ごとにトータルリターン`R`と，トータルリターンから無リスク利子率を除いた超過リターン`Re`を計算しています。
 
 ```{r ch05_07}
 stock_data <- stock_data |>
-  group_by(firm_ID) |> # 企業ごとに
   mutate( # 新しい変数を作成
-    # トータルリターン
-    R = ( (stock_price + DPS) * adj_coef - lag(stock_price)) / lag(stock_price),
-    Re = R - R_F # 月次超過リターン
-  ) |>
-  ungroup() # グループ化を解除
+    R = ((stock_price + DPS) * adj_coef - lag(stock_price)) / lag(stock_price),
+    Re = R - R_F, # 月次超過リターン
+    .by = firm_ID # firm_IDごとにグループ
+  )
 ```
 
 ここまでの処理で`stock_data`に時価総額`ME`，トータルリターン`R`，超過リターン`Re`が追加されました。
@@ -227,22 +224,11 @@ stock_data |>
 ```{r ch05_14}
 ggplot(stock_data) +
   aes(x = R) + geom_histogram() + # トータルリターンのヒストグラム
-  xlab("Monthly Stock Return") + ylab("Count") # 軸ラベル
+  xlab("月次株式リターン") + ylab("度数") + mystyle# 軸ラベル
 ```
 
 トータルリターンのヒストグラムに正規分布のグラフを重ねてみると，次のようになります。
-```{r}
-# トータルリターン
-R <- stock_data$R
 
-# 正規分布データ作成
-m <- mean(stock_data$R, na.rm = TRUE)
-sd <- sd(stock_data$R, na.rm = TRUE)
-x <- rnorm(95040, mean = m, sd = sd)
-
-df <- data.frame(R,x) |> drop_na() # 欠損値削除
-df <- df |> pivot_longer(everything())
-```
 
 ```{r}
 # トータルリターン
@@ -254,46 +240,32 @@ s <- sd(stock_data$R, na.rm = TRUE)
 ggplot(stock_data) +
   aes(x = R) +
   # y軸を密度(density)に設定
-  geom_histogram(aes(y = after_stat(density)), bins = 100, alpha = 0.4, fill = "blue") +
+  geom_histogram(aes(y = after_stat(density)), bins = 100, alpha = 0.3, fill = "gray50") +
+  geom_density(color = "blue", linewidth = 1) +  # 密度曲線を追加
   # 正規分布の曲線を追加
-  stat_function(fun = dnorm, args = list(mean = m, sd = s), color = "red", size = 1) +
-  xlab("Monthly Stock Return") + ylab("Density") +
+  stat_function(
+    fun = dnorm, args = list(mean = m, sd = s),
+    color = "red", linetype = "dashed", linewidth = 1) +
+  xlab("月次株式リターン") + ylab("密度") + mystyle
+```
+
+
+歪度と尖度の結果と整合的に、実際のトータル・リターンのデータの確率密度(青い線)と正規分布(赤い点線)を比べてみると、実際のデータは右に裾が長く，尖度も正規分布よりもとがった形となっていることが分かります。
+
+より厳密にデータが正規分布にしたがっているかを確認するために，Q-Qプロットを描いてみます。
+
+```{r qqplot, filename="Q-Qプロット"}
+ggplot(stock_data) +
+  aes(sample = R) +
+  stat_qq() +
+  stat_qq_line(color = "red") +
+  labs(x = "理論上の分位点", y = "サンプルの分位点") +
   mystyle
 ```
 
-トータルリターンと正規分布のヒストグラムを書いてみる。
+## リターンの累積
 
-```{r}
-# dev="quartz_pdf"
-g <- ggplot(df) + aes(x = value, fill = name, group = name) +
-  geom_histogram(bins = 100, alpha = 0.4, position="identity") +
-  xlab("Monthly Stock Return") + ylab("Count")
-g <- g + annotate( # 位置を指定して文字列を追加
-  geom = "text", x = 0.3, y = 900, label = "fat tail") +
-  annotate(# 始点や終点などを指定して矢印を追加
-  geom = "segment", x = 0.3, xend = 0.3,
-  y = 800, yend = 300,
-  color = "black",  size = 0.5,
-  arrow = arrow(length = unit(0.3, "cm"))
-  )
-g <- g + annotate( # 位置を指定して文字列を追加
-  geom = "text", x = 0.3, y = 4200,
-  label = "Sharp shape"
-  ) +
-  annotate(# 始点や終点などを指定して矢印を追加
-  geom = "segment", x = 0.2, xend = 0.1,
-  y = 4200, yend = 4200,
-  color = "black", size = 0.5,
-  arrow = arrow(length = unit(0.3, "cm"))
-  )
-g <- g + mystyle
-print(g)
-```
-歪度と尖度の結果と整合的に、赤色で表されているトータルリターンのヒストグラムは正規分布よりも右に裾が長く，尖度も正規分布よりもとがった形となっています。
-
-# リターンの累積
-
-## バイ・アンド・ホールド・リターンの考え方
+### バイ・アンド・ホールド・リターンの考え方
 
 **バイ・アンド・ホールド・リターン**(buy-and-hold-return)は，ある時点で株式を購入し，そのまま保有し続けたときのリターンのことを指します。
 たとえば，$12$月末に株式を購入し，$3$月末に売却したときの、バイ・アンド・ホールド・リターンの累積は，次式で計算できます。ただし配当は無視します。
@@ -321,21 +293,22 @@ $$
 
 ```{r ch05_15}
 annual_stock_data <- stock_data |>
-  group_by(firm_ID, year) |> # firm_IDとyearごとにグループ化
   summarise(
     annual_R = prod(1 + R) - 1, # B&H年次リターン
-    annual_R_F = prod(1 + R_F) - 1 # 年次超過リターン
+    annual_R_F = prod(1 + R_F) - 1, # 年次超過リターン
+    .by = c(firm_ID, year) # 企業と年度でグループ化
   ) |>
-  mutate(annual_Re = annual_R - annual_R_F) |> # 年次超過リターン
-  ungroup()
+  mutate(
+    annual_Re = annual_R - annual_R_F # 年次超過リターン
+    )
 head(annual_stock_data)
 ```
 
-# 株式データと財務データを組み合わせた分析
+## 株式データと財務データを組み合わせた分析
 
 ここでは，株式データと財務データを組み合わせて分析を行います。
 
-## データの結合
+### データの結合
 
 複数のデータフレームを結合する際に重要なところは、
 
@@ -356,7 +329,7 @@ nrow(stock_data) # 月次リターン・データの行数
 
 月次リターンの行数が上の年次データとは大きく異なっていることが分かります。
 
-::: {.callout .callout-info}
+:::{.callout .callout-info}
 **先読みバイアス**(look-ahead bias)とは、ある時点での情報を使って、その時点よりも未来の情報を使っていることを指します。12月末決算の会社のディスクロジャージャーは、最速で決算日後45日以内に出される決算短信か、3ヶ月以内に出される有価証券報告書があります。
 このため、年次データを使って同時期の年次リターンを計算すると、年次データの発表後に出される有価証券報告書の情報を使っていることになります。これを先読みバイアスといいます。
 :::
@@ -364,7 +337,10 @@ nrow(stock_data) # 月次リターン・データの行数
 
 ```{r ch05_18}
 annual_data <- annual_stock_data |>
-  full_join(financial_data, by = c("firm_ID", "year")) # firm_IDとyearのペアをキーとして設定
+  full_join(
+    financial_data,
+    by = c("firm_ID", "year")
+  ) # firm_IDとyearのペアをキーとして設定
 ```
 
 
@@ -405,9 +381,9 @@ ggplot(year2015) +
   scale_y_continuous(limits = c(2, 11)) + mystyle
 ```
 
-# 統計的推論入門
+## 統計的推論入門
 
-## リターン・データに関する仮定
+### リターン・データに関する仮定
 
 統計的推論の内容に入る前に、`firm_ID`が1の企業の超過リターン`Re`のデータを眺めてみます。
 
@@ -623,7 +599,7 @@ t.test(Re_firm_ID_1)
 
 
 
-# 線形回帰入門
+## 線形回帰入門
 
 年次財務データ`annual_data`を使って線形回帰(linear regression)について学習します。
 線形(linear)とは，$X$と$\beta$の積が線形であることを意味します。回帰(regression)とは，$X$と$\beta$の積が$Y$を説明することを意味します。
@@ -677,12 +653,11 @@ $$
 
 annual_data <- annual_data |>
   arrange(firm_ID, year) |> # 時系列順に並べ替え（lag計算に必須）
-  group_by(firm_ID) |>
   mutate(
     lag_ME = lag(ME),
-    lagged_BEME = lagged_BE / lag_ME # ここでBEMEを計算
-  ) |>
-  ungroup()
+    lagged_BEME = lagged_BE / lag_ME, # ここでBEMEを計算
+    .by = firm_ID
+  )
 ```
 
 ```{r ch05_31}
@@ -724,8 +699,6 @@ print(lm_results$coefficients)
 
 ```{r ch05_35}
 # ch05_35: broomパッケージのtidy()関数で係数の推定値に関する結果を確認
-#install.packages("broom")
-library(broom)
 tidy(lm_results)
 ```
 
@@ -751,8 +724,7 @@ $$
 
 
 
-```{r ch05_37}
-# ch05_37: 線形・対数モデルによる推定
+```{r ch05_37, filename="線形・対数モデルによる推定"}
 tidy(lm(Re ~ log(lagged_BEME), data = lm_sample_data)) # 右辺のみlog()関数で自然対数を取る
 ```
 
@@ -760,8 +732,7 @@ tidy(lm(Re ~ log(lagged_BEME), data = lm_sample_data)) # 右辺のみlog()関数
 前処理が終わった後や新しい変数を作った後に、データを保存しておくと便利です。
 6章以降では、以下のデータを継続して使うので、csvファイルとして保存しておきます。
 
-```{r ch05_38}
-# ch05_38: データの保存
-write_csv(monthly_data, "ch05_output1.csv")
-write_csv(annual_data, "ch05_output2.csv")
+```{r ch05_38, filename="データの保存"}
+write_csv(monthly_data, "data/ch05_output1.csv")
+write_csv(annual_data, "data/ch05_output2.csv")
 ```

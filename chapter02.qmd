@@ -833,7 +833,7 @@ ggplot(df_plot, aes(x = sigma_p, y = mu_p)) +
 資本市場線の傾きは、この金融市場における**リスクとリターンのトレードオフ**を表しているといえます。
 
 
-```{r graph_cml_final, filename="3資産の効率的フロンティア（資本市場線）"}
+```{r graph_cml_fixed_coord, filename="3資産の効率的フロンティア"}
 #| code-fold: true
 
 # --- 1. パラメータ設定 ---
@@ -844,7 +844,7 @@ params <- list(
 )
 
 # --- 2. データの作成 ---
-# 2-1. リスク資産のみのフロンティア（双曲線）
+# 2-1. リスク資産のみのフロンティア
 df_frontier <- tibble(
   w = seq(-1, 2, by = 0.001)
 ) |>
@@ -852,15 +852,13 @@ df_frontier <- tibble(
     mu_p = w * params$mu_A + (1 - w) * params$mu_B,
     sigma_p = sqrt((w * params$sigma_A)^2 + ((1 - w) * params$sigma_B)^2 +
                    2 * w * (1 - w) * params$rho * params$sigma_A * params$sigma_B),
-    # シャープレシオ (接点探索用)
     sharpe_ratio = (mu_p - params$R_F) / sigma_p
   )
 
-# 2-2. 接点ポートフォリオ (Tangency Portfolio)
+# 2-2. 接点ポートフォリオ
 tangency_port <- df_frontier |> slice_max(sharpe_ratio, n = 1)
 
 # 2-3. 資本市場線 (CML)
-# 安全資産(リスク0, リターンRf) から 接点を通って右に伸びる直線
 df_cml <- tibble(
   sigma_p = c(0, 0.6),
   mu_p    = c(params$R_F, params$R_F + tangency_port$sharpe_ratio * 0.6)
@@ -868,48 +866,57 @@ df_cml <- tibble(
 
 # --- 3. プロット作成 ---
 ggplot() +
-  # 【重要】テーマ設定を最初に適用（scale_color_manualなどが上書きされるのを防ぐ）
-  mystyle +
+  # A. 資本市場線 (CML)
+  geom_line(
+    data = df_cml,
+    aes(x = sigma_p, y = mu_p),
+    color = "red",
+    linewidth = 1
+  ) +
 
-  # A. 資本市場線 (CML) - 新しい効率的フロンティア
-  geom_line(data = df_cml, aes(x = sigma_p, y = mu_p, color = "資本市場線"), linewidth = 1) +
-
-  # B. リスク資産のみのフロンティア - もはや非効率
-  geom_path(data = df_frontier, aes(x = sigma_p, y = mu_p, color = "リスク資産のみのフロンティア"),
-            linewidth = 1, linetype = "dashed") +
+  # B. リスク資産のみのフロンティア
+  geom_path(
+    data = df_frontier,
+    aes(x = sigma_p, y = mu_p),
+    color = "blue",
+    linewidth = 1,
+    linetype = "dashed"
+  ) +
 
   # C. ポイントの描画
   # 資産A
   annotate("point", x = params$sigma_A, y = params$mu_A, color = "green", size = 3) +
-  annotate("text",  x = params$sigma_A, y = params$mu_A, label = "A", vjust = -1.5, fontface = "bold") +
+  annotate("text",  x = params$sigma_A, y = params$mu_A, label = "A", vjust = 2, fontface = "bold") +
 
   # 資産B
   annotate("point", x = params$sigma_B, y = params$mu_B, color = "orange", size = 3) +
-  annotate("text",  x = params$sigma_B, y = params$mu_B, label = "B", vjust = -1.5, fontface = "bold") +
+  annotate("text",  x = params$sigma_B, y = params$mu_B, label = "B", vjust = -1.2, fontface = "bold") +
 
   # 安全資産
   annotate("point", x = 0, y = params$R_F, color = "purple", size = 3) +
-  annotate("text",  x = 0, y = params$R_F, label = "安全資産(F)", hjust = -0.1, vjust = -1, fontface = "bold") +
+  annotate("text",  x = 0, y = params$R_F, label = "安全資産(F)", hjust = -0.3, fontface = "bold") +
 
   # 接点ポートフォリオ
-  annotate("point", x = tangency_port$sigma_p, y = tangency_port$mu_p, color = "black", shape = 8, size = 4) +
+  annotate("point", x = tangency_port$sigma_p, y = tangency_port$mu_p, color = "black", size = 3) +
   annotate("text",  x = tangency_port$sigma_p, y = tangency_port$mu_p,
-           label = paste0("接点ポートフォリオ\n(w=", sprintf("%.2f", tangency_port$w), ")"),
-           vjust = 1.5, lineheight = 0.9, size = 3.5) +
+           label = paste0("接点P \n(w=", sprintf("%.2f", tangency_port$w), ")"),
+           hjust = -0.2, vjust = 0.8, lineheight = 0.9, size = 3) +
 
-  # D. 色と凡例の設定
-  scale_color_manual(
-    name = "",
-    values = c("資本市場線" = "red", "リスク資産のみのフロンティア" = "blue")
-  ) +
-
+  # D. テーマなどの設定
   labs(title = "安全資産を含む場合の効率的フロンティア",
-       subtitle = "赤い直線が新たな効率的フロンティアとなる",
        x = "リスク (標準偏差)",
        y = "期待リターン") +
 
-  theme(legend.position = "bottom") +
-  xlim(0, 0.6) + ylim(0, 0.3)
+  # 【修正】データを消さずにズームするために coord_cartesian を使用
+  coord_cartesian(xlim = c(0, 0.6), ylim = c(0, 0.3)) +
+
+  # テーマ設定
+  theme_economist_white(base_family = "HiraKakuProN-W3") +
+  theme(
+    text = element_text(size = 12),
+    axis.title = element_text(size = 12),
+    legend.position = "none"
+  )
 ```
 
 安全資産が利用可能な場合、投資家は「安全資産」と「任意のリスク資産ポートフォリオ」を組み合わせることができます。
@@ -924,9 +931,33 @@ ggplot() +
 この赤い直線上の組み合わせは、青い曲線上のどの点よりも（接点を除いて）左上に位置するため、より効率的です。
 したがって、安全資産が存在する場合の効率的フロンティアはこの**直線（資本市場線）**となります。
 
+
+::: {.callout-note title="【直感的理解】なぜ曲線ではなく直線が最強なのか？"}
+この理屈は、**「ピンと定規」**を使うと直感的に理解できます。
+
+1. **リスク資産のエリア（青い曲線）** <br>
+   これまで見てきた双曲線（青い点線）は、株式などのリスク資産だけで作れる限界ラインでした。
+   投資家はこのライン上のどこかを選ぶしかありませんでした。
+2. **安全資産（紫の点）** <br>
+  ここに「リスクゼロでお金が増える」安全資産（$R_F$）が登場します。
+  これはグラフの左端（リスク0）の軸上にピンを刺すようなものです。
+3. **混ぜると「直線」になる** 安全資産と、あるリスク資産を混ぜてポートフォリオを作ると、
+  グラフ上ではその2点を結ぶ直線が描かれます。
+  投資家は、安全資産のピン（$R_F$）を支点にして、定規をリスク資産のエリア（青い曲線）に向けて伸ばすことができます。
+4. **定規を跳ね上げる（最適化）** 投資家は「同じリスクなら、できるだけ高いリターン」を欲しがります。
+   つまり、$R_F$に刺したピンを支点にして、定規の角度をできるだけ急にして、グイッと上に持ち上げたいと考えます。
+
+   - 定規が曲線の内側を通るとき（割線）：もっと上にいけます。
+   - 定規が曲線から離れてしまったとき：そのような商品は存在しないので買えません。
+
+  定規を限界まで上に持ち上げたとき、定規は青い曲線の一番出っ張った部分に「ピタリ」と接するはずです。この**「接した状態の直線」**こそが、物理的に可能な範囲で最もリターン効率が良いライン（効率的フロンティア）となります。
+  そして、その接点にあるのが「接点ポートフォリオ」です。
+  これ以外の青い曲線上の点は、すべてこの直線の下側（＝効率が悪い）に来てしまうため、選ばれなくなります。
+:::
+
 <!-- 以下では，各資産のパラメータを変更したら，効率的フロンティアや接点ポートフォリオがどのように変化するかを確認できるインタラクティブなグラフを示します。 -->
 
-```{r}
+```{r shiny_portfolio_simulation, filename="ポートフォリオシミュレーション"}
 #| echo: false
 #| eval: false
 
@@ -1064,14 +1095,17 @@ $(\mu_P,\rho_p)$平面上でそれを描く方法の一つが**無差別曲線**
 **無差別曲線**とは，投資家の効用(utility)が**一定**となるリスクとリターンの組み合わせを描いた曲線をいう。つまり同じ効用水準を達成できるリスクとリターンの組み合わせを表現した曲線である。
 
 
-
-
-
 #### 効用関数の例
 
-以下では，財$x$と$y$を消費したときの効用$U$を図示している。この消費者の効用関数は$U(x,y) = x^{\frac 25} \times y^{\frac 35}$としている。
+以下では，財$x$と$y$を消費したときの効用$U$を図示しています。
+この消費者の効用関数は$U(x,y) = x^{\frac 25} \times y^{\frac 35}$としている。
+
+:::{.column-margin}
+なぜこのような設定にしているのかというと，この効用関数は**限界代替率逓減**(diminishing marginal rate of substitution)を満たしており，たくさん消費すると効用が増えるが，その増え方がだんだん小さくなる，という現実をよく表している性質を持っているからです。
+:::
 
 ```{r utility_intersection_line_with_contours}
+#| code-fold: true
 #| warning: false
 #| message: false
 
@@ -1140,7 +1174,7 @@ plot_ly() |>
   )
 ```
 
-この山のような部分が効用関数の曲面を表しており，上に行くほど効用水準が高くなります。
+この山のような部分が効用関数の曲面を表しており，$x$と$y$をたくさん消費すれば効用水準が高くなっています。
 青い面は予算制約面を表しており，この面の上は予算を使い切って消費することを意味しています。
 つまり青い面上の点で，もっとも満足度が高い場所が，最適消費点となります。
 
@@ -1441,4 +1475,6 @@ p_combined
 ## N資産が投資可能な場合への拡張
 
 ここまではリスク資産が銘柄AとBの二つしかない場合を分析してきましたが，平均分散アプローチやCAPMは危険資産の数が任意の$N$個であっても成立します。
+
+
 
