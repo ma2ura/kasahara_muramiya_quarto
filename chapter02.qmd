@@ -6,10 +6,7 @@ pacman::p_load(
   tidyverse, # 便利なパッケージ群
   ggthemes, # ggplot2のテーマ集
   plotly, # インタラクティブなグラフ作成
-  patchwork, # 複数のグラフをまとめて表示
-  Rsolnp, # 制約付き最適化ソルバー
-  shiny, # インタラクティブ・アプリ作成
-  shinylive
+  patchwork # 複数のグラフをまとめて表示
 )
 
 mystyle <- list(
@@ -1075,61 +1072,56 @@ $(\mu_P,\rho_p)$平面上でそれを描く方法の一つが**無差別曲線**
 #### 効用関数の例
 
 以下では，財$x$と$y$を消費したときの効用$U$を図示している。この消費者の効用関数は$U(x,y) = x^{\frac 25} \times y^{\frac 35}$としている。
-```{r utility_function}
-library(Rsolnp)
+```{r utility_function_plotly, filename="効用関数の3Dプロット"}
+#| warning: false
+#| message: false
+
+# 1. データ作成
 x <- 1:50
 y <- 1:50
-u <- function(x, y) {x^(2/5) * y^(3/5)} #効用関数を定義
-U <- outer(x, y, u) #outer()はx_1,x_2に対応したf(x_1,x_2)の値を行列で返す
-persp(x, y, U,
-      theta = 30, # 横回転の角度
-      phi = 30, # 縦回転の角度
-      ticktype = "simple", # 線の種類
-      lwd = 0.5, # 線の太さ
-      col = F,
-      border = 8)
+# 効用関数の定義と行列計算
+u_func <- function(x, y) { x^(2/5) * y^(3/5) }
+U <- outer(x, y, u_func)
+
+# 2. plotlyで描画
+# 表面の色を半透明にして，等高線を底面に投影
+plot_ly(x = ~x, y = ~y, z = ~U) |>
+  add_surface(
+    contours = list( # 表面に等高線を描く設定
+      z = list(
+        show = TRUE, # 等高線を表示
+        usecolormap = TRUE, # 色分けを反映
+        highlightcolor = "#ff0000",
+        project = list(z = TRUE) # 底に無差別曲線を投影
+      )
+    ),
+    colorscale = "Viridis", # 視認性の良いカラーパレット
+    opacity = 0.6
+  ) |>
+  layout(
+    title = "コブ＝ダグラス型効用関数",
+    scene = list(
+      xaxis = list(title = "財 x"),
+      yaxis = list(title = "財 y"),
+      zaxis = list(title = "効用 U"),
+      # 初期視点の調整 (perspのtheta/phiに近い感覚で設定)
+      camera = list(eye = list(x = 2.5, y = 1.5, z = 1.2))
+    )
+  )
 ```
 
-```{r}
-# データ作成
-x <- 1:50
-y <- 1:50
-u <- function(x, y) {x^(2/5) * y^(3/5)}
-U <- outer(x, y, u)
+等高線(つまり無差別曲線)だけを取り出した図が以下のものです。
+青いラインは予算制約を表しており、青い線の内側が**消費可能集合**(affordable set)といいます。
+予算の範囲内で購入可能な財の組み合わせのなかで、最も高い効用水準を実現する点、つまり無差別曲線との接点が最適消費点となります。
 
-# 色の準備（高さに応じて色を変える処理）
-nrz <- nrow(U)
-ncz <- ncol(U)
-# グラデーションパレットを作成 (青→緑→黄)
-jet.colors <- colorRampPalette(c("blue", "green", "yellow", "orange", "red"))
-nbcol <- 100
-color <- jet.colors(nbcol)
-# 高さ(z)を色のインデックスに変換
-zfacet <- U[-1, -1] + U[-1, -ncz] + U[-nrz, -1] + U[-nrz, -ncz]
-facetcol <- cut(zfacet, nbcol)
-
-# 描画
-persp(x, y, U,
-      theta = 45, phi = 30,
-      col = color[facetcol], # 計算した色を指定
-      shade = 0.2,           # 陰影
-      border = NA,           # 枠線なしで滑らかに
-      ticktype = "detailed",
-      xlab = "財 x", ylab = "財 y", zlab = "効用 U",
-      main = "効用関数の3Dプロット")
-```
-
-この立体図を等高線を使って表現したものが以下の図である。
-青いラインは予算制約であり、予算の範囲内で購入可能な財の組み合わせを意味している。つまり、この予算制約と無差別曲線が接する点が、予算内で達成可能な最も高い効用水準を表している。
-
-無リスク利子率が10%で，リスクプレミアムが5％，βが1.2の場合の期待リターンは，$R_F + \beta \times (R_M - R_F) = 0.1 + 1.2 \times 0.05 = 0.16$となる。このときの無差別曲線は，$U = 0.16$となるような点を結んだ曲線となる。
+無リスク利子率が10%で，リスクプレミアムが5％，
+$\beta$ が1.2の場合の期待リターンは，
+$R_F + \beta \times (R_M - R_F) = 0.1 + 1.2 \times 0.05 = 0.16$ となります。
+このときの無差別曲線は$U = 0.16$ となるような点を結んだ曲線となる。
 
 ```{r indifference_curve}
 #| fig-cap: "無差別曲線と消費可能集合"
-#| fig-aligned: center
-#| fig-width: 6
-#| fig-height: 6
-contour(x, y, U, method = "edge", labcex = 1,lwd = 2)
+contour(x, y, U, method = "edge", labcex = 1, lwd = 2)
 abline(a = 100/6, b = -4/6, lwd = 2, col = "blue") #予算制約線
 points(x = 10, y = 10, lwd = 3, col = "darkblue", pch = 16) #最適消費点
 ```
