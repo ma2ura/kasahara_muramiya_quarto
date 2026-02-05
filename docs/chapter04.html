@@ -115,15 +115,9 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-SFB56VHK63', { 'anonymize_ip': true});
 </script><style>
-.marky {
-  background: linear-gradient(transparent 60%, #FCFFC1 0%);
-}
-.markb {
-  background: linear-gradient(transparent 60%, #88E2EA 0%);
-}
-.markp{
-  background: linear-gradient(transparent 70%, #ffcdd2 0%)
-}
+.marky { background: linear-gradient(transparent 60%, #FCFFC1 0%); }
+.markb { background: linear-gradient(transparent 60%, #88E2EA 0%); }
+.markp { background: linear-gradient(transparent 70%, #ffcdd2 0%); }
 </style>
 <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -434,42 +428,38 @@ window.Quarto = {
 </li>
   <li><a href="#%E6%AC%A0%E6%90%8D%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86" id="toc-欠損データの処理" class="nav-link" data-scroll-target="#%E6%AC%A0%E6%90%8D%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86"><span class="header-section-number">4.4</span> 4.3.2 欠損データの処理</a></li>
   <li>
-<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの抽出とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">5</span> 4.4 データの抽出とヒストグラムによる可視化</a>
+<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの抽出とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.5</span> データの抽出とヒストグラムによる可視化</a>
   <ul class="collapse">
-<li><a href="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95" id="toc-条件にあうデータの抽出方法" class="nav-link" data-scroll-target="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95"><span class="header-section-number">5.1</span> 4.4.1 条件にあうデータの抽出方法</a></li>
-  <li>
-<a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-ヒストグラムによる売上高の可視化" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">5.2</span> 4.4.2 ヒストグラムによる売上高の可視化</a>
-  <ul class="collapse">
-<li><a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ヒストグラム" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">5.2.1</span> ヒストグラム</a></li>
-  <li><a href="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ggplotでヒストグラム" class="nav-link" data-scroll-target="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">5.2.2</span> ggplotでヒストグラム</a></li>
-  </ul>
-</li>
+<li><a href="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95" id="toc-条件にあうデータの抽出方法" class="nav-link" data-scroll-target="#%E6%9D%A1%E4%BB%B6%E3%81%AB%E3%81%82%E3%81%86%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA%E6%96%B9%E6%B3%95"><span class="header-section-number">4.5.1</span> 条件にあうデータの抽出方法</a></li>
   </ul>
 </li>
   <li>
-<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの集計と折れ線グラフによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">6</span> 4.5 データの集計と折れ線グラフによる可視化</a>
+<a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-ヒストグラムによる売上高の可視化" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.6</span> 4.4.2 ヒストグラムによる売上高の可視化</a>
   <ul class="collapse">
-<li><a href="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88" id="toc-dplyrを用いた集計" class="nav-link" data-scroll-target="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88"><span class="header-section-number">6.1</span> 4.5.3 dplyrを用いた集計</a></li>
-  <li><a href="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-折れ線グラフによる上場企業数の可視化" class="nav-link" data-scroll-target="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">6.2</span> 4.5.4 折れ線グラフによる上場企業数の可視化</a></li>
+<li><a href="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ヒストグラム" class="nav-link" data-scroll-target="#%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">4.6.1</span> ヒストグラム</a></li>
+  <li><a href="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0" id="toc-ggplotでヒストグラム" class="nav-link" data-scroll-target="#ggplot%E3%81%A7%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0"><span class="header-section-number">4.6.2</span> ggplotでヒストグラム</a></li>
   </ul>
 </li>
   <li>
-<a href="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-変数の作成とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">7</span> 4.6 変数の作成とヒストグラムによる可視化</a>
+<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-データの集計と折れ線グラフによる可視化" class="nav-link" data-scroll-target="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.7</span> データの集計と折れ線グラフによる可視化</a>
   <ul class="collapse">
-<li><a href="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88" id="toc-キーボードショートカット" class="nav-link" data-scroll-target="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88"><span class="header-section-number">7.1</span> キーボードショートカット</a></li>
-  <li>
-<a href="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91" id="toc-グループごとの集計とランク付け" class="nav-link" data-scroll-target="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91"><span class="header-section-number">7.2</span> 4.7 グループごとの集計とランク付け</a>
-  <ul class="collapse">
-<li><a href="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-産業ごとのroe平均値と棒グラフによる可視化" class="nav-link" data-scroll-target="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">7.2.1</span> 4.7.1 産業ごとのROE平均値と棒グラフによる可視化</a></li>
+<li><a href="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88" id="toc-dplyrを用いた集計" class="nav-link" data-scroll-target="#dplyr%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E9%9B%86%E8%A8%88"><span class="header-section-number">4.7.1</span> dplyrを用いた集計</a></li>
+  <li><a href="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-折れ線グラフによる上場企業数の可視化" class="nav-link" data-scroll-target="#%E6%8A%98%E3%82%8C%E7%B7%9A%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E4%B8%8A%E5%A0%B4%E4%BC%81%E6%A5%AD%E6%95%B0%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.7.2</span> 折れ線グラフによる上場企業数の可視化</a></li>
   </ul>
 </li>
+  <li><a href="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-変数の作成とヒストグラムによる可視化" class="nav-link" data-scroll-target="#%E5%A4%89%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%A8%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.8</span> 変数の作成とヒストグラムによる可視化</a></li>
+  <li><a href="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88" id="toc-キーボードショートカット" class="nav-link" data-scroll-target="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88"><span class="header-section-number">4.9</span> キーボードショートカット</a></li>
+  <li>
+<a href="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91" id="toc-グループごとの集計とランク付け" class="nav-link" data-scroll-target="#%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%94%E3%81%A8%E3%81%AE%E9%9B%86%E8%A8%88%E3%81%A8%E3%83%A9%E3%83%B3%E3%82%AF%E4%BB%98%E3%81%91"><span class="header-section-number">4.10</span> グループごとの集計とランク付け</a>
+  <ul class="collapse">
+<li><a href="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-産業ごとのroe平均値と棒グラフによる可視化" class="nav-link" data-scroll-target="#%E7%94%A3%E6%A5%AD%E3%81%94%E3%81%A8%E3%81%AEroe%E5%B9%B3%E5%9D%87%E5%80%A4%E3%81%A8%E6%A3%92%E3%82%B0%E3%83%A9%E3%83%95%E3%81%AB%E3%82%88%E3%82%8B%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.10.1</span> 産業ごとのROE平均値と棒グラフによる可視化</a></li>
   </ul>
 </li>
   <li>
-<a href="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-上級デュポンモデルによるroeの分析とその可視化" class="nav-link" data-scroll-target="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">8</span> 4.8 上級デュポン・モデルによるROEの分析とその可視化</a>
+<a href="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96" id="toc-上級デュポンモデルによるroeの分析とその可視化" class="nav-link" data-scroll-target="#%E4%B8%8A%E7%B4%9A%E3%83%87%E3%83%A5%E3%83%9D%E3%83%B3%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AB%E3%82%88%E3%82%8Broe%E3%81%AE%E5%88%86%E6%9E%90%E3%81%A8%E3%81%9D%E3%81%AE%E5%8F%AF%E8%A6%96%E5%8C%96"><span class="header-section-number">4.11</span> 上級デュポン・モデルによるROEの分析とその可視化</a>
   <ul class="collapse">
-<li><a href="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-箱ひげ図による産業別比較" class="nav-link" data-scroll-target="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">8.1</span> 4.8.2 箱ひげ図による産業別比較</a></li>
-  <li><a href="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-散布図による産業別比較" class="nav-link" data-scroll-target="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">8.2</span> 4.8.3 散布図による産業別比較</a></li>
+<li><a href="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-箱ひげ図による産業別比較" class="nav-link" data-scroll-target="#%E7%AE%B1%E3%81%B2%E3%81%92%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">4.11.1</span> 箱ひげ図による産業別比較</a></li>
+  <li><a href="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83" id="toc-散布図による産業別比較" class="nav-link" data-scroll-target="#%E6%95%A3%E5%B8%83%E5%9B%B3%E3%81%AB%E3%82%88%E3%82%8B%E7%94%A3%E6%A5%AD%E5%88%A5%E6%AF%94%E8%BC%83"><span class="header-section-number">4.11.2</span> 散布図による産業別比較</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -976,10 +966,10 @@ Note
 <p>さらに欠損値についての議論では，<a href="https://www.amazon.co.jp/gp/product/400029847X/ref=dbs_a_def_rwt_bibl_vppi_i3">星野・岡田 (2016)「欠測データの統計科学―医学と社会科学への応用」</a>岩波書店がめちゃめちゃ有用です。</p>
 </div>
 </div>
-</section><section id="データの抽出とヒストグラムによる可視化" class="level1" data-number="5"><h1 data-number="5">
-<span class="header-section-number">5</span> 4.4 データの抽出とヒストグラムによる可視化</h1>
-<section id="条件にあうデータの抽出方法" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="条件にあうデータの抽出方法">
-<span class="header-section-number">5.1</span> 4.4.1 条件にあうデータの抽出方法</h2>
+</section><section id="データの抽出とヒストグラムによる可視化" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="データの抽出とヒストグラムによる可視化">
+<span class="header-section-number">4.5</span> データの抽出とヒストグラムによる可視化</h2>
+<section id="条件にあうデータの抽出方法" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="条件にあうデータの抽出方法">
+<span class="header-section-number">4.5.1</span> 条件にあうデータの抽出方法</h3>
 <p>教科書では複数の方法が紹介されているが，このメモではtidyverseパッケージを用いた方法だけ取り上げます。具体的には，データベース操作のパッケージである<code>dplyr</code>の中の<code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code>関数について説明します。 さらに<code>magrittr</code>を用いたパイプ演算子<code>|&gt;</code>を用いたデータの受け渡しの記法を活用して，可読性の高いソースコードを書くことも紹介します。 ここでは<code>dplyr</code>パッケージの<code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code>関数であることを明示的に示すため、<code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>と書いていますが、<code>dplyr</code>パッケージを読み込んでいる場合は<code><a href="https://rdrr.io/r/stats/filter.html">filter()</a></code>と書いても同じです。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>financial_data_2015 <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
@@ -1004,7 +994,7 @@ Note
 <span id="cb32-7"><a href="#cb32-7"></a>    <span class="fu">summarise</span>(</span>
 <span id="cb32-8"><a href="#cb32-8"></a>        <span class="at">mean_ROE =</span> <span class="fu">mean</span>(ROE), <span class="co"># mean()で平均値を計算</span></span>
 <span id="cb32-9"><a href="#cb32-9"></a>        <span class="at">by =</span> industry_ID <span class="co"># 産業ごとに</span></span>
-<span id="cb32-10"><a href="#cb32-10"></a>    ) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb32-10"><a href="#cb32-10"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>基本関数の場合は、</p>
 <div class="cell" data-layout-align="center">
@@ -1016,10 +1006,10 @@ Note
 <span id="cb33-6"><a href="#cb33-6"></a>        <span class="at">FUN =</span> mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>となりますので、上の方が読みやすいことがわかります。</p>
-</section><section id="ヒストグラムによる売上高の可視化" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="ヒストグラムによる売上高の可視化">
-<span class="header-section-number">5.2</span> 4.4.2 ヒストグラムによる売上高の可視化</h2>
-<section id="ヒストグラム" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="ヒストグラム">
-<span class="header-section-number">5.2.1</span> ヒストグラム</h3>
+</section></section><section id="ヒストグラムによる売上高の可視化" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="ヒストグラムによる売上高の可視化">
+<span class="header-section-number">4.6</span> 4.4.2 ヒストグラムによる売上高の可視化</h2>
+<section id="ヒストグラム" class="level3" data-number="4.6.1"><h3 data-number="4.6.1" class="anchored" data-anchor-id="ヒストグラム">
+<span class="header-section-number">4.6.1</span> ヒストグラム</h3>
 <p>ヒストグラム(histogram)は，データの分布を可視化するためのグラフです。 ヒストグラムは，連続データを区間に分けて，区間ごとのデータの個数を棒グラフで表現したものです。したがってヒストグラムの棒の高さは、その区間に含まれるデータの個数を表します。</p>
 <p>たとえば、例として生徒100人の身長データがあるとします。 この身長データをRで生成するには，<code><a href="https://rdrr.io/r/stats/Normal.html">rnorm()</a></code>関数を使います。</p>
 <div class="cell" data-layout-align="center">
@@ -1027,19 +1017,19 @@ Note
 <span id="cb34-2"><a href="#cb34-2"></a>height <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">170</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
 <span id="cb34-3"><a href="#cb34-3"></a><span class="fu">print</span>(height)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 171.5728 168.2334 162.8957 169.6133 168.5566 169.7290 178.7473 173.6433
-  [9] 171.5355 174.0981 168.5932 170.9122 166.9104 162.7687 171.3856 165.7022
- [17] 166.6737 163.5072 169.8197 171.9306 170.6677 171.6860 164.6027 178.8413
- [25] 170.6498 175.6210 164.4245 172.0806 168.6640 170.2693 165.4197 170.8328
- [33] 175.7888 169.5173 169.4026 167.9562 175.3026 182.5762 170.8697 170.4833
- [41] 172.1800 161.9911 165.0699 168.6369 168.8933 176.2546 166.8951 170.8418
- [49] 171.4524 176.6154 159.0731 169.4092 160.6188 175.0853 173.7298 179.3315
- [57] 175.0707 160.9220 170.2606 169.3617 179.7116 164.4804 166.6673 170.2450
- [65] 169.3224 176.8822 173.7331 170.0180 171.0434 171.7557 178.1420 160.9653
- [73] 172.1534 161.2055 171.7387 173.9881 168.6045 176.7739 171.3696 167.1408
- [81] 172.7837 169.6284 169.1183 177.6157 174.5728 165.4507 169.9520 168.2482
- [89] 171.6715 162.0841 170.1405 179.5418 168.3488 167.6785 174.5318 169.3672
- [97] 159.5208 168.6184 176.7639 171.7220</code></pre>
+<pre><code>  [1] 165.6501 164.6953 172.3324 172.3389 169.5559 169.8298 172.6653 165.8277
+  [9] 165.9394 171.8562 164.0687 168.8142 172.9868 172.5511 170.7812 168.9409
+ [17] 162.8153 177.1758 176.0888 168.2036 169.5928 174.1667 169.9959 163.9285
+ [25] 165.1858 162.8039 168.9907 175.3588 171.7358 175.6663 167.8883 167.8990
+ [33] 175.4725 167.9132 166.7830 167.2803 165.9804 171.4927 172.1801 174.7852
+ [41] 170.7580 168.3184 174.1223 173.3305 170.0200 169.2158 171.1829 163.6158
+ [49] 161.2569 165.3530 177.5611 163.3051 163.3575 172.4074 169.3534 158.1339
+ [57] 170.9202 168.3143 166.9693 171.0622 168.7590 166.0696 174.7843 171.1020
+ [65] 176.0543 169.7163 173.1669 171.5255 173.7097 166.9256 167.3082 164.4577
+ [73] 167.3535 167.1467 174.0388 172.1354 164.7153 162.2318 174.8636 177.7922
+ [81] 172.4090 171.2126 167.8126 170.8377 161.7694 173.6519 168.5042 167.2457
+ [89] 171.3851 166.0009 169.0913 172.9589 179.7613 158.5658 166.7944 164.6645
+ [97] 167.5527 165.2087 169.9109 170.9231</code></pre>
 </div>
 </div>
 <p>100個のデータを眺めていても、なかなか特徴をつかめませんよね。そこでこの身長という連続データを5センチごとの区間に分けます。たとえば、165cm以上、170cm未満の区間には何人の生徒がいるのか、170cm以上、175cm未満の区間には何人の生徒がいるのか、というように区間ごとのデータの個数を数えます。 このとき、区間の幅を5cmにするか、10cmにするか、20cmにするか、ということは、データの特徴をつかむ上で重要なことです。区間の幅を大きくすると、データの特徴がざっくりとしかつかめません。一方、区間の幅を小さくすると、データの特徴が細かくつかめますが、データの個数が少ない区間が多くなり、データの特徴をつかむのに時間がかかります。 やってみましょう。</p>
@@ -1067,8 +1057,8 @@ Note
 </div>
 </div>
 <p>どのヒストグラムがデータの特徴を最も良く表しているのか、を考えて区間幅を設定しましょう。</p>
-</section><section id="ggplotでヒストグラム" class="level3" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="ggplotでヒストグラム">
-<span class="header-section-number">5.2.2</span> ggplotでヒストグラム</h3>
+</section><section id="ggplotでヒストグラム" class="level3" data-number="4.6.2"><h3 data-number="4.6.2" class="anchored" data-anchor-id="ggplotでヒストグラム">
+<span class="header-section-number">4.6.2</span> ggplotでヒストグラム</h3>
 <p>ヒストグラムを書くためには，基本関数の<code><a href="https://rdrr.io/r/graphics/hist.html">hist()</a></code>が最も簡単ですが，より高性能な<code>ggplot2</code>を用いたヒストグラムの書き方を説明します。 ここでは、上で作成した2015年のデータ<code>financial_data_2015</code>を使って、売上高のヒストグラムを書きます。</p>
 <p><code>ggplot2</code>の書き方は少し特殊ですが、慣れてくると非常に便利です。 <code>ggplot2</code>ではレイヤー(階層)を上から重ねていくようにグラフを作っていきます。 まず<code>ggplot()</code>関数でグラフの土台を作ります。<code>ggplot()</code>に入れるデータの型は<code>data.frame</code>でなければならないので注意しましょう。</p>
 <div class="cell" data-layout-align="center">
@@ -1148,10 +1138,10 @@ Note
 </div>
 </div>
 <p>うまくいきました。</p>
-</section></section></section><section id="データの集計と折れ線グラフによる可視化" class="level1 page-columns page-full" data-number="6"><h1 data-number="6">
-<span class="header-section-number">6</span> 4.5 データの集計と折れ線グラフによる可視化</h1>
-<section id="dplyrを用いた集計" class="level2 page-columns page-full" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="dplyrを用いた集計">
-<span class="header-section-number">6.1</span> 4.5.3 dplyrを用いた集計</h2>
+</section></section><section id="データの集計と折れ線グラフによる可視化" class="level2 page-columns page-full" data-number="4.7"><h2 data-number="4.7" class="anchored" data-anchor-id="データの集計と折れ線グラフによる可視化">
+<span class="header-section-number">4.7</span> データの集計と折れ線グラフによる可視化</h2>
+<section id="dplyrを用いた集計" class="level3 page-columns page-full" data-number="4.7.1"><h3 data-number="4.7.1" class="anchored" data-anchor-id="dplyrを用いた集計">
+<span class="header-section-number">4.7.1</span> dplyrを用いた集計</h3>
 <p>もっとデータを加工して、データの特徴をつかむグラフを作成してみます。 データを加工するために、非常に便利なパッケージであるtidyverseの<code>dplyr</code>を用いたデータ加工を説明します。<code>dplyr</code>でよく使う関数に、</p>
 <ul>
 <li><code>summarise()</code></li>
@@ -1204,8 +1194,8 @@ Note
 <p>関数型プログラミング(functional programming)は，現代的なプログラミング・パラダイムの1種であり，定義された関数を用いて各データに対して行いたい処理を切り分ける。Rでは<code>apply</code>系関数として，様々な関数が用意されている。<code>tidyverse</code>群では，<code>purrr</code>がある。ちょっと難しいですがpurrr超便利</p>
 </div>
 </div>
-</section><section id="折れ線グラフによる上場企業数の可視化" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="折れ線グラフによる上場企業数の可視化">
-<span class="header-section-number">6.2</span> 4.5.4 折れ線グラフによる上場企業数の可視化</h2>
+</section><section id="折れ線グラフによる上場企業数の可視化" class="level3" data-number="4.7.2"><h3 data-number="4.7.2" class="anchored" data-anchor-id="折れ線グラフによる上場企業数の可視化">
+<span class="header-section-number">4.7.2</span> 折れ線グラフによる上場企業数の可視化</h3>
 <p>データの成形が終わったので，折れ線グラフを作っていきます。 ここではx軸(横軸)を年度<code>year</code>，y軸(縦軸)を上場企業数<code>N_firms</code>とする折れ線グラフを作ってみます。 折れ線グラフを作るには<code>geom_line()</code>関数を使います。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(N_firms_by_year) <span class="sc">+</span></span>
@@ -1221,11 +1211,11 @@ Note
 </div>
 </div>
 <p>ここで突然現れた<code>group = 1</code>という<code>aes()</code>のオプションですが、これはすべてのデータが同じグループに属していることを指定しています。 x軸にファクター型を指定する場合、<code>group = 1</code>を指定しないと、x軸の値ごとに別のグループとして認識されてしまい、折れ線グラフがうまく描けません。</p>
-</section></section><section id="変数の作成とヒストグラムによる可視化" class="level1" data-number="7"><h1 data-number="7">
-<span class="header-section-number">7</span> 4.6 変数の作成とヒストグラムによる可視化</h1>
+</section></section><section id="変数の作成とヒストグラムによる可視化" class="level2" data-number="4.8"><h2 data-number="4.8" class="anchored" data-anchor-id="変数の作成とヒストグラムによる可視化">
+<span class="header-section-number">4.8</span> 変数の作成とヒストグラムによる可視化</h2>
 <p><code>tidyverse</code>の<code>dplyr</code>パッケージの<code>mutate()</code>関数を用いれば，パイプ演算子<code>|&gt;</code>を用いて可読性の高いシンプルな書き方で、新しい変数を作成することができます。</p>
-<section id="キーボードショートカット" class="level2 callout-tips" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="キーボードショートカット">
-<span class="header-section-number">7.1</span> キーボードショートカット</h2>
+</section><section id="キーボードショートカット" class="level2 callout-tips" data-number="4.9"><h2 data-number="4.9" class="anchored" data-anchor-id="キーボードショートカット">
+<span class="header-section-number">4.9</span> キーボードショートカット</h2>
 <p>Macなら<code>command + shift + m</code>でパイプ演算子が入力できます。 Windowsなら<code>ctrl + shift + m</code>です。</p>
 </section><p>ここでは，ROE(Return on Equity)を計算してみます。 ROEの定義は，</p>
 <p><span class="math display">
@@ -1324,10 +1314,10 @@ BE_t = \underbrace{(OA_t - OL_t)}_{NOA_t} - \underbrace{(FO_t - FA_t)}_{NFO_t}
 </div>
 </div>
 </div>
-<section id="グループごとの集計とランク付け" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="グループごとの集計とランク付け">
-<span class="header-section-number">7.2</span> 4.7 グループごとの集計とランク付け</h2>
-<section id="産業ごとのroe平均値と棒グラフによる可視化" class="level3" data-number="7.2.1"><h3 data-number="7.2.1" class="anchored" data-anchor-id="産業ごとのroe平均値と棒グラフによる可視化">
-<span class="header-section-number">7.2.1</span> 4.7.1 産業ごとのROE平均値と棒グラフによる可視化</h3>
+<section id="グループごとの集計とランク付け" class="level2" data-number="4.10"><h2 data-number="4.10" class="anchored" data-anchor-id="グループごとの集計とランク付け">
+<span class="header-section-number">4.10</span> グループごとの集計とランク付け</h2>
+<section id="産業ごとのroe平均値と棒グラフによる可視化" class="level3" data-number="4.10.1"><h3 data-number="4.10.1" class="anchored" data-anchor-id="産業ごとのroe平均値と棒グラフによる可視化">
+<span class="header-section-number">4.10.1</span> 産業ごとのROE平均値と棒グラフによる可視化</h3>
 <p>グループごとに平均値を出すといった処理は，<code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code>の引数で<code>.by=var</code>を指定すれば簡単です。 ここでは、産業ごとにROEの平均値と標準偏差を求めてみます。 ROEには欠損値が含まれているため、<code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>関数を使うと<code>NA</code>が返ってきます。<code>NA</code>を無視して平均値を計算するには、<code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>関数のオプション<code>na.rm = TRUE</code>を指定します。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>df_ind <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
@@ -1384,11 +1374,11 @@ $ sd_ROE      &lt;dbl&gt; 0.09264764, 0.09530125, 0.05569899, 0.04676826, 0.0485
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a><span class="co"># 2020年度の産業内のROEランキングの変数を作成</span></span>
 <span id="cb59-2"><a href="#cb59-2"></a>ROE_rank_data <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
-<span id="cb59-3"><a href="#cb59-3"></a>    <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb59-4"><a href="#cb59-4"></a>    <span class="fu">select</span>(firm_ID, industry_ID, ROE) <span class="sc">|&gt;</span> </span>
+<span id="cb59-3"><a href="#cb59-3"></a>    <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span></span>
+<span id="cb59-4"><a href="#cb59-4"></a>    <span class="fu">select</span>(firm_ID, industry_ID, ROE) <span class="sc">|&gt;</span></span>
 <span id="cb59-5"><a href="#cb59-5"></a>    <span class="fu">mutate</span>(  <span class="co"># summarize を mutate に変更</span></span>
-<span id="cb59-6"><a href="#cb59-6"></a>        <span class="at">ROE_rank =</span> <span class="fu">rank</span>(<span class="fu">desc</span>(ROE)), </span>
-<span id="cb59-7"><a href="#cb59-7"></a>        <span class="at">.by =</span> industry_ID </span>
+<span id="cb59-6"><a href="#cb59-6"></a>        <span class="at">ROE_rank =</span> <span class="fu">rank</span>(<span class="fu">desc</span>(ROE)),</span>
+<span id="cb59-7"><a href="#cb59-7"></a>        <span class="at">.by =</span> industry_ID</span>
 <span id="cb59-8"><a href="#cb59-8"></a>    )</span>
 <span id="cb59-9"><a href="#cb59-9"></a></span>
 <span id="cb59-10"><a href="#cb59-10"></a>ROE_rank_data <span class="sc">|&gt;</span></span>
@@ -1472,8 +1462,8 @@ $ sd_ROE      &lt;dbl&gt; 0.09264764, 0.09530125, 0.05569899, 0.04676826, 0.0485
 </table>
 </div>
 </div>
-</section></section></section><section id="上級デュポンモデルによるroeの分析とその可視化" class="level1" data-number="8"><h1 data-number="8">
-<span class="header-section-number">8</span> 4.8 上級デュポン・モデルによるROEの分析とその可視化</h1>
+</section></section><section id="上級デュポンモデルによるroeの分析とその可視化" class="level2" data-number="4.11"><h2 data-number="4.11" class="anchored" data-anchor-id="上級デュポンモデルによるroeの分析とその可視化">
+<span class="header-section-number">4.11</span> 上級デュポン・モデルによるROEの分析とその可視化</h2>
 <p>上級デュポン・モデルとは，次式で表されるROEの分解式です。</p>
 <p><span class="math display">
 \begin{aligned}
@@ -1508,8 +1498,8 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 </div>
 </div>
 <p>となり，差の平均は<span class="math inline">4.396878 \times 10^{-6}</span>となり，ほぼ0となっていることから，上級デュポン・モデルの分解式が正しいことが確認できます。 完全にゼロにならない理由は計算の過程で生じる丸め誤差によるものです。</p>
-<section id="箱ひげ図による産業別比較" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="箱ひげ図による産業別比較">
-<span class="header-section-number">8.1</span> 4.8.2 箱ひげ図による産業別比較</h2>
+<section id="箱ひげ図による産業別比較" class="level3" data-number="4.11.1"><h3 data-number="4.11.1" class="anchored" data-anchor-id="箱ひげ図による産業別比較">
+<span class="header-section-number">4.11.1</span> 箱ひげ図による産業別比較</h3>
 <p>産業別で利ざや<code>PM</code>がどのように分布しているのかを調べるために，箱ひげ図(box plot)を作ってみます。 箱ひげ図は，データの分布を可視化するためのグラフで，第1四分位点，中央値，第3四分位点，(異常値をのぞく)最大値，(異常値をのぞく)最小値を表現できる，非常に情報量の多いグラフです。</p>
 <p><code>ggplot2</code>パッケージの<code>geom_boxplot()</code>関数を用いることで，データフレームから箱ひげ図を作図できます。</p>
 <p>先に作成したデータフレーム<code>financial_data</code>を用いて，<code>PM</code>の箱ひげ図を作成してみましょう。 あまり多くの箱ひげ図を作っても見づらくなるので，最終年度のデータ で，産業IDが2〜6までの企業に限定します。</p>
@@ -1531,8 +1521,8 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 </div>
 </div>
 <p>箱ひげ図から，産業ごとに利ざやの分布が異なることがわかります。とりわけ産業3は利ざやの散らばりが大きく，産業4は非常に散らばりが小さいことが分かります。</p>
-</section><section id="散布図による産業別比較" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="散布図による産業別比較">
-<span class="header-section-number">8.2</span> 4.8.3 散布図による産業別比較</h2>
+</section><section id="散布図による産業別比較" class="level3" data-number="4.11.2"><h3 data-number="4.11.2" class="anchored" data-anchor-id="散布図による産業別比較">
+<span class="header-section-number">4.11.2</span> 散布図による産業別比較</h3>
 <p>次に産業ごとに <code>ATO</code>(純事業資産回転率)と <code>PM</code>(売上高事業利益率)がどう分布しているか散布図を書いてみます。 ここでは異常値の影響を受けにくい統計量である中央値(median)を計算し，散布図を作成してみます。</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a>df_ind_median <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
@@ -2258,9 +2248,9 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-193"><a href="#cb67-193"></a>さらに欠損値についての議論では，<span class="co">[</span><span class="ot">星野・岡田 (2016)「欠測データの統計科学―医学と社会科学への応用」</span><span class="co">](https://www.amazon.co.jp/gp/product/400029847X/ref=dbs_a_def_rwt_bibl_vppi_i3)</span>岩波書店がめちゃめちゃ有用です。</span>
 <span id="cb67-194"><a href="#cb67-194"></a>:::</span>
 <span id="cb67-195"><a href="#cb67-195"></a></span>
-<span id="cb67-196"><a href="#cb67-196"></a><span class="fu"># 4.4 データの抽出とヒストグラムによる可視化</span></span>
+<span id="cb67-196"><a href="#cb67-196"></a><span class="fu">## データの抽出とヒストグラムによる可視化</span></span>
 <span id="cb67-197"><a href="#cb67-197"></a></span>
-<span id="cb67-198"><a href="#cb67-198"></a><span class="fu">## 4.4.1 条件にあうデータの抽出方法</span></span>
+<span id="cb67-198"><a href="#cb67-198"></a><span class="fu">### 条件にあうデータの抽出方法</span></span>
 <span id="cb67-199"><a href="#cb67-199"></a></span>
 <span id="cb67-200"><a href="#cb67-200"></a>教科書では複数の方法が紹介されているが，このメモではtidyverseパッケージを用いた方法だけ取り上げます。具体的には，データベース操作のパッケージである<span class="in">`dplyr`</span>の中の<span class="in">`filter()`</span>関数について説明します。</span>
 <span id="cb67-201"><a href="#cb67-201"></a>さらに<span class="in">`magrittr`</span>を用いたパイプ演算子<span class="in">`|&gt;`</span>を用いたデータの受け渡しの記法を活用して，可読性の高いソースコードを書くことも紹介します。</span>
@@ -2294,7 +2284,7 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-229"><a href="#cb67-229"></a>    <span class="fu">summarise</span>(</span>
 <span id="cb67-230"><a href="#cb67-230"></a>        <span class="at">mean_ROE =</span> <span class="fu">mean</span>(ROE), <span class="co"># mean()で平均値を計算</span></span>
 <span id="cb67-231"><a href="#cb67-231"></a>        <span class="at">by =</span> industry_ID <span class="co"># 産業ごとに</span></span>
-<span id="cb67-232"><a href="#cb67-232"></a>    ) </span>
+<span id="cb67-232"><a href="#cb67-232"></a>    )</span>
 <span id="cb67-233"><a href="#cb67-233"></a><span class="in">```</span></span>
 <span id="cb67-234"><a href="#cb67-234"></a></span>
 <span id="cb67-235"><a href="#cb67-235"></a>基本関数の場合は、</span>
@@ -2403,9 +2393,9 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-350"><a href="#cb67-350"></a></span>
 <span id="cb67-351"><a href="#cb67-351"></a>うまくいきました。</span>
 <span id="cb67-352"><a href="#cb67-352"></a></span>
-<span id="cb67-353"><a href="#cb67-353"></a><span class="fu"># 4.5 データの集計と折れ線グラフによる可視化</span></span>
+<span id="cb67-353"><a href="#cb67-353"></a><span class="fu">## データの集計と折れ線グラフによる可視化</span></span>
 <span id="cb67-354"><a href="#cb67-354"></a></span>
-<span id="cb67-355"><a href="#cb67-355"></a><span class="fu">## 4.5.3 dplyrを用いた集計</span></span>
+<span id="cb67-355"><a href="#cb67-355"></a><span class="fu">### dplyrを用いた集計</span></span>
 <span id="cb67-356"><a href="#cb67-356"></a></span>
 <span id="cb67-357"><a href="#cb67-357"></a>もっとデータを加工して、データの特徴をつかむグラフを作成してみます。</span>
 <span id="cb67-358"><a href="#cb67-358"></a>データを加工するために、非常に便利なパッケージであるtidyverseの<span class="in">`dplyr`</span>を用いたデータ加工を説明します。<span class="in">`dplyr`</span>でよく使う関数に、</span>
@@ -2452,7 +2442,7 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-399"><a href="#cb67-399"></a>関数型プログラミング(functional programming)は，現代的なプログラミング・パラダイムの1種であり，定義された関数を用いて各データに対して行いたい処理を切り分ける。Rでは<span class="in">`apply`</span>系関数として，様々な関数が用意されている。<span class="in">`tidyverse`</span>群では，<span class="in">`purrr`</span>がある。ちょっと難しいですがpurrr超便利</span>
 <span id="cb67-400"><a href="#cb67-400"></a>:::</span>
 <span id="cb67-401"><a href="#cb67-401"></a></span>
-<span id="cb67-402"><a href="#cb67-402"></a><span class="fu">## 4.5.4 折れ線グラフによる上場企業数の可視化</span></span>
+<span id="cb67-402"><a href="#cb67-402"></a><span class="fu">### 折れ線グラフによる上場企業数の可視化</span></span>
 <span id="cb67-403"><a href="#cb67-403"></a></span>
 <span id="cb67-404"><a href="#cb67-404"></a>データの成形が終わったので，折れ線グラフを作っていきます。</span>
 <span id="cb67-405"><a href="#cb67-405"></a>ここではx軸(横軸)を年度<span class="in">`year`</span>，y軸(縦軸)を上場企業数<span class="in">`N_firms`</span>とする折れ線グラフを作ってみます。</span>
@@ -2469,7 +2459,7 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-416"><a href="#cb67-416"></a>ここで突然現れた<span class="in">`group = 1`</span>という<span class="in">`aes()`</span>のオプションですが、これはすべてのデータが同じグループに属していることを指定しています。</span>
 <span id="cb67-417"><a href="#cb67-417"></a>x軸にファクター型を指定する場合、<span class="in">`group = 1`</span>を指定しないと、x軸の値ごとに別のグループとして認識されてしまい、折れ線グラフがうまく描けません。</span>
 <span id="cb67-418"><a href="#cb67-418"></a></span>
-<span id="cb67-419"><a href="#cb67-419"></a><span class="fu"># 4.6 変数の作成とヒストグラムによる可視化</span></span>
+<span id="cb67-419"><a href="#cb67-419"></a><span class="fu">## 変数の作成とヒストグラムによる可視化</span></span>
 <span id="cb67-420"><a href="#cb67-420"></a></span>
 <span id="cb67-421"><a href="#cb67-421"></a><span class="in">`tidyverse`</span>の<span class="in">`dplyr`</span>パッケージの<span class="in">`mutate()`</span>関数を用いれば，パイプ演算子<span class="in">`|&gt;`</span>を用いて可読性の高いシンプルな書き方で、新しい変数を作成することができます。</span>
 <span id="cb67-422"><a href="#cb67-422"></a></span>
@@ -2559,9 +2549,9 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-512"><a href="#cb67-512"></a><span class="fu">print</span>(g)</span>
 <span id="cb67-513"><a href="#cb67-513"></a><span class="in">```</span></span>
 <span id="cb67-514"><a href="#cb67-514"></a></span>
-<span id="cb67-515"><a href="#cb67-515"></a><span class="fu">## 4.7 グループごとの集計とランク付け</span></span>
+<span id="cb67-515"><a href="#cb67-515"></a><span class="fu">## グループごとの集計とランク付け</span></span>
 <span id="cb67-516"><a href="#cb67-516"></a></span>
-<span id="cb67-517"><a href="#cb67-517"></a><span class="fu">### 4.7.1 産業ごとのROE平均値と棒グラフによる可視化</span></span>
+<span id="cb67-517"><a href="#cb67-517"></a><span class="fu">### 産業ごとのROE平均値と棒グラフによる可視化</span></span>
 <span id="cb67-518"><a href="#cb67-518"></a></span>
 <span id="cb67-519"><a href="#cb67-519"></a>グループごとに平均値を出すといった処理は，<span class="in">`dplyr::summarise()`</span>の引数で<span class="in">`.by=var`</span>を指定すれば簡単です。</span>
 <span id="cb67-520"><a href="#cb67-520"></a>ここでは、産業ごとにROEの平均値と標準偏差を求めてみます。</span>
@@ -2612,11 +2602,11 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-567"><a href="#cb67-567"></a><span class="in">```{r}</span></span>
 <span id="cb67-568"><a href="#cb67-568"></a><span class="co"># 2020年度の産業内のROEランキングの変数を作成</span></span>
 <span id="cb67-569"><a href="#cb67-569"></a>ROE_rank_data <span class="ot">&lt;-</span> financial_data <span class="sc">|&gt;</span></span>
-<span id="cb67-570"><a href="#cb67-570"></a>    <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb67-571"><a href="#cb67-571"></a>    <span class="fu">select</span>(firm_ID, industry_ID, ROE) <span class="sc">|&gt;</span> </span>
+<span id="cb67-570"><a href="#cb67-570"></a>    <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span></span>
+<span id="cb67-571"><a href="#cb67-571"></a>    <span class="fu">select</span>(firm_ID, industry_ID, ROE) <span class="sc">|&gt;</span></span>
 <span id="cb67-572"><a href="#cb67-572"></a>    <span class="fu">mutate</span>(  <span class="co"># summarize を mutate に変更</span></span>
-<span id="cb67-573"><a href="#cb67-573"></a>        <span class="at">ROE_rank =</span> <span class="fu">rank</span>(<span class="fu">desc</span>(ROE)), </span>
-<span id="cb67-574"><a href="#cb67-574"></a>        <span class="at">.by =</span> industry_ID </span>
+<span id="cb67-573"><a href="#cb67-573"></a>        <span class="at">ROE_rank =</span> <span class="fu">rank</span>(<span class="fu">desc</span>(ROE)),</span>
+<span id="cb67-574"><a href="#cb67-574"></a>        <span class="at">.by =</span> industry_ID</span>
 <span id="cb67-575"><a href="#cb67-575"></a>    )</span>
 <span id="cb67-576"><a href="#cb67-576"></a></span>
 <span id="cb67-577"><a href="#cb67-577"></a>ROE_rank_data <span class="sc">|&gt;</span></span>
@@ -2630,7 +2620,7 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-585"><a href="#cb67-585"></a></span>
 <span id="cb67-586"><a href="#cb67-586"></a></span>
 <span id="cb67-587"><a href="#cb67-587"></a></span>
-<span id="cb67-588"><a href="#cb67-588"></a><span class="fu"># 4.8 上級デュポン・モデルによるROEの分析とその可視化</span></span>
+<span id="cb67-588"><a href="#cb67-588"></a><span class="fu">## 上級デュポン・モデルによるROEの分析とその可視化</span></span>
 <span id="cb67-589"><a href="#cb67-589"></a></span>
 <span id="cb67-590"><a href="#cb67-590"></a>上級デュポン・モデルとは，次式で表されるROEの分解式です。</span>
 <span id="cb67-591"><a href="#cb67-591"></a></span>
@@ -2684,7 +2674,7 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-643"><a href="#cb67-643"></a>完全にゼロにならない理由は計算の過程で生じる丸め誤差によるものです。</span>
 <span id="cb67-644"><a href="#cb67-644"></a></span>
 <span id="cb67-645"><a href="#cb67-645"></a></span>
-<span id="cb67-646"><a href="#cb67-646"></a><span class="fu">## 4.8.2 箱ひげ図による産業別比較</span></span>
+<span id="cb67-646"><a href="#cb67-646"></a><span class="fu">### 箱ひげ図による産業別比較</span></span>
 <span id="cb67-647"><a href="#cb67-647"></a></span>
 <span id="cb67-648"><a href="#cb67-648"></a>産業別で利ざや<span class="in">`PM`</span>がどのように分布しているのかを調べるために，箱ひげ図(box plot)を作ってみます。</span>
 <span id="cb67-649"><a href="#cb67-649"></a>箱ひげ図は，データの分布を可視化するためのグラフで，第1四分位点，中央値，第3四分位点，(異常値をのぞく)最大値，(異常値をのぞく)最小値を表現できる，非常に情報量の多いグラフです。</span>
@@ -2708,7 +2698,7 @@ ROE_t := \frac{X_t}{BE_{t-1}} &amp;= \underbrace{\frac{OX_t}{NOA_{t-1}}}_{RNOA_t
 <span id="cb67-669"><a href="#cb67-669"></a></span>
 <span id="cb67-670"><a href="#cb67-670"></a>箱ひげ図から，産業ごとに利ざやの分布が異なることがわかります。とりわけ産業3は利ざやの散らばりが大きく，産業4は非常に散らばりが小さいことが分かります。</span>
 <span id="cb67-671"><a href="#cb67-671"></a></span>
-<span id="cb67-672"><a href="#cb67-672"></a><span class="fu">## 4.8.3 散布図による産業別比較</span></span>
+<span id="cb67-672"><a href="#cb67-672"></a><span class="fu">### 散布図による産業別比較</span></span>
 <span id="cb67-673"><a href="#cb67-673"></a></span>
 <span id="cb67-674"><a href="#cb67-674"></a>次に産業ごとに <span class="in">`ATO`</span>(純事業資産回転率)と <span class="in">`PM`</span>(売上高事業利益率)がどう分布しているか散布図を書いてみます。</span>
 <span id="cb67-675"><a href="#cb67-675"></a>ここでは異常値の影響を受けにくい統計量である中央値(median)を計算し，散布図を作成してみます。</span>

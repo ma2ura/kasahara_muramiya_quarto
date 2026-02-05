@@ -7,7 +7,9 @@ pacman::p_load(
   ggthemes, # ggplot2のテーマ集
   plotly, # インタラクティブなグラフ作成
   patchwork, # 複数のグラフをまとめて表示
-  Rsolnp # 制約付き最適化ソルバー
+  Rsolnp, # 制約付き最適化ソルバー
+  shiny, # インタラクティブ・アプリ作成
+  shinylive
 )
 
 mystyle <- list(
@@ -90,16 +92,20 @@ $$
 
 $T=1$として、横軸を割引率、縦軸を現在価値としたグラフが以下のものである。
 割引率が大きくなるにつれて現在価値が小さくなることが分かる。
+
 ```{r pv_rf, filename = "現在価値と割引率"}
-T = 1 # 1年後に固定
-R_F <- c(0.01, seq(0.1, 1, by = 0.01)) # 無リスク利子率
-PV <- 100 / (1 + R_F)^T # 現在価値の計算
-df <- data.frame(R_F, PV) # データフレーム作成
-# 作図
-df |>
+T_fixed <- 1 # 1年後に固定
+
+data.frame(
+  R_F = c(0.01, seq(0.1, 1, by = 0.01))
+  ) |>
+  mutate(
+    PV = 100 / (1 + R_F)^T_fixed
+  ) |>
   ggplot() + aes(x = R_F, y = PV) +
   geom_line(color = "blue") +
-  xlab("割引率") + ylab("現在価値") + mystyle
+  labs(x = "割引率", y = "現在価値") +
+  mystyle
 ```
 
 次に、$R_F = 0.1$ に固定して、横軸を年 $T$ 、縦軸を現在価値 $PV$ としてグラフが以下のものです。
@@ -440,35 +446,38 @@ $$
 
 ```{r diversified_investment, filename="分散投資効果 p.65"}
 #| code-fold: true
-# 設定
-rho = 0.2
-mu_A <- 0.1
-sigma_A <- 0.2
-mu_B <- 0.2
-sigma_B <- 0.3
-# 保有費率
-wa <- seq(0,1,by = 0.01)
-wb <- 1 - wa
 
-df <- tibble(
-  mu_p = wa * mu_A + wb * mu_B,
-  sigma_p = sqrt(wa^2 * sigma_A^2 + wb^2 * sigma_B^2 + 2 * rho * wa * wb * sigma_A * sigma_B),
-  label= c(
-  "0,1", rep("", 9),
-  "0.1,0.9",rep("", 9),
-  "0.2,0.8",rep("", 9),
-  "0.3,0.7",rep("", 9),
-  "0.4,0.6",rep("", 9),
-  "0.5,0.5",rep("", 9),
-  "0.6,0.4",rep("", 9),
-  "0.7,0.3",rep("", 9),
-  "0.8,0.2",rep("", 9),
-  "0.9,0.1",rep("", 9),
-  "1,0")
+# パラメータ設定
+params <- list(
+  mu_A = 0.1, sigma_A = 0.2,
+  mu_B = 0.2, sigma_B = 0.3,
+  rho = 0.2
+)
+
+# データの生成
+df_portfolio <- tibble(
+  wa = seq(0, 1, by = 0.01),
+  wb = 1 - wa
+  ) |>
+  mutate(
+    mu_p = wa * params$mu_A + wb * params$mu_B,
+    var_p = wa^2 * params$sigma_A^2 + wb^2 * params$sigma_B^2 +
+      2 * params$rho * wa * wb * params$sigma_A * params$sigma_B,
+    sigma_p = sqrt(var_p),
+    # ラベル作成: 0.1刻みの点のみラベルを付ける
+    label = if_else(round(wa * 100) %% 10 == 0,
+                    sprintf("%.1f, %.1f", wa, wb),
+                    NA_character_)
   )
 
-ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
-
+# 作図
+ggplot(df_portfolio, aes(x = mu_p, y = sigma_p)) +
+  geom_line() +
+  geom_point(data = df_portfolio |> filter(!is.na(label)), size = 2) +
+  geom_text(aes(label = label), na.rm = TRUE, vjust = -1, size = 3) +
+  coord_flip() +
+  labs(x = "期待リターン", y = "標準偏差 (リスク)") +
+  mystyle
 ```
 
 完全な負の相関$(\rho=-1)$であるの場合、$\sigma^{2}_{P}=0$のポートフォリオを構築できる。
@@ -488,32 +497,36 @@ $$
 
 ```{r, filename="完全な負の相関の分散投資効果 p.65"}
 #| code-fold: true
-mu_A <- 0.1
-sigma_A <- 0.2
-mu_B <- 0.2
-sigma_B <- 0.3
 
-wa <- seq(0,1,by = 0.01)
-wb <- 1 - wa
-
-
-df <- tibble(
-  mu_p = wa * mu_A + wb*mu_B,
-  sigma_p = abs(wa*sigma_A - wb*sigma_B),
-  label= c(
-  "0,1", rep("", 9),
-  "0.1,0.9",rep("", 9),
-  "0.2,0.8",rep("", 9),
-  "0.3,0.7",rep("", 9),
-  "0.4,0.6",rep("", 9),
-  "0.5,0.5",rep("", 9),
-  "0.6,0.4",rep("", 9),
-  "0.7,0.3",rep("", 9),
-  "0.8,0.2",rep("", 9),
-  "0.9,0.1",rep("", 9),
-  "1,0")
+# パラメータ設定
+params <- list(
+  mu_A = 0.1, sigma_A = 0.2,
+  mu_B = 0.2, sigma_B = 0.3
 )
-ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
+
+# データ生成
+df_neg_corr <- tibble(
+  wa = seq(0, 1, by = 0.01),
+  wb = 1 - wa
+) |>
+  mutate(
+    mu_p = wa * params$mu_A + wb * params$mu_B,
+    # 完全な負の相関の場合、標準偏差は加重平均の差の絶対値になる
+    sigma_p = abs(wa * params$sigma_A - wb * params$sigma_B),
+    # ラベル作成: 0.1刻みの点のみラベルを付ける
+    label = if_else(round(wa * 100) %% 10 == 0,
+                    sprintf("%.1f, %.1f", wa, wb),
+                    NA_character_)
+  )
+
+# 作図
+ggplot(df_neg_corr, aes(x = mu_p, y = sigma_p)) +
+  geom_line() +
+  geom_point(data = df_neg_corr |> filter(!is.na(label)), size = 2) +
+  geom_text(aes(label = label), na.rm = TRUE, vjust = -1, size = 3) +
+  coord_flip() + # 縦軸をリターン、横軸をリスクにするため入れ替え
+  labs(x = "期待リターン", y = "標準偏差 (リスク)") +
+  mystyle
 ```
 このケースでは、$\sigma_A = 0.2$、$\sigma_B = 0.3$となっているため、$0.2w_A = 0.3w_B$となる保有割合を考える。
 $$
@@ -530,55 +543,71 @@ $$
 ### 空売りの効果
 
 空売り(short sale)とは、
+
 1. 保有していない証券を誰か(普通は証券会社)から借りてきて売却し、
 2. 一定期間後に買い戻して元の持ち主に返却する
+
 取引をいい、**値下がりから利益を得る**。
 空売りを行う投資家をショートセラー(short seller)という。
 
-いままでは、$0 \leq w_A,w_B \geq 1$＄という制約を置いていたが、この制約をはずして、
-$w_A + w_B = 1$のみを課す。つまり$w_A<0$や$w_B<0$が空売りを表す。
+いままでは、$0 \leq w_A,w_B \leq 1$ という制約を置いていたが、この制約をはずして $w_A + w_B = 1$ のみを課す。
+つまり$w_A < 0$や$w_B < 0$が空売りを表す。
 
-```{r}
-rho = 0.2
-mu_A <- 0.1
-sigma_A <- 0.2
-mu_B <- 0.2
-sigma_B <- 0.3
-# 保有費率
-wa <- seq(-1,2,by = 0.01)
-wb <- 1 - wa
+```{r short_sale_effect, filename="空売りの効果 p.66"}
+#| code-fold: true
 
-df <- tibble(
-  mu_p = wa * mu_A + wb*mu_B,
-  sigma_p = sqrt(wa^2 * sigma_A^2 + wb^2 * sigma_B^2 + 2 * rho * wa * wb * sigma_A * sigma_B),
-  label= c(
-  rep("",100),
-  "0,1", rep("", 9),
-  "0.1,0.9",rep("", 9),
-  "0.2,0.8",rep("", 9),
-  "0.3,0.7",rep("", 9),
-  "0.4,0.6",rep("", 9),
-  "0.5,0.5",rep("", 9),
-  "0.6,0.4",rep("", 9),
-  "0.7,0.3",rep("", 9),
-  "0.8,0.2",rep("", 9),
-  "0.9,0.1",rep("", 9),
-  "1,0" , rep("",100)
-  )
+# パラメータ設定
+params <- list(
+  mu_A = 0.1, sigma_A = 0.2,
+  mu_B = 0.2, sigma_B = 0.3,
+  rho  = 0.2
 )
-ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
+
+# データ生成
+df_short <- tibble(
+  wa = seq(-1, 2, by = 0.01), # 空売りを考慮して範囲拡大
+  wb = 1 - wa
+) |>
+  mutate(
+    mu_p = wa * params$mu_A + wb * params$mu_B,
+    sigma_p = sqrt(wa^2 * params$sigma_A^2 + wb^2 * params$sigma_B^2 +
+                   2 * params$rho * wa * wb * params$sigma_A * params$sigma_B),
+    wa_int = round(wa * 100), # 100倍して整数化
+
+    # 条件:
+    # 1. wa が -1 以上 2 以下 (wa_int が -100 ~ 200)
+    # 2. wa が 0.1 刻み (wa_int が 10 で割り切れる)
+    is_label_target = (wa_int >= -100 & wa_int <= 200) & (wa_int %% 10 == 0),
+
+    label = if_else(is_label_target,
+                    sprintf("%.1f, %.1f", wa, wb),
+                    NA_character_)
+  )
+
+# 作図
+ggplot(df_short, aes(x = mu_p, y = sigma_p)) +
+  geom_line() +
+  # ラベルがある点（0 <= wa <= 1）のみポイントとテキストを表示
+  geom_point(data = df_short |> filter(!is.na(label)), size = 2) +
+  geom_text(aes(label = label), na.rm = TRUE, vjust = -1, size = 3) +
+
+  coord_flip() +
+  labs(x = "期待リターン", y = "標準偏差 (リスク)") +
+  mystyle
 ```
+
+先ほどの空売りなしのケースと比べると，曲線が大きく広がっていることがわかります。
+次に，安全資産を加えた3資産の場合を考えます。
+
 ### 安全資産の導入
 
 **安全資産の購入**についても考える。
 
-安全資産Fのリターンを$R_F$、
-ポートフォリオPの保有比率を$w_F$とおく（安全資産のリターンは確実に実現する成果なので，確率変数を表すチルダをつけてない）。
-以降は，確率変数にはなるべくチルダをつける。銘柄Aと銘柄Bと安全資産の投資割合をそれぞれ$w_A, w_B, w_F$で表す。
+安全資産Fのリターンを$R_F$、ポートフォリオPの保有比率を$w_F$，銘柄Aと銘柄Bと安全資産の投資割合をそれぞれ$w_A, w_B, w_F$で表します。
 
-まず銘柄Aと安全資産の2資産からなるポートフォリオを考える。
-つまり各資産への投資割合を$w_A + w_F = 1,\quad  w_B = 0$ とする場合を考える。
-この安全資産と銘柄AからなるポートフォリオPの(ネット)リターン$\tilde R_P$は，
+まず銘柄Aと安全資産の2資産からなるポートフォリオを考えます。
+各資産への投資割合を$w_A + w_F = 1, \quad  w_B = 0$ とする場合を考える。
+この安全資産と銘柄AからなるポートフォリオPの(ネット)リターン $\tilde R_P$ は，
 $$
 \tilde R_{P} = w_{F} R_{F} + w_{A} \tilde R_{A}
 $$
@@ -594,12 +623,14 @@ $$
 \end{aligned}
 $$
 
-となる。もちろん安全資産のリターンは確率変数でないので，期待値をとってもそのままである。
-$\mu_{A}-R_{F}$ はリスク資産である銘柄Aの**リスクプレミアム**を表している。通常，リスクのある資産の期待リターンは安全資産のリターンより大きいため，リスクプレミアムは正の値となる。したがって，リスク資産への投資割合$w_A$を1単位増加させれば，$\mathbb{E}[R_P]$はリスクプレミアム分増加する
+となります。
+もちろん安全資産のリターンは定数なので，期待値をとってもそのままです。
+$\mu_{A} - R_{F}$ はリスク資産である銘柄Aの**リスクプレミアム**を表しています。
+通常，リスクのある資産の期待リターンは安全資産のリターンより大きいため，リスクプレミアムは正の値となります。
+したがって，リスク資産への投資割合 $w_A$ を1単位増加させれば，$\mathbb{E}[R_P]$ はリスクプレミアム分増加する
 
-つぎに，ポートフォリオのリスクを表す標準偏差$\sigma _P$とリターンの関係は次式で表せる。まず安全資産のリスクはゼロであるため，リスク資産の銘柄Ａを保有する分だけリスクが生じる。
-
-つぎに，ポートフォリオのリスクを表す標準偏差$\sigma _P$とリターンの関係は次式で表せる。まず安全資産のリスクはゼロであるため，リスク資産の銘柄Ａを保有する分だけリスクが生じる。
+つぎに，ポートフォリオのリスクを表す標準偏差 $\sigma _P$ とリターンの関係は次式で表せます。
+まず安全資産のリスクはゼロであるため，リスク資産の銘柄Ａを保有する分だけリスクが生じる。
 
 $$
 \begin{aligned}
@@ -611,7 +642,8 @@ $$
 \end{aligned}
 $$
 
-空売りを想定する場合$w_A < 0$となるため，標準偏差を求める際に絶対値をとっている。空売りはない状況（つまり，$w_A>0$）を想定すると，
+空売りを想定する場合$w_A < 0$となるため，標準偏差を求める際に絶対値をとっています。
+空売りはない状況（つまり，$w_A>0$）を想定すると，
 
 $$
 \begin{aligned}
@@ -620,7 +652,8 @@ w_A = \frac{\sigma_P}{\sigma _A}
 \end{aligned}
 $$
 
-のように，リスク資産である銘柄Aへの投資割合$w_A$が，ポートフォリオPとリスク資産Aのリスクの割合で決定されることがわかる。これを，ポートフォリオの期待リターン$\mu_P$に代入すると，
+のように，リスク資産である銘柄Aへの投資割合$w_A$が，ポートフォリオPとリスク資産Aのリスクの割合で決定されることがわかります。
+これを，ポートフォリオの期待リターン$\mu_P$に代入すると、
 
 $$
 \begin{aligned}
@@ -633,37 +666,43 @@ $$
 となり，期待リターン$\mu_P$は，切片が$R_F$，傾きが$(\mu_A - R_F)/\sigma_A$とする$\sigma_P$の線形関数となる。
 
 
-```{r graph_02}
-#| fig-width: 10
-#| fig-height: 6
-R_F = 0.01
-mu_A <- 0.1
-sigma_A <- 0.2
-mu_B <- 0.2
-sigma_B <- 0.3
-# 保有費率
-wa <- seq(-1,2,by = 0.01)
-wb <- 1 - wa
+```{r safe_asset_allocation, filename="安全資産の導入 p.68"}
+#| code-fold: true
 
-df <- tibble(
-  mu_p = R_F + wa*(mu_A - R_F),
-  sigma_p = abs(wa)*sigma_A,
-  label= c(
-  rep("",100),
-  "0,1", rep("", 9),
-  "0.1,0.9",rep("", 9),
-  "0.2,0.8",rep("", 9),
-  "0.3,0.7",rep("", 9),
-  "0.4,0.6",rep("", 9),
-  "0.5,0.5",rep("", 9),
-  "0.6,0.4",rep("", 9),
-  "0.7,0.3",rep("", 9),
-  "0.8,0.2",rep("", 9),
-  "0.9,0.1",rep("", 9),
-  "1,0" , rep("",100)
-  )
+# パラメータ設定
+params <- list(
+  R_F     = 0.01, # 安全資産利子率
+  mu_A    = 0.1,  # 銘柄A 期待リターン
+  sigma_A = 0.2   # 銘柄A 標準偏差
 )
-ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line() + geom_point(data = filter(df, label != ""), aes(label = label), size = 2) + coord_flip() + mystyle
+
+# データ生成
+df_safe <- tibble(
+  wa = seq(-1, 2, by = 0.01) # 銘柄Aへの投資比率
+) |>
+  mutate(
+    wf = 1 - wa, # 安全資産への投資比率
+    mu_p    = params$R_F + wa * (params$mu_A - params$R_F),
+    sigma_p = abs(wa) * params$sigma_A, # 空売り時は絶対値
+
+    # ラベルの作成
+    wa_int = round(wa * 100),
+    is_label_target = (wa_int >= 0 & wa_int <= 100) & (wa_int %% 10 == 0),
+    label = if_else(is_label_target,
+                    sprintf("%g, %g", wa, wf),
+                    NA_character_)
+  )
+
+# 作図
+ggplot(df_safe, aes(x = mu_p, y = sigma_p)) +
+  geom_line() +
+  geom_point(data = df_safe |> filter(!is.na(label)), size = 2) +
+  geom_text(aes(label = label), na.rm = TRUE, vjust = -1, size = 3) +
+
+  coord_flip() +
+
+  labs(x = "期待リターン", y = "標準偏差 (リスク)") +
+  mystyle
 ```
 
 ### 3資産のポートフォリオ
@@ -715,7 +754,7 @@ $$
 「どのようなポートフォリオが投資家にとって望ましいか」
 
 一般に、投資家はリスクが小さい一方でリターンが大きいポートフォリオを好む。
-ここでは，リターンをポートフォリオの期待リターン$\mu_P$，リスクをポートフォリオの標準偏差$\sigma _P$で表し，この2つの変数から更正される平面$(\mu_P, \sigma_P)$上で最適ポートフォリオ問題を分析する。
+ここでは，リターンをポートフォリオの期待リターン$\mu_P$，リスクをポートフォリオの標準偏差$\sigma _P$で表し，この2つの変数から構成される平面$(\mu_P, \sigma_P)$上で最適ポートフォリオ問題を分析する。
 
 ### 効率的フロンティア
 
@@ -724,218 +763,302 @@ $$
 -   標準偏差はともに0.25 $\sigma _D = \sigma _E = 0.25$
 -   Dの方がEよりも期待リターンが大きい，$\mu _D > \mu _E$
 
-つまり，同じリスク（標準偏差）ならリターン（期待リターン）が高いポートフォリオに投資したほうがよい。よってリスク・リターンのトレードオフの意味でDの方がEよりも望ましい。
-以下のグラフでいうと、同じリスク(緑のライン上)なら、リターンの高いポートフォリオが望ましい。そのため赤い実線が効率的フロンティアとなり、青い点線は選択されないポートフォリオになる。
+つまり，<span class="markp">同じリスク（標準偏差）ならリターン（期待リターン）が高いポートフォリオに投資したほうがいいです</span>。
+以下のグラフでいうと、同じリスク(緑のライン上)なら、リターンの高いポートフォリオが望ましい。そのため青い線が効率的フロンティアとなり、点線は選択されないポートフォリオになります。
 
-```{r graph_efficient_frontier, filename="効率的フロンティア"}
+```{r graph_efficient_frontier_modern, filename="効率的フロンティア"}
 #| code-fold: true
+
 # --- 1. パラメータ設定 ---
-mu_a    <- 0.1  # 株式Aの期待収益率
-sigma_a <- 0.2  # 株式Aの標準偏差
-mu_b    <- 0.2  # 株式Bの期待収益率
-sigma_b <- 0.3  # 株式Bの標準偏差
-rho     <- 0.2  # 相関係数
+params <- list(
+  mu_A    = 0.1, sigma_A = 0.2,  # 株式Aの標準偏差
+  mu_B    = 0.2, sigma_B = 0.3,  # 株式Bの標準偏差
+  rho     = 0.2   # 相関係数
+)
 
 # --- 2. 最小分散ポートフォリオ (MVP) の算出 ---
-# 効率的フロンティアと非効率部を分ける頂点を正確に計算します
-# 分散共分散
-cov_ab <- rho * sigma_a * sigma_b
-var_a  <- sigma_a^2
-var_b  <- sigma_b^2
+# 分散・共分散
+cov_ab <- params$rho * params$sigma_A * params$sigma_B
+var_a  <- params$sigma_A^2
+var_b  <- params$sigma_B^2
 
 # MVPにおける資産Aのウェイト w_mvp
 # 公式: w = (Var(B) - Cov(A,B)) / (Var(A) + Var(B) - 2Cov(A,B))
 w_mvp <- (var_b - cov_ab) / (var_a + var_b - 2 * cov_ab)
 
-# MVPのリターンとリスク
-mu_mvp    <- w_mvp * mu_a + (1 - w_mvp) * mu_b
+# MVPのリターンとリスク（しきい値として使用）
+mu_mvp    <- w_mvp * params$mu_A + (1 - w_mvp) * params$mu_B
 sigma_mvp <- sqrt(w_mvp^2 * var_a + (1 - w_mvp)^2 * var_b + 2 * w_mvp * (1 - w_mvp) * cov_ab)
 
 # --- 3. プロット用データの作成 ---
-# ウェイトを広めにとる
-w <- seq(-1, 2, by = 0.001)
-
-# リターンとリスクを計算
-mu_p    <- w * mu_a + (1 - w) * mu_b
-sigma_p <- sqrt((w * sigma_a)^2 + ((1 - w) * sigma_b)^2 + 2 * w * (1 - w) * rho * sigma_a * sigma_b)
-
-# データフレーム化し、MVPよりリターンが高いかどうかでフラグ立て
-df_plot <- data.frame(w, mu_p, sigma_p) %>%
-  mutate(frontier_type = ifelse(mu_p >= mu_mvp, "Efficient (Upper)", "Inefficient (Lower)"))
+df_plot <- tibble(
+  w = seq(-1, 2, by = 0.001)
+) |>
+  mutate(
+    mu_p = w * params$mu_A + (1 - w) * params$mu_B,
+    sigma_p = sqrt((w * params$sigma_A)^2 +
+                  ((1 - w) * params$sigma_B)^2 +
+                  2 * w * (1 - w) * cov_ab),
+    frontier_type = if_else(mu_p >= mu_mvp, "効率(上部)", "非効率(下部)")
+  )
 
 # --- 4. プロット作成 ---
-ggplot() +
-  # A. フロンティアの描画 (実線と破線で色分け)
-  geom_path(data = df_plot, aes(x = sigma_p, y = mu_p, color = frontier_type, linetype = frontier_type), size = 1) +
-
-  # B. ポイントの描画
+ggplot(df_plot, aes(x = sigma_p, y = mu_p)) +
+  geom_path(
+    aes(color = frontier_type,
+    linetype = frontier_type)
+    ) +
+  geom_vline(xintercept = 0.25, color = "green", linetype = "dashed") +
   # 資産A (緑)
-  geom_point(aes(x = sigma_a, y = mu_a), color = "green", size = 4) +
-  geom_text(aes(x = sigma_a, y = mu_a, label = "A"), vjust = -1.5, fontface = "bold") +
-
+  annotate("point", x = params$sigma_A, y = params$mu_A, color = "orange", size = 2) +
+  annotate("text",  x = params$sigma_A, y = params$mu_A, label = "A", vjust = 2, fontface = "bold") +
   # 資産B (オレンジ)
-  geom_point(aes(x = sigma_b, y = mu_b), color = "orange", size = 4) +
-  geom_text(aes(x = sigma_b, y = mu_b, label = "B"), vjust = -1.5, fontface = "bold") +
-
+  annotate("point", x = params$sigma_B, y = params$mu_B, color = "orange", size = 2) +
+  annotate("text",  x = params$sigma_B, y = params$mu_B, label = "B", vjust = -1.5, fontface = "bold") +
   # 最小分散ポートフォリオ MVP (黒)
-  geom_point(aes(x = sigma_mvp, y = mu_mvp), color = "black", size = 4) +
-  # geom_text(aes(x = sigma_mvp, y = mu_mvp, label = "MVP"), vjust = 1.5, fontface = "bold") +
+  annotate("point", x = sigma_mvp, y = mu_mvp, color = "black", size = 2) +
 
   # C. 見た目の調整
-  scale_color_manual(values = c("Efficient (Upper)" = "red", "Inefficient (Lower)" = "blue")) +
-  scale_linetype_manual(values = c("Efficient (Upper)" = "solid", "Inefficient (Lower)" = "dashed")) +
+  scale_color_manual(values = c("効率(上部)" = "red", "非効率(下部)" = "blue")) +
+  scale_linetype_manual(values = c("効率(上部)" = "solid", "非効率(下部)" = "dashed")) +
 
   labs(title = "効率的フロンティア(2資産)",
-       x = "リスク (標準偏差)",
+       x = "リスク",
        y = "期待リターン",
-       color = "", linetype = "") +
-  theme_bw() +
-  theme(legend.position = "bottom",
-        text = element_text(size = 12)) + mystyle +
-  xlim(0.0, 0.6) + ylim(0.0, 0.3)  # 見やすいように範囲を適宜調整
+       color = "",
+       linetype = "") +
+  mystyle +
+  xlim(0.1, 0.6) + ylim(0.0, 0.3)
 ```
 
-```{r graph_optimal_portofolio}
-#| echo: false
-#| eval: false
-#w<- seq(0, 1, by = 0.01) # 所有ウェイト
-w <- seq(-1,2,by = 0.01)
+<span class="markp">リスク資産AとBに加え、安全資産Fにも投資可能な場合、効率的フロンティアは**直線**になります。</span>
+この効率的フロンティアは**資本市場線**(Capital Market Line; CML)とも呼ばれます。
+資本市場線の傾きは、この金融市場における**リスクとリターンのトレードオフ**を表しているといえます。
 
-mu_a    <- 0.1 # 株式Aの期待収益率
-sigma_a <- 0.2 # 株式Aの分散
-mu_b    <- 0.2 # 株式Bの期待収益率
-sigma_b <- 0.3 # 株式Bの分散
-rho     <- 0.2 # 相関係数
-mu_p    <-  w * mu_a + (1 - w) * mu_b # ポートフォリオの期待リターン
-sigma_p <- sqrt((w * sigma_a + (1 - w) * sigma_b)^2 - 2*(1 - rho)*w*(1 - w)*sigma_a*sigma_b) # ポートフォリオの分散
-df_plot <- data.frame(mu_p, sigma_p)
-df_plot <- df_plot %>% dplyr::mutate(plus_dummy = as.factor(ifelse(mu_p >= 0.126, 1, 0)))
-ggplot(df_plot) + aes(y = sigma_p, x = mu_p, color = plus_dummy, linetype = plus_dummy) +
-scale_linetype_manual(values = c("dashed", "solid")) + geom_path() +
-geom_hline(yintercept = 0.25, color = "green") + coord_flip() + mystyle
-```
 
-リスク資産AとBに加え、安全資産Fにも投資可能な場合、効率的フロンティアは**直線**になる。
-この場合、効率的フロンティアは**資本市場線**(Capital Market Line; CML)とも呼ばれる。
-傾きは、この金融市場におけるリスクとリターンのトレードオフを表す。
-
-```{r graph_cml, filename="効率的フロンティアと資本市場線"}
+```{r graph_cml_final, filename="3資産の効率的フロンティア（資本市場線）"}
 #| code-fold: true
 
-# --- 1. パラメータ設定 (講義資料より) ---
-# を参照
-mu_a    <- 0.1  # 株式Aの期待収益率
-sigma_a <- 0.2  # 株式Aの標準偏差
-mu_b    <- 0.2  # 株式Bの期待収益率
-sigma_b <- 0.3  # 株式Bの標準偏差
-rho     <- 0.2  # 相関係数
-R_F     <- 0.01 # 無リスク利子率
+# --- 1. パラメータ設定 ---
+params <- list(
+  mu_A    = 0.1,  sigma_A = 0.2,
+  mu_B    = 0.2,  sigma_B = 0.3,
+  rho     = 0.2,  R_F     = 0.01
+)
 
-# --- 2. 効率的フロンティアのデータ作成 ---
-# ウェイト(w)を変化させる (-100% から 200% まで)
-w <- seq(-1, 2, by = 0.001)
+# --- 2. データの作成 ---
+# 2-1. リスク資産のみのフロンティア（双曲線）
+df_frontier <- tibble(
+  w = seq(-1, 2, by = 0.001)
+) |>
+  mutate(
+    mu_p = w * params$mu_A + (1 - w) * params$mu_B,
+    sigma_p = sqrt((w * params$sigma_A)^2 + ((1 - w) * params$sigma_B)^2 +
+                   2 * w * (1 - w) * params$rho * params$sigma_A * params$sigma_B),
+    # シャープレシオ (接点探索用)
+    sharpe_ratio = (mu_p - params$R_F) / sigma_p
+  )
 
-# ポートフォリオの期待リターン(mu_p)とリスク(sigma_p)を計算
-# 公式: mu_p = w*mu_A + (1-w)*mu_B
-mu_p <- w * mu_a + (1 - w) * mu_b
+# 2-2. 接点ポートフォリオ (Tangency Portfolio)
+tangency_port <- df_frontier |> slice_max(sharpe_ratio, n = 1)
 
-# 公式: sigma_p = sqrt(w^2*sigma_A^2 + (1-w)^2*sigma_B^2 + 2w(1-w)*rho*sigma_A*sigma_B)
-sigma_p <- sqrt((w * sigma_a)^2 + ((1 - w) * sigma_b)^2 + 2 * w * (1 - w) * rho * sigma_a * sigma_b)
+# 2-3. 資本市場線 (CML)
+# 安全資産(リスク0, リターンRf) から 接点を通って右に伸びる直線
+df_cml <- tibble(
+  sigma_p = c(0, 0.6),
+  mu_p    = c(params$R_F, params$R_F + tangency_port$sharpe_ratio * 0.6)
+)
 
-# データフレームにまとめる
-df_frontier <- data.frame(w, mu_p, sigma_p)
-
-# --- 3. 接点ポートフォリオ(Tangency Portfolio)の導出 ---
-# シャープレシオ (リスク単位あたりの超過リターン) を計算
-df_frontier <- df_frontier %>%
-  mutate(sharpe_ratio = (mu_p - R_F) / sigma_p)
-
-# シャープレシオが最大になる点（=接点ポートフォリオ）を取得
-tangency_port <- df_frontier %>%
-  filter(sharpe_ratio == max(sharpe_ratio))
-
-# 最大シャープレシオ（これが資本市場線の傾きになる）
-max_sharpe <- tangency_port$sharpe_ratio
-
-# --- 4. 資本市場線(CML)のデータ作成 ---
-# リスク 0 から 0.6 までの範囲で直線のデータを生成
-# CMLの式: mu = R_F + (Sharpe Ratio) * sigma
-cml_sigma <- seq(0, 0.6, by = 0.01)
-cml_mu    <- R_F + max_sharpe * cml_sigma
-df_cml    <- data.frame(sigma_p = cml_sigma, mu_p = cml_mu)
-
-# --- 5. プロット作成 (ggplot2) ---
+# --- 3. プロット作成 ---
 ggplot() +
-  # A. 資本市場線 (CML) - 赤色の実線
-  geom_line(data = df_cml, aes(x = sigma_p, y = mu_p, color = "Capital Market Line"), size = 1) +
+  # 【重要】テーマ設定を最初に適用（scale_color_manualなどが上書きされるのを防ぐ）
+  mystyle +
 
-  # B. 効率的フロンティア - 青色の破線
-  geom_path(data = df_frontier, aes(x = sigma_p, y = mu_p, color = "Efficient Frontier"), size = 1, linetype = "dashed") +
+  # A. 資本市場線 (CML) - 新しい効率的フロンティア
+  geom_line(data = df_cml, aes(x = sigma_p, y = mu_p, color = "資本市場線"), linewidth = 1) +
 
-  # C. 各資産のポイント描画
-  # 資産A (緑)
-  geom_point(aes(x = sigma_a, y = mu_a), color = "green", size = 4) +
-  geom_text(aes(x = sigma_a, y = mu_a, label = "A"), vjust = -1.5, fontface = "bold") +
+  # B. リスク資産のみのフロンティア - もはや非効率
+  geom_path(data = df_frontier, aes(x = sigma_p, y = mu_p, color = "リスク資産のみのフロンティア"),
+            linewidth = 1, linetype = "dashed") +
 
-  # 資産B (オレンジ)
-  geom_point(aes(x = sigma_b, y = mu_b), color = "orange", size = 4) +
-  geom_text(aes(x = sigma_b, y = mu_b, label = "B"), vjust = -1.5, fontface = "bold") +
+  # C. ポイントの描画
+  # 資産A
+  annotate("point", x = params$sigma_A, y = params$mu_A, color = "green", size = 3) +
+  annotate("text",  x = params$sigma_A, y = params$mu_A, label = "A", vjust = -1.5, fontface = "bold") +
 
-  # 接点ポートフォリオ (黒い星印)
-  geom_point(data = tangency_port, aes(x = sigma_p, y = mu_p), color = "black", shape = 8, size = 5) +
-  geom_text(data = tangency_port, aes(x = sigma_p, y = mu_p, label = paste0("Tangency\n(w=", round(tangency_port$w, 2), ")")), vjust = 1.5, lineheight = 0.8) +
+  # 資産B
+  annotate("point", x = params$sigma_B, y = params$mu_B, color = "orange", size = 3) +
+  annotate("text",  x = params$sigma_B, y = params$mu_B, label = "B", vjust = -1.5, fontface = "bold") +
 
-  # 無リスク資産 (紫)
-  geom_point(aes(x = 0, y = R_F), color = "purple", size = 4) +
-  geom_text(aes(x = 0, y = R_F, label = "Risk Free"), hjust = -0.2, fontface = "bold") +
+  # 安全資産
+  annotate("point", x = 0, y = params$R_F, color = "purple", size = 3) +
+  annotate("text",  x = 0, y = params$R_F, label = "安全資産(F)", hjust = -0.1, vjust = -1, fontface = "bold") +
 
-  # D. 見た目の調整
-  scale_color_manual(name = "", values = c("Capital Market Line" = "red", "Efficient Frontier" = "blue")) +
-  labs(title = "資本市場線 (CML) と効率的フロンティア",
-       subtitle = "リスク(標準偏差) と 期待リターン の関係",
+  # 接点ポートフォリオ
+  annotate("point", x = tangency_port$sigma_p, y = tangency_port$mu_p, color = "black", shape = 8, size = 4) +
+  annotate("text",  x = tangency_port$sigma_p, y = tangency_port$mu_p,
+           label = paste0("接点ポートフォリオ\n(w=", sprintf("%.2f", tangency_port$w), ")"),
+           vjust = 1.5, lineheight = 0.9, size = 3.5) +
+
+  # D. 色と凡例の設定
+  scale_color_manual(
+    name = "",
+    values = c("資本市場線" = "red", "リスク資産のみのフロンティア" = "blue")
+  ) +
+
+  labs(title = "安全資産を含む場合の効率的フロンティア",
+       subtitle = "赤い直線が新たな効率的フロンティアとなる",
        x = "リスク (標準偏差)",
        y = "期待リターン") +
-  theme_bw() + # シンプルなテーマ
-  theme(legend.position = "bottom", # 凡例を下に
-        text = element_text(size = 12)) +
-  xlim(0, 0.6) + ylim(0, 0.3) + mystyle# 軸の範囲指定
 
+  theme(legend.position = "bottom") +
+  xlim(0, 0.6) + ylim(0, 0.3)
 ```
 
-```{r capital_market_line}
+安全資産が利用可能な場合、投資家は「安全資産」と「任意のリスク資産ポートフォリオ」を組み合わせることができます。
+先ほどの式で確認した通り、安全資産とあるポートフォリオを組み合わせると、リスク・リターン平面上では直線が描かれます。
+では、投資家はどのリスク資産ポートフォリオと安全資産を組み合わせるべきでしょうか？
+
+図の紫の点（安全資産 $R_F$）からスタートします。
+そこから、青い点線（リスク資産のみのフロンティア）上の任意の点に向けて直線を引くことができます。
+投資家は、同じリスクならより高いリターンを好むため、傾きが最も急になる直線を選ぼうとします。
+その直線とは、安全資産の点から伸び、リスク資産のフロンティアに接する直線（赤い実線）となります。
+この接点となるポートフォリオを**接点ポートフォリオ**(Tangency Portfolio)と呼びます。
+この赤い直線上の組み合わせは、青い曲線上のどの点よりも（接点を除いて）左上に位置するため、より効率的です。
+したがって、安全資産が存在する場合の効率的フロンティアはこの**直線（資本市場線）**となります。
+
+<!-- 以下では，各資産のパラメータを変更したら，効率的フロンティアや接点ポートフォリオがどのように変化するかを確認できるインタラクティブなグラフを示します。 -->
+
+```{shinylive-r}
 #| echo: false
 #| eval: false
-#w<- seq(0, 1, by = 0.01) # 所有ウェイト
-w <- seq(-1,2,by = 0.01)
+#| code-fold: true
+#| standalone: true
+#| viewerHeight: 600
 
-mu_a    <- 0.1 # 株式Aの期待収益率
-sigma_a <- 0.2 # 株式Aの分散
-mu_b    <- 0.2 # 株式Bの期待収益率
-sigma_b <- 0.3 # 株式Bの分散
-rho     <- 0.2 # 相関係数
-R_F     <- 0.01 # 無リスク利子率
+# UI定義
+ui <- fluidPage(
+  # 講義資料の中に埋め込むため、タイトルは省略またはh4程度に留める
+  h4("【シミュレーション】パラメータを動かしてフロンティアの変化を確認しよう"),
 
-mu_p    <-  w * mu_a + (1 - w) * mu_b # ポートフォリオの期待リターン
-sigma_p <- sqrt((w * sigma_a + (1 - w) * sigma_b)^2 - 2*(1 - rho)*w*(1 - w)*sigma_a*sigma_b) # ポートフォリオの分散
-df_plot <- data.frame(mu_p, sigma_p)
-df_plot <- df_plot %>% dplyr::mutate(plus_dummy = as.factor(ifelse(mu_p >= 0.126, 1, 0)))
+  sidebarLayout(
+    sidebarPanel(
+      width = 4, # サイドバーの幅調整
+      h5("資産A (緑)"),
+      sliderInput("mu_a", "期待リターン", min = -0.1, max = 0.5, value = 0.1, step = 0.01),
+      sliderInput("sigma_a", "標準偏差", min = 0.05, max = 0.5, value = 0.2, step = 0.01),
 
-ggplot(df_plot) + aes(y = sigma_p, x = mu_p, color = plus_dummy, linetype = plus_dummy) +
-  scale_linetype_manual(values = c("dashed", "solid")) + geom_path() + ylim(0,0.6) +
-  geom_hline(yintercept = 0.25, color = "green") + coord_flip() + mystyle
+      h5("資産B (橙)"),
+      sliderInput("mu_b", "期待リターン", min = -0.1, max = 0.5, value = 0.2, step = 0.01),
+      sliderInput("sigma_b", "標準偏差", min = 0.05, max = 0.5, value = 0.3, step = 0.01),
 
+      hr(),
+      h5("市場環境"),
+      sliderInput("rho", "相関係数 (ρ)", min = -1, max = 1, value = 0.2, step = 0.1),
+      sliderInput("rf", "無リスク金利 (Rf)", min = 0, max = 0.15, value = 0.01, step = 0.005)
+    ),
 
-# 保有費率
-wa <- seq(-1,2,by = 0.01)
-wb <- 1 - wa
-
-df <- tibble(
-  mu_p = R_F + wa*(mu_A - R_F),
-  sigma_p = abs(wa) * sigma_A
+    mainPanel(
+      width = 8,
+      plotOutput("frontierPlot", height = "500px"),
+      wellPanel(
+        style = "padding: 10px; font-size: 0.9em;",
+        textOutput("tangencyInfo")
+      )
+    )
+  )
 )
-ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line()  + coord_flip()
 
+# Serverロジック定義
+server <- function(input, output) {
 
+  # テーマ設定（Shiny内で確実に読み込むためここで再定義またはリスト化）
+  my_theme <- list(
+    theme_economist_white(base_family = "HiraKakuProN-W3"),
+    scale_colour_economist(),
+    theme(
+      text = element_text(size = 12),
+      legend.position = "bottom",
+      legend.title = element_blank()
+    )
+  )
+
+  # リアクティブなデータ生成
+  data_reactive <- reactive({
+    mu_a    <- input$mu_a
+    sigma_a <- input$sigma_a
+    mu_b    <- input$mu_b
+    sigma_b <- input$sigma_b
+    rho     <- input$rho
+    rf      <- input$rf
+
+    # フロンティア計算
+    df_frontier <- tibble(
+      w = seq(-1, 2, by = 0.005)
+    ) |>
+      mutate(
+        mu_p = w * mu_a + (1 - w) * mu_b,
+        sigma_p = sqrt((w * sigma_a)^2 + ((1 - w) * sigma_b)^2 +
+                         2 * w * (1 - w) * rho * sigma_a * sigma_b),
+        sharpe_ratio = (mu_p - rf) / sigma_p
+      )
+
+    # 接点ポートフォリオ
+    tangency_port <- df_frontier |> slice_max(sharpe_ratio, n = 1)
+
+    # 資本市場線
+    max_sigma <- max(0.6, tangency_port$sigma_p * 1.5)
+    df_cml <- tibble(
+      sigma_p = c(0, max_sigma),
+      mu_p    = c(rf, rf + tangency_port$sharpe_ratio * max_sigma)
+    )
+
+    list(frontier = df_frontier, tangency = tangency_port, cml = df_cml,
+         p = list(mu_a=mu_a, sigma_a=sigma_a, mu_b=mu_b, sigma_b=sigma_b, rf=rf))
+  })
+
+  # プロット描画
+  output$frontierPlot <- renderPlot({
+    dat <- data_reactive()
+    p   <- dat$p
+
+    ggplot() +
+      my_theme +
+      # CML
+      geom_line(data = dat$cml, aes(x = sigma_p, y = mu_p, color = "資本市場線"), linewidth = 1.2) +
+      # フロンティア
+      geom_path(data = dat$frontier, aes(x = sigma_p, y = mu_p, color = "効率的フロンティア"),
+                linewidth = 1, linetype = "dashed") +
+      # ポイント
+      annotate("point", x = p$sigma_a, y = p$mu_a, color = "green", size = 4) +
+      annotate("text",  x = p$sigma_a, y = p$mu_a, label = "A", vjust = -1.5, fontface = "bold") +
+      annotate("point", x = p$sigma_b, y = p$mu_b, color = "orange", size = 4) +
+      annotate("text",  x = p$sigma_b, y = p$mu_b, label = "B", vjust = -1.5, fontface = "bold") +
+      annotate("point", x = 0, y = p$rf, color = "purple", size = 4) +
+      annotate("text",  x = 0, y = p$rf, label = "Rf", hjust = -0.3, fontface = "bold") +
+      # 接点
+      annotate("point", x = dat$tangency$sigma_p, y = dat$tangency$mu_p, color = "black", shape = 8, size = 5) +
+      annotate("text",  x = dat$tangency$sigma_p, y = dat$tangency$mu_p,
+               label = "接点", vjust = 1.5, fontface = "bold") +
+
+      scale_color_manual(values = c("資本市場線" = "red", "効率的フロンティア" = "blue")) +
+      labs(x = "リスク (標準偏差)", y = "期待リターン") +
+      xlim(0, 0.7) + ylim(-0.05, 0.5)
+  })
+
+  # 数値情報
+  output$tangencyInfo <- renderText({
+    t <- data_reactive()$tangency
+    sprintf(
+      "【接点ポートフォリオ】 期待リターン: %.2f%%, リスク: %.2f%% (シャープレシオ: %.4f) | 構成比: A %.1f%% : B %.1f%%",
+      t$mu_p * 100, t$sigma_p * 100, t$sharpe_ratio,
+      t$w * 100, (1 - t$w) * 100
+    )
+  })
+}
+
+# アプリの起動
+shinyApp(ui = ui, server = server)
 ```
 
 ### 投資家のリスク回避度と最適ポートフォリオ
@@ -944,6 +1067,10 @@ ggplot(df) + aes(y = sigma_p, x = mu_p) + geom_line()  + coord_flip()
 そのためには投資家のリスク・リターンのトレードオフに関する**選好(preference)**の特徴，つまり**リスクの回避度**の情報が必要となる。
 $(\mu_P,\rho_p)$平面上でそれを描く方法の一つが**無差別曲線**(indifference curve)である。
 **無差別曲線**とは，投資家の効用(utility)が**一定**となるリスクとリターンの組み合わせを描いた曲線をいう。つまり同じ効用水準を達成できるリスクとリターンの組み合わせを表現した曲線である。
+
+
+
+
 
 #### 効用関数の例
 
@@ -1034,7 +1161,7 @@ points(x = 10, y = 10, lwd = 3, col = "darkblue", pch = 16) #最適消費点
 1は各投資家で共通している。
 いったん接点ポートフォリオを求めてしまえば、他の投資家はその情報を用いて2を考えればよい。
 
-最適ポートフォリオ問題を2段階に分離できるという命題は、**トービンの分離定理**(又は二基金文理定理)と呼ばれている。
+最適ポートフォリオ問題を2段階に分離できるという命題は、**トービンの分離定理**(又は二基金分離定理)と呼ばれている。
 
 
 
