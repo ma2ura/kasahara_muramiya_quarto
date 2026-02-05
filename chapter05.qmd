@@ -22,8 +22,6 @@ mystyle <- list(
 )
 ```
 
-## 株式データの取得と可視化
-
 前章では財務データを題材に、クロスセクションデータを扱うために必要なデータの取得と操作と可視化について学習しました。
 特に重要な操作として，`mutate()`や`summarise()`関数で、`.by = var`を指定することでグループごとの変数の値を計算する方法を学びました。
 本章では株式データを題材に，株式データの理解に必要な株式の基礎知識とともに，リターンの定義や計算について学び，最後には統計的推論と線形回帰分析についても学習します。
@@ -58,7 +56,7 @@ print(stock_data)
 ```{r rename, filename="変数名の変更"}
 stock_data <- stock_data |>
   rename(
-    n_shares = shares_outstanding, 
+    n_shares = shares_outstanding,
     adj_coef = adjustment_coefficient
   )
 ```
@@ -108,7 +106,7 @@ stock_data |>
   filter(firm_ID == 74 , month_ID %in% 29:32) |>
   # 特定の変数を抽出
   select(
-    year, firm_ID, month_ID, 
+    year, firm_ID, month_ID,
     stock_price, n_shares, adj_coef
   )
 ```
@@ -134,7 +132,7 @@ stock_data <- stock_data |>
 
 ```{r ch05_06, filename="時価総額のヒストグラム"}
 # 日本語を含むグラフを作成するときは，dev = "quartz_pdf"を指定
-g <- ggplot(stock_data) + aes(x = ME) + 
+g <- ggplot(stock_data) + aes(x = ME) +
   geom_histogram() + # ヒストグラムを描く
   scale_x_continuous( # 軸の範囲と表記方法の指定
     limits = c(0, quantile(stock_data$ME, 0.95)),
@@ -246,7 +244,7 @@ ggplot(stock_data) +
   geom_density(color = "blue", linewidth = 1) +  # 密度曲線を追加
   # 正規分布の曲線を追加
   stat_function(
-    fun = dnorm, args = list(mean = m, sd = s), 
+    fun = dnorm, args = list(mean = m, sd = s),
     color = "red", linetype = "dashed", linewidth = 1) +
   xlab("月次株式リターン") + ylab("密度") + mystyle
 ```
@@ -259,15 +257,15 @@ ggplot(stock_data) +
 ```{r qqplot, filename="Q-Qプロット"}
 ggplot(stock_data) +
   aes(sample = R) +
-  stat_qq() + 
+  stat_qq() +
   stat_qq_line(color = "red") +
   labs(x = "理論上の分位点", y = "サンプルの分位点") +
   mystyle
 ```
 
-# リターンの累積
+## リターンの累積
 
-## バイ・アンド・ホールド・リターンの考え方
+### バイ・アンド・ホールド・リターンの考え方
 
 **バイ・アンド・ホールド・リターン**(buy-and-hold-return)は，ある時点で株式を購入し，そのまま保有し続けたときのリターンのことを指します。
 たとえば，$12$月末に株式を購入し，$3$月末に売却したときの、バイ・アンド・ホールド・リターンの累積は，次式で計算できます。ただし配当は無視します。
@@ -302,15 +300,15 @@ annual_stock_data <- stock_data |>
   ) |>
   mutate(
     annual_Re = annual_R - annual_R_F # 年次超過リターン
-    )  
+    )
 head(annual_stock_data)
 ```
 
-# 株式データと財務データを組み合わせた分析
+## 株式データと財務データを組み合わせた分析
 
 ここでは，株式データと財務データを組み合わせて分析を行います。
 
-## データの結合
+### データの結合
 
 複数のデータフレームを結合する際に重要なところは、
 
@@ -340,7 +338,7 @@ nrow(stock_data) # 月次リターン・データの行数
 ```{r ch05_18}
 annual_data <- annual_stock_data |>
   full_join(
-    financial_data, 
+    financial_data,
     by = c("firm_ID", "year")
   ) # firm_IDとyearのペアをキーとして設定
 ```
@@ -383,9 +381,9 @@ ggplot(year2015) +
   scale_y_continuous(limits = c(2, 11)) + mystyle
 ```
 
-# 統計的推論入門
+## 統計的推論入門
 
-## リターン・データに関する仮定
+### リターン・データに関する仮定
 
 統計的推論の内容に入る前に、`firm_ID`が1の企業の超過リターン`Re`のデータを眺めてみます。
 
@@ -601,7 +599,7 @@ t.test(Re_firm_ID_1)
 
 
 
-# 線形回帰入門
+## 線形回帰入門
 
 年次財務データ`annual_data`を使って線形回帰(linear regression)について学習します。
 線形(linear)とは，$X$と$\beta$の積が線形であることを意味します。回帰(regression)とは，$X$と$\beta$の積が$Y$を説明することを意味します。
