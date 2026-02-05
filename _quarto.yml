@@ -12,8 +12,8 @@ book:
   license: "CC BY-NC-SA"
   favicon: img/favicon.ico
   cover-image: img/kasahara_muramiya.jpg
-  # site-url: https://ma2ura.github.io/Marketing_Data_Analysis/
-  # repo-url: https://github.com/ma2ura/Marketing_Data_Analysis/
+  site-url: https://ma2ura.github.io/kasahara_muramiya_quarto/
+  repo-url: https://github.com/ma2ura/kasahara_muramiya_quarto/
   repo-branch: main
 
   reader-mode: true
@@ -23,7 +23,7 @@ book:
   page-footer:
         border: true
         background: "#a10000"
-        left: "Copyright 2025, Soichi Matsuura"
+        left: "Copyright 2026, Soichi Matsuura"
         right:
           - icon: house
             href: https://so-ichi.com/r.html
@@ -57,19 +57,25 @@ format:
       dark: cyborg
     mainfont: "Noto Sans JP"
     monofont: "0xProto" # ※このフォントがシステムにない場合、デフォルトになります
+
     toc: true
-    toc-depth: 3
-    toc-expand: 2
+    toc-location: left
+    toc-title: "ここの目次"
+    toc-depth: 2
+    toc-expand: true
+
     code-tools: true
     code-link: true
     code-line-numbers: true
     code-block-bg: true
     code-block-border-left: "#002D72"
+
     link-external-icon: true
     html-math-method: katex
+
     author-meta: "Soichi Matsuura"
     twitter-card: true
-
+    embed-resources: false
     include-in-header:
       text: |
         <style>
