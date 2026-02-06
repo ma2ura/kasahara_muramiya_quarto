@@ -101,6 +101,7 @@ data.frame(
   ) |>
   ggplot() + aes(x = R_F, y = PV) +
   geom_line(color = "blue") +
+  scale_x_continuous(labels = scales::percent) + # 軸を%表示に
   labs(x = "割引率", y = "現在価値") +
   mystyle
 ```
@@ -736,6 +737,7 @@ $$
 \end{aligned}
 $$
 
+
 安全資産と2つのリスク資産からなるポートフォリオの期待リターンは，安全資産の期待リターンとリスク資産の期待リターンの和となる。
 
 安全資産と2つのリスク資産に投資可能な場合，$(\mu_P, \sigma _P)$の取りうる値を図示できる。テキストの数値例を用いてRで図示してみる。
@@ -957,135 +959,7 @@ ggplot() +
 
 <!-- 以下では，各資産のパラメータを変更したら，効率的フロンティアや接点ポートフォリオがどのように変化するかを確認できるインタラクティブなグラフを示します。 -->
 
-```{r shiny_portfolio_simulation, filename="ポートフォリオシミュレーション"}
-#| echo: false
-#| eval: false
 
-
-# UI定義
-ui <- fluidPage(
-  # 講義資料の中に埋め込むため、タイトルは省略またはh4程度に留める
-  h4("【シミュレーション】パラメータを動かしてフロンティアの変化を確認しよう"),
-
-  sidebarLayout(
-    sidebarPanel(
-      width = 4, # サイドバーの幅調整
-      h5("資産A (緑)"),
-      sliderInput("mu_a", "期待リターン", min = -0.1, max = 0.5, value = 0.1, step = 0.01),
-      sliderInput("sigma_a", "標準偏差", min = 0.05, max = 0.5, value = 0.2, step = 0.01),
-
-      h5("資産B (橙)"),
-      sliderInput("mu_b", "期待リターン", min = -0.1, max = 0.5, value = 0.2, step = 0.01),
-      sliderInput("sigma_b", "標準偏差", min = 0.05, max = 0.5, value = 0.3, step = 0.01),
-
-      hr(),
-      h5("市場環境"),
-      sliderInput("rho", "相関係数 (ρ)", min = -1, max = 1, value = 0.2, step = 0.1),
-      sliderInput("rf", "無リスク金利 (Rf)", min = 0, max = 0.15, value = 0.01, step = 0.005)
-    ),
-
-    mainPanel(
-      width = 8,
-      plotOutput("frontierPlot", height = "500px"),
-      wellPanel(
-        style = "padding: 10px; font-size: 0.9em;",
-        textOutput("tangencyInfo")
-      )
-    )
-  )
-)
-
-# Serverロジック定義
-server <- function(input, output) {
-
-  # テーマ設定（Shiny内で確実に読み込むためここで再定義またはリスト化）
-  my_theme <- list(
-    theme_economist_white(base_family = "HiraKakuProN-W3"),
-    scale_colour_economist(),
-    theme(
-      text = element_text(size = 12),
-      legend.position = "bottom",
-      legend.title = element_blank()
-    )
-  )
-
-  # リアクティブなデータ生成
-  data_reactive <- reactive({
-    mu_a    <- input$mu_a
-    sigma_a <- input$sigma_a
-    mu_b    <- input$mu_b
-    sigma_b <- input$sigma_b
-    rho     <- input$rho
-    rf      <- input$rf
-
-    # フロンティア計算
-    df_frontier <- tibble(
-      w = seq(-1, 2, by = 0.005)
-    ) |>
-      mutate(
-        mu_p = w * mu_a + (1 - w) * mu_b,
-        sigma_p = sqrt((w * sigma_a)^2 + ((1 - w) * sigma_b)^2 +
-                         2 * w * (1 - w) * rho * sigma_a * sigma_b),
-        sharpe_ratio = (mu_p - rf) / sigma_p
-      )
-
-    # 接点ポートフォリオ
-    tangency_port <- df_frontier |> slice_max(sharpe_ratio, n = 1)
-
-    # 資本市場線
-    max_sigma <- max(0.6, tangency_port$sigma_p * 1.5)
-    df_cml <- tibble(
-      sigma_p = c(0, max_sigma),
-      mu_p    = c(rf, rf + tangency_port$sharpe_ratio * max_sigma)
-    )
-
-    list(frontier = df_frontier, tangency = tangency_port, cml = df_cml,
-         p = list(mu_a=mu_a, sigma_a=sigma_a, mu_b=mu_b, sigma_b=sigma_b, rf=rf))
-  })
-
-  # プロット描画
-  output$frontierPlot <- renderPlot({
-    dat <- data_reactive()
-    p   <- dat$p
-
-    ggplot() +
-      my_theme +
-      # CML
-      geom_line(data = dat$cml, aes(x = sigma_p, y = mu_p, color = "資本市場線"), linewidth = 1.2) +
-      # フロンティア
-      geom_path(data = dat$frontier, aes(x = sigma_p, y = mu_p, color = "効率的フロンティア"),
-                linewidth = 1, linetype = "dashed") +
-      # ポイント
-      annotate("point", x = p$sigma_a, y = p$mu_a, color = "green", size = 4) +
-      annotate("text",  x = p$sigma_a, y = p$mu_a, label = "A", vjust = -1.5, fontface = "bold") +
-      annotate("point", x = p$sigma_b, y = p$mu_b, color = "orange", size = 4) +
-      annotate("text",  x = p$sigma_b, y = p$mu_b, label = "B", vjust = -1.5, fontface = "bold") +
-      annotate("point", x = 0, y = p$rf, color = "purple", size = 4) +
-      annotate("text",  x = 0, y = p$rf, label = "Rf", hjust = -0.3, fontface = "bold") +
-      # 接点
-      annotate("point", x = dat$tangency$sigma_p, y = dat$tangency$mu_p, color = "black", shape = 8, size = 5) +
-      annotate("text",  x = dat$tangency$sigma_p, y = dat$tangency$mu_p,
-               label = "接点", vjust = 1.5, fontface = "bold") +
-
-      scale_color_manual(values = c("資本市場線" = "red", "効率的フロンティア" = "blue")) +
-      labs(x = "リスク (標準偏差)", y = "期待リターン") +
-      xlim(0, 0.7) + ylim(-0.05, 0.5)
-  })
-
-  # 数値情報
-  output$tangencyInfo <- renderText({
-    t <- data_reactive()$tangency
-    sprintf(
-      "【接点ポートフォリオ】 期待リターン: %.2f%%, リスク: %.2f%% (シャープレシオ: %.4f) | 構成比: A %.1f%% : B %.1f%%",
-      t$mu_p * 100, t$sigma_p * 100, t$sharpe_ratio,
-      t$w * 100, (1 - t$w) * 100
-    )
-  })
-}
-
-# アプリの起動
-shinyApp(ui = ui, server = server)
-```
 
 ### 投資家のリスク回避度と最適ポートフォリオ
 
@@ -1108,8 +982,6 @@ $(\mu_P,\rho_p)$平面上でそれを描く方法の一つが**無差別曲線**
 #| code-fold: true
 #| warning: false
 #| message: false
-
-library(plotly)
 
 # 1. 効用関数のデータ作成
 x <- 1:50
@@ -1137,13 +1009,13 @@ plot_ly() |>
     opacity = 0.6,
     colorscale = "Viridis",
     name = "効用関数",
-    # 【復活】底面に等高線（無差別曲線）を描画する設定
+    showscale = FALSE, # 【追加】カラーバー（色の凡例）を消す
     contours = list(
       z = list(
         show = TRUE,
         usecolormap = TRUE,
         highlightcolor = "#ff0000",
-        project = list(z = TRUE) # z=TRUEで底面に投影
+        project = list(z = TRUE)
       )
     )
   ) |>
@@ -1154,22 +1026,23 @@ plot_ly() |>
     z = bc_z_mat,
     opacity = 0.3,
     colorscale = list(c(0, 1), c("blue", "blue")),
-    showscale = FALSE,
+    showscale = FALSE, # 元からある設定（ここも消す）
     name = "予算制約"
   ) |>
   # (C) 交線
   add_paths(
     x = line_x, y = line_y, z = line_z,
-    line = list(width = 4, color = "red"),
+    line = list(width = 2, color = "red"),
     name = "予算線上の効用"
   ) |>
   layout(
     title = "効用最大化：曲面・予算制約・無差別曲線",
+    showlegend = FALSE, # 【追加】項目名（線や面の名前）の凡例を消す
     scene = list(
       xaxis = list(title = "財 x"),
       yaxis = list(title = "財 y"),
       zaxis = list(title = "効用 U"),
-      camera = list(eye = list(x = 1.5, y = 1.5, z = 1.2))
+      camera = list(eye = list(x = -1.5, y = 1.5, z = 1.2))
     )
   )
 ```
@@ -1196,18 +1069,15 @@ $R_F + \beta \times (R_M - R_F) = 0.1 + 1.2 \times 0.05 = 0.16$ となります�
 
 <!-- リスクとリターンの無差別曲線 -->
 <!-- ![無差別曲線と効率的フロンティアに基づく最適ポート フォリオの決定](img/KM_fig_2-12.jpg) -->
+<!-- 複数のポートフォリオを比べるとき，この図の左上のものほど高リターン低リスクに対応するので、より高い効用水準が実現する。 -->
+無差別曲線の**局所的な傾き**は、その投資家が追加的なリスクを引き受けるうえで要求するリスクプレミアム，つまり傾き＝我慢料の相場を表しています。
+したがって，リスク回避的な投資家ほど，リスクを1単位負担する際に，より大きなリスクプレミアムを要求するので、傾きは大きくなる，ということです。
 
-複数ポートフォリオを比べるとき，この図の左上のものほど高リターン低リスクに対応するので、より高い効用水準が実現する。
-また無差別曲線の**局所的な傾き**は、その投資家が追加的なリスクを引き受けるうえで要求するリスクプレミアムを表す。
-リスク回避的な投資家ほど，リスクを1単位負担する際に，より大きなリスクプレミアムを要求するので、傾きは大きくなる。
-つまり，1単位リスクを負担する代わりに欲しいリターンの額が大きくなるほど，傾きが大きくなる。
-
-無差別曲線と効率的フロンティアが接する点が、この投資家にとっての最適ポートフォリオとなる。
+無差別曲線と効率的フロンティアが接する点が、この投資家にとっての最適ポートフォリオとなります。
 投資可能なポートフォリオの範囲で、最も左上の無差別曲線を実現するのが接点となる。
 どの点が最適ポートフォリオとして選ばれるかは個々の投資家の無差別曲線の形状(リスク回避度)に依存する。最適ポートフォリオにおいて、無差別曲線と効率的フロンティアの局所的な傾きは一致(接線だから当然)するため、その投資家が要求するリスクプレミアムがちょうど実現されている。
 
 上図の場合，この投資家の最適ポートフォリオは$(w_F,w_{tan})\approx(0.29,0.71)$の比率で構成される。
-
 接点ポートフォリオは銘柄Aに47％、銘柄Bに53％投資するポートフォリオだったので、最適保有比率は、$(w_F,w_A,w_B)\approx(0.29,0.33,0.38)$と書き換えられる。
 
 ### トービンの分離定理
