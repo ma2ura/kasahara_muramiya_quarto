@@ -872,8 +872,7 @@ ggplot() +
   geom_line(
     data = df_cml,
     aes(x = sigma_p, y = mu_p),
-    color = "red",
-    linewidth = 1
+    color = "red"
   ) +
 
   # B. リスク資産のみのフロンティア
@@ -881,27 +880,26 @@ ggplot() +
     data = df_frontier,
     aes(x = sigma_p, y = mu_p),
     color = "blue",
-    linewidth = 1,
     linetype = "dashed"
   ) +
 
   # C. ポイントの描画
   # 資産A
-  annotate("point", x = params$sigma_A, y = params$mu_A, color = "green", size = 3) +
+  annotate("point", x = params$sigma_A, y = params$mu_A, color = "green", size = 2) +
   annotate("text",  x = params$sigma_A, y = params$mu_A, label = "A", vjust = 2, fontface = "bold") +
 
   # 資産B
-  annotate("point", x = params$sigma_B, y = params$mu_B, color = "orange", size = 3) +
-  annotate("text",  x = params$sigma_B, y = params$mu_B, label = "B", vjust = -1.2, fontface = "bold") +
+  annotate("point", x = params$sigma_B, y = params$mu_B, color = "orange", size = 2) +
+  annotate("text",  x = params$sigma_B, y = params$mu_B, label = "B", vjust = 2, fontface = "bold") +
 
   # 安全資産
-  annotate("point", x = 0, y = params$R_F, color = "purple", size = 3) +
+  annotate("point", x = 0, y = params$R_F, color = "purple", size = 2) +
   annotate("text",  x = 0, y = params$R_F, label = "安全資産(F)", hjust = -0.3, fontface = "bold") +
 
   # 接点ポートフォリオ
-  annotate("point", x = tangency_port$sigma_p, y = tangency_port$mu_p, color = "black", size = 3) +
+  annotate("point", x = tangency_port$sigma_p, y = tangency_port$mu_p, color = "black", size = 2) +
   annotate("text",  x = tangency_port$sigma_p, y = tangency_port$mu_p,
-           label = paste0("接点P \n(w=", sprintf("%.2f", tangency_port$w), ")"),
+           label = paste0("接点 P \n(w=", sprintf("%.2f", tangency_port$w), ")"),
            hjust = -0.2, vjust = 0.8, lineheight = 0.9, size = 3) +
 
   # D. テーマなどの設定
