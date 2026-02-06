@@ -1135,13 +1135,13 @@ plot_ly() |>
     opacity = 0.6,
     colorscale = "Viridis",
     name = "効用関数",
-    # 【復活】底面に等高線（無差別曲線）を描画する設定
+    showscale = FALSE, # 【追加】カラーバー（色の凡例）を消す
     contours = list(
       z = list(
         show = TRUE,
         usecolormap = TRUE,
         highlightcolor = "#ff0000",
-        project = list(z = TRUE) # z=TRUEで底面に投影
+        project = list(z = TRUE)
       )
     )
   ) |>
@@ -1152,7 +1152,7 @@ plot_ly() |>
     z = bc_z_mat,
     opacity = 0.3,
     colorscale = list(c(0, 1), c("blue", "blue")),
-    showscale = FALSE,
+    showscale = FALSE, # 元からある設定（ここも消す）
     name = "予算制約"
   ) |>
   # (C) 交線
@@ -1163,6 +1163,7 @@ plot_ly() |>
   ) |>
   layout(
     title = "効用最大化：曲面・予算制約・無差別曲線",
+    showlegend = FALSE, # 【追加】項目名（線や面の名前）の凡例を消す
     scene = list(
       xaxis = list(title = "財 x"),
       yaxis = list(title = "財 y"),
