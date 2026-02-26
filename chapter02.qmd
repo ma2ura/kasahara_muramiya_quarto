@@ -1040,7 +1040,7 @@ plot_ly() |>
       xaxis = list(title = "財 x"),
       yaxis = list(title = "財 y"),
       zaxis = list(title = "効用 U"),
-      camera = list(eye = list(x = -1.5, y = 1.5, z = 1.2))
+      camera = list(eye = list(x = -1.5, y = 5, z = 1))
     )
   )
 ```

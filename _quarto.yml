@@ -46,6 +46,8 @@ book:
     - chapter04.qmd
     - chapter05.qmd
     - chapter06.qmd
+    - chapter07.qmd
+    - chapter08.qmd
 
 website:
   back-to-top-navigation: true

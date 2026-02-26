@@ -1,0 +1,102 @@
+## ファクターモデルの応用
+
+ファクター・モデルの応用として、
+
+1. 資本コストの推定
+2. 平均分散ポートフォリオの構築方法
+
+を学びます。
+
+## 資本コストの推定
+
+### 資本コストと割引率
+
+株式での資金調達のケースを考えます。
+配当割引モデルで$i$社の$0$時点における理論株価$P^*_{i,0}$を表すと、
+
+$$
+P_{i,0} = \sum_{t=1}^{\infty} \frac{\mathbb{E}[ D_{i,t}]}{(1 + \widetilde{R}_i )^t}
+$$
+
+となります。
+この式より期待配当 $\mathbb{E}[ D_{i,t}]$ が一定としたとき、資本コスト $\widetilde{R}_i$ の上昇は理論株価の下落をもたらすことがわかります。
+この資本コスト$\widetilde{R}_i$は、投資家が$i$社の株式に投資する際に要求する最低限のリターンを表しており、これをFF3モデルで推定しようとします。
+
+6.3節で学習したように、Fama-Frenchの3ファクターモデルは、
+
+1. 市場ポートフォリオの超過リターン $R_M^e$
+2. 小型株と大型株の平均リターンの差であるサイズ・ファクター $SMB$
+3. バリュー株とグロース株の平均リターンの差であるバリュー・ファクター $HML$
+
+の3つのファクターを用いて、資産のリターンを説明するモデルです。
+このモデルを用いて、資本コスト$\widetilde{R}_i$を推定するための式は以下のようになります。
+$$
+R^e_{i,t} = \beta_i^M R_{M,t}^{e} + \beta_i^{SMB} SMB_t + \beta_i^{HML} HML_t + \varepsilon_{i,t}
+$$
+
+
+SMBとHMLの計算方法は、以下のようになります。
+
+1. 時価総額の中央値を基準に全ての株式を小型株グループと大型株グループに分けます。
+2. 簿価時価比率の上位30%をバリュー株グループ、下位30%をグロース株グループ、残りの40%をミドルグループに分けます。
+3. それぞれのグループごとに、時価総額加重ポートフォリオを作成します。
+
+$$
+\widetilde{R}_i = \mathbb{E}[R_i^{FF3}] = R_F + \beta_i^M \mathbb{E}[R_M^e] + \beta_i^{SMB} \mathbb{E}[SMB] + \beta_i^{HML} \mathbb{E}[HML]
+$$
+ここで、$R_F$は無リスク金利、$\beta_i^M$は$i$社の市場リスクプレミアムに対する感応度、$\mathbb{E}[R_M^e]$は市場リスクプレミアムの期待値、$\beta_i^{SMB}$は$i$社のサイズファクターに対する感応度、$\mathbb{E}[SMB]$はサイズファクターの期待値、$\beta_i^{HML}$は$i$社のバリューファクターに対する感応度、$\mathbb{E}[HML]$はバリューファクターの期待値を表しています。
+```{r setup}
+# パッケージの読み込み
+pacman::p_load(
+  tidyverse, # 便利なパッケージ群
+  ggthemes, # ggplot2のテーマ集
+  broom # モデルの整形
+)
+# グラフのスタイル設定
+mystyle <- list(
+  theme_economist_white(
+    base_family = "HiraKakuProN-W3"
+    ),
+  scale_colour_economist(),
+  theme(
+    text = element_text(size = 12),
+    axis.title = element_text(size = 12)
+  )
+)
+```
+
+
+## 平均分散ポートフォリオの構築
+
+### 分散共分散行列の分解式
+
+投資可能な資産の数を$N$とします。
+資産$i$のリターンを$R_i$とすると、分散共分散行列$\Sigma$は以下のように定義されます。
+
+ここで、$Var(R_i)$は資産$i$のリターンの分散、$Cov(R_i, R_j)$は資産$i$と$j$のリターンの共分散を表し，それぞれ$\sigma_i^2$と$\sigma_{i,j}$と表記します。
+
+$$
+\begin{aligned}
+\Sigma = \begin{pmatrix}
+\sigma_{1,1}^2 & \sigma_{1,2} & \cdots & \sigma_{1,N} \\
+\sigma_{2,1} & \sigma_{2,2}^2 & \cdots & \sigma_{2,N} \\
+\vdots & \vdots & \ddots & \vdots \\
+\sigma_{N,1} & \sigma_{N,2} & \cdots & \sigma_{N,N}^2
+\end{pmatrix}
+\end{aligned}
+$$
+
+この行列は対角要素が各資産のリターンの分散を表し、非対角要素が資産間の共分散を表しています。共分散は$\sigma_{i,j} = \sigma_{j,i}$であるため、分散共分散行列は対称行列となります。
+つまり，行列の右上三角部分と左下三角部分は同じ値をもつため，この行列の要素の数は，$N^2$ではなく$N(N+1)/2$となります。
+
+
+$$
+\begin{aligned}
+\Sigma = \begin{pmatrix}
+\sigma_{1,1}^2 &  & &  \\
+\sigma_{2,1} & \sigma_{2,2}^2 &  &  \\
+\vdots & \vdots & \ddots &  \\
+\sigma_{N,1} & \sigma_{N,2} & \cdots & \sigma_{N,N}^2
+\end{pmatrix}
+\end{aligned}
+$$
