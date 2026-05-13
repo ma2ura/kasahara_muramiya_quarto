@@ -2,11 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Soichi Matsuura">
 <title>5&nbsp; 株式データの取得と可視化 – 実証会計・ファイナンスの勉強ノート</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -67,19 +70,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./img/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-9b98439fbe4ae1eb56616ecad9777bd3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8d3ca4b06cbe525a365245b9186fe341.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-9ad9de00ec9496f4fef5089063f8ffc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-8d3ca4b06cbe525a365245b9186fe341.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -1313,8 +1315,20 @@ Y_i = \beta_0 + \beta_1 \log (X_i) + \varepsilon_i
 <div class="code-with-filename-file">
 <pre><strong>データの保存</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1"></a><span class="fu">write_csv</span>(monthly_data, <span class="st">"data/ch05_output1.csv"</span>)</span>
-<span id="cb68-2"><a href="#cb68-2"></a><span class="fu">write_csv</span>(annual_data, <span class="st">"data/ch05_output2.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1"></a><span class="fu">dir.create</span>(<span class="st">"data"</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb68-2"><a href="#cb68-2"></a></span>
+<span id="cb68-3"><a href="#cb68-3"></a>safe_write_csv <span class="ot">&lt;-</span> <span class="cf">function</span>(df, path) {</span>
+<span id="cb68-4"><a href="#cb68-4"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb68-5"><a href="#cb68-5"></a>    <span class="fu">write_csv</span>(df, path),</span>
+<span id="cb68-6"><a href="#cb68-6"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb68-7"><a href="#cb68-7"></a>      <span class="fu">warning</span>(<span class="fu">paste0</span>(<span class="st">"CSVの保存に失敗しました: "</span>, path, <span class="st">" / "</span>, <span class="fu">conditionMessage</span>(e)))</span>
+<span id="cb68-8"><a href="#cb68-8"></a>      <span class="fu">invisible</span>(<span class="cn">NULL</span>)</span>
+<span id="cb68-9"><a href="#cb68-9"></a>    }</span>
+<span id="cb68-10"><a href="#cb68-10"></a>  )</span>
+<span id="cb68-11"><a href="#cb68-11"></a>}</span>
+<span id="cb68-12"><a href="#cb68-12"></a></span>
+<span id="cb68-13"><a href="#cb68-13"></a><span class="fu">safe_write_csv</span>(monthly_data, <span class="st">"data/ch05_output1.csv"</span>)</span>
+<span id="cb68-14"><a href="#cb68-14"></a><span class="fu">safe_write_csv</span>(annual_data, <span class="st">"data/ch05_output2.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 
@@ -2532,9 +2546,21 @@ Y_i = \beta_0 + \beta_1 \log (X_i) + \varepsilon_i
 <span id="cb69-753"><a href="#cb69-753"></a>6章以降では、以下のデータを継続して使うので、csvファイルとして保存しておきます。</span>
 <span id="cb69-754"><a href="#cb69-754"></a></span>
 <span id="cb69-755"><a href="#cb69-755"></a><span class="in">```{r ch05_38, filename="データの保存"}</span></span>
-<span id="cb69-756"><a href="#cb69-756"></a><span class="fu">write_csv</span>(monthly_data, <span class="st">"data/ch05_output1.csv"</span>)</span>
-<span id="cb69-757"><a href="#cb69-757"></a><span class="fu">write_csv</span>(annual_data, <span class="st">"data/ch05_output2.csv"</span>)</span>
-<span id="cb69-758"><a href="#cb69-758"></a><span class="in">```</span></span>
+<span id="cb69-756"><a href="#cb69-756"></a><span class="fu">dir.create</span>(<span class="st">"data"</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb69-757"><a href="#cb69-757"></a></span>
+<span id="cb69-758"><a href="#cb69-758"></a>safe_write_csv <span class="ot">&lt;-</span> <span class="cf">function</span>(df, path) {</span>
+<span id="cb69-759"><a href="#cb69-759"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb69-760"><a href="#cb69-760"></a>    <span class="fu">write_csv</span>(df, path),</span>
+<span id="cb69-761"><a href="#cb69-761"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb69-762"><a href="#cb69-762"></a>      <span class="fu">warning</span>(<span class="fu">paste0</span>(<span class="st">"CSVの保存に失敗しました: "</span>, path, <span class="st">" / "</span>, <span class="fu">conditionMessage</span>(e)))</span>
+<span id="cb69-763"><a href="#cb69-763"></a>      <span class="fu">invisible</span>(<span class="cn">NULL</span>)</span>
+<span id="cb69-764"><a href="#cb69-764"></a>    }</span>
+<span id="cb69-765"><a href="#cb69-765"></a>  )</span>
+<span id="cb69-766"><a href="#cb69-766"></a>}</span>
+<span id="cb69-767"><a href="#cb69-767"></a></span>
+<span id="cb69-768"><a href="#cb69-768"></a><span class="fu">safe_write_csv</span>(monthly_data, <span class="st">"data/ch05_output1.csv"</span>)</span>
+<span id="cb69-769"><a href="#cb69-769"></a><span class="fu">safe_write_csv</span>(annual_data, <span class="st">"data/ch05_output2.csv"</span>)</span>
+<span id="cb69-770"><a href="#cb69-770"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

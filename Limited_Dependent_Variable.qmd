@@ -1,0 +1,103 @@
+---
+title: "目的変数が質的変数の場合の分析手法"
+author: "松浦総一"
+date : "令和5年6月1日(木)"
+format:
+  html:
+    html-math-method: katex
+    theme: sandstone
+    toc: true
+    toc-expand: 2
+execute:
+  message : false
+  warning: false
+self-contained-math: true
+---
+
+## 目的変数が質的変数とは。
+
+- 質的変数とは、その値が何らかの属性を表す変数のことである。
+- とりわけ、質的変数の値が2つしかない場合を二値変数またはダミー変数という。
+- このような質的変数が目的変数となる場合は分析手法が変わる。
+- また、目的変数が質的変数の場合は、分析結果の解釈が難しくなります。
+
+ここでは、目的変数が二値となる場合によく用いられるロジスティック回帰分析について説明します。
+
+
+## 線形確率モデル
+
+- 二値変数を目的変数とする場合でも、線形確率モデルを用いることができる。つまり、目的変数が二値であっても最小二乗推定法を用いる、ということである。
+たとえば、空飛ぶ豚であれば1、ただの豚であれば0、という二値変数を目的変数とし、説明変数を過去に飛んだ時間の長さ、であるとすると、以下のような線形確率モデルを考えることができます。
+
+$$
+\text{飛ぶ豚}_i = \beta_0 + \beta_1 \text{飛行経験}_i + \varepsilon_i
+$$
+
+この回帰モデルを推定してみます。
+
+## 最小二乗法(OLS)
+
+$$
+Y _i = \beta_0 + \beta_1 X_i + \varepsilon_i
+$$
+
+
+$$
+\hat{Y}_i = \beta _0 + \beta_1 X_i
+$$
+
+から，誤差$\varepsilon$の二乗和を最小にするような$\beta_0$と$\beta_1$を求めます。
+
+$$
+\begin{aligned}
+\varepsilon _i &= Y_i - \hat{Y}_i\\
+\varepsilon _i^2 &= (Y_i - \hat{Y}_i)^2\\
+				 &= Y_i^2 - 2 Y_i \hat{Y}_i + \hat{Y}_i^2\\
+\sum_{i = 1}^n \varepsilon _i^2 &= \sum_{i = 1}^n Y_i^2 - 2 \sum_{i = 1}^n Y_i \hat{Y}_i + \sum_{i = 1}^n \hat{Y}_i^2
+\end{aligned}
+$$
+
+
+
+## Rで線形確率モデル
+
+データを読み込んで、構造を確認します。
+
+```{r}
+pacman::p_load(tidyverse, ggthemes)
+df <- read_csv("data/PorcoRosso.csv")
+glimpse(df)
+```
+
+上の回帰モデルを推定するためは、二値変数で空飛ぶ豚かどうかを表す`flying`と、飛行時間を表す`flyhour`を使います。
+とりあえず、この二つの変数を使って、散布図を書いてみます。
+
+## 散布図
+
+```{r}
+ggplot(df, aes(x = flyhour, y = flying)) + geom_point()
+```
+
+## 実践
+
+```{r mystyle}
+mystyle <- list (#  ggplotのテーマ
+  theme_calc(), # ggthemesパッケージ
+  scale_colour_calc(), # ggthemesパッケージ
+  scale_x_continuous(expand = c(0,0)),
+  theme(text = element_text(size = 12,
+                            family = "HiraKakuProN-W3"
+                            ))) # テーマ
+```
+
+```{r porco}
+porco <- read_csv("data/PorcoRosso.csv")
+```
+
+データの中身を確認してみます。
+
+```{r}
+glimpse(porco)
+```
+
+このデータは、宮崎駿監督のアニメーション映画「紅の豚」の主人公、ポルコ・ロッソの飛行機の操縦経験に関するデータです。

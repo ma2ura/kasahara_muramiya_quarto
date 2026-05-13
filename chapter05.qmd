@@ -733,6 +733,18 @@ tidy(lm(Re ~ log(lagged_BEME), data = lm_sample_data)) # 右辺のみlog()関数
 6章以降では、以下のデータを継続して使うので、csvファイルとして保存しておきます。
 
 ```{r ch05_38, filename="データの保存"}
-write_csv(monthly_data, "data/ch05_output1.csv")
-write_csv(annual_data, "data/ch05_output2.csv")
+dir.create("data", showWarnings = FALSE, recursive = TRUE)
+
+safe_write_csv <- function(df, path) {
+  tryCatch(
+    write_csv(df, path),
+    error = function(e) {
+      warning(paste0("CSVの保存に失敗しました: ", path, " / ", conditionMessage(e)))
+      invisible(NULL)
+    }
+  )
+}
+
+safe_write_csv(monthly_data, "data/ch05_output1.csv")
+safe_write_csv(annual_data, "data/ch05_output2.csv")
 ```
