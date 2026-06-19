@@ -25,14 +25,16 @@ mystyle <- list(
 1. CAPMの実証的検証に必要な市場ポートフォリオの構築
 2. ある特徴に基づいて各銘柄をランキングにし，ランキングに応じたポートフォリオの構築
 
-## 市場ポートフォリオの構築
+CAPMとFama−Frenchの3ファクターモデルの実装を目指す。
 
-**市場ポートフォリオ**(market portfolio)とは，**市場に存在する全ての危険資産を時価総額比率で保有したポートフォリオ**をいいます。
+### 市場ポートフォリオの構築
+
+**市場ポートフォリオ**(market portfolio)とは，**市場に存在する全ての危険資産を時価総額比率で保有したポートフォリオ**をいいます(2章を参照)。
+株価データを取得できる上場企業の株式に限定して、時価総額でウェイトづけた市場インデックスを作成します。
 
 :::{.column-margin}
 厳密には，リスク資産には株式や債券に代表される金融資産の他、不動産や貴金属などの実物資産も含まれますが、実用上はTOPIXやS&P500といった株価指数と同一視されることが多いです。
 :::
-
 
 **入手可能な全銘柄の前年末時価総額$\sum ME_{j,t-1}$と個別銘柄の時価総額 $ME_{i,t-1}$ の比率**をウェイト $w_{i,t}^M$ として市場ポートフォリオを構築します。
 
@@ -61,9 +63,10 @@ glimpse(annual_data)
 
 この銘柄ごとの保有比率を計算するために，前年度末の時価総額を計算し，`lagged_ME`に代入します。
 `annual_data`は2015年から2020年のデータが入っています。
-`lag()`で前期末の時価総額を`lagged_ME`に代入しようとしても2015年の前年のデータは存在しないので，欠損値になることに注意しましょう。
+`mutate()`関数で、`.by = firm_ID`を指定することで、企業ごとに`lag()`関数を適用することができます。
+すると`lag()`で前期末の時価総額を`lagged_ME`に代入しようとしても2015年の前年のデータは存在しないので，欠損値になることに注意しましょう。
 
-```{r ch06_02}
+```{r ch06_02, filename = "前年度の時価総額を計算"}
 annual_data <- annual_data |>
     arrange(firm_ID, year) |> # firm_IDとyearで並び換え
     mutate(
@@ -83,12 +86,11 @@ annual_data <- annual_data |>
 この`lagged_ME`を使って保有比率を計算します。
 年度ごとに時価総額を合計し、ある企業の前期末時価総額を合計時価総額で割ることで保有比率`w_M`を計算します。
 
-```{r ch06_03}
+```{r ch06_03, filename = "保有費率の計算"}
 annual_data <- annual_data |>
     mutate(
       .by = year, # 年度ごとに
-      # ウェイト
-      w_M = lagged_ME / sum(lagged_ME, na.rm = TRUE)
+      w_M = lagged_ME / sum(lagged_ME, na.rm = TRUE) # ウェイト
     )
 ```
 
@@ -97,12 +99,11 @@ annual_data <- annual_data |>
 次に，<span class="markp">2016年以降の欠損値の行を削除するのではなく，保有比率`w_M`をゼロに置き換えることで投資しないことを表します</span>。
 `mutate()`と`replace()`を用いて変数の置き換えをします。
 
-```{r ch06_04}
+```{r ch06_04, filename = "欠損値の置き換え"}
 annual_data <- annual_data |>
     mutate( # w_Mの欠損値を0に置き換える
         w_M = replace(
-          w_M,
-          year >= 2016 & is.na(w_M),
+          w_M, year >= 2016 & is.na(w_M),
           0
         )
     )
@@ -266,7 +267,6 @@ table(annual_data$year,  annual_data$ME_rank10)
 `drop_na()`関数で欠損行を削除し、`.by =month_ID`と`ME_rank10`に関してグループ化した上で、`summarize()`関数で月次超過リターン`Re`の平均値を計算して、`Re`変数としています。
 
 ```{r ch06-13, filename="前年度末の時価総額に基づくポートフォリオ・ソート"}
-
 ME_sorted_portfolio <- annual_data |>
   select(year, firm_ID, ME_rank10) |> # 年次データから追加したい情報を抽出
   full_join(monthly_data, by = c("year", "firm_ID")) |> # yearとfirm_IDをキーに月次データと結合
@@ -306,7 +306,6 @@ print(g)
 まずは等加重の場合のコードを確認する。
 
 ```{r ch06_15a, filename="BPRに基づくポートフォリオ・ソート（等加重の場合）"}
-
 annual_data <- annual_data |>
   mutate(
     lagged_BEME = lagged_BE / lagged_ME
@@ -385,6 +384,9 @@ BEME_sorted_portfolio |>
 
 次節では，この現象を，資産価格モデルの1つであるCAPM(Capital Asset Pricing Model)が説明できるかどうかを検証します。
 
+
+
+
 ## CAPMの実証的な検証
 
 ### CAPMを検証する意義
@@ -415,18 +417,18 @@ $$
 $$
 R_{i,t}^e = \beta_i \times R_{M,t}^e + \varepsilon_{i,t}
 $$
-ここで、$R^e_{i,t} = R_{i,t} - R_{F,t}$である。
-つまり、$t$時点における証券$i$の実現超過リターン$R_{i,t}^e$は、$t$時点における市場ポートフォリオの実現超過リターン$R_{M,t}^e$と、証券$i$の市場ポートフォリオに対するベータ係数$\beta_i$の積に、誤差項$\varepsilon_{i,t}$を加えたものとして表現されます。
+ここで、$R^e_{i,t} = R_{i,t} - R_{F,t}$ である。
+つまり、<span class="markp">$t$ 時点における証券$i$の実現超過リターン$R_{i,t}^e$は、$t$時点における市場ポートフォリオの実現超過リターン$R_{M,t}^e$と、証券$i$の市場ポートフォリオに対するベータ係数$\beta_i$の積に、誤差項$\varepsilon_{i,t}$を加えたもの</span>として表現されます。
 
 また、誤差項$\varepsilon_{i,t}$に関して次の仮定を置きます。
 
-- $varepsilon _{i,t}$は独立同一分布(i.i.d.)に従う
+- $\varepsilon _{i,t}$は独立同一分布(i.i.d.)に従う
 - $E[\varepsilon_{i,t}] = 0$
 - $E[R_{M,t}^e , \ \varepsilon_{i,t} ] = 0$
 
-こうすることで、CAPM式を線形回帰モデルで表現できるので、$\beta_i$の推定が可能となります。
+こうすることで、CAPM式を線形回帰モデルで表現できるので、最小二乗法による$\beta_i$の推定が可能となります。
 
-#### 時系列回帰
+### 時系列回帰
 
 CAPM式は任意の$i$証券で成立するモデルのため、ポートフォリオにも応用できます。
 つまりあるポートフォリオの超過リターンを、市場ポートフォリオの超過リターンと、そのポートフォリオに対するベータ係数の積で説明することができます。
@@ -435,50 +437,62 @@ $$
 R_{P,t}^e = \alpha _P + \beta_P R_{M,t}^e + \varepsilon_{P,t}
 $$
 
-CAPMの式と比較すると、切片である$\alpha _P$が追加されていることが分かります。
-もし証券市場にCAPMの関係が成立しているなら、$\alpha _P$はゼロとなっているはずです。
-この$\alpha $を調べることで、CAPMの検証が可能となります。
+CAPMの式と比較すると、切片である$\alpha_P$が追加されていることが分かります。
+もし証券市場にCAPMの関係が成立しているなら、$\alpha_P$はゼロとなっているはずです。
+この$\alpha_P$を調べることで、CAPMの検証が可能となります。
 
+ここでは、**時系列回帰**(time series regression)を使って、市場ポートフォリオの超過リターンを説明変数として、各ポートフォリオの超過リターンを説明するモデルを推定します。
+`full_join()`関数で、`factor_data`と`ME_sorted_portfolio`を`month_ID`をキーに結合しています。
+`full_join()`関数を使うことで、両方のデータセットに存在する`month_ID`の行は結合され、どちらか一方のデータセットにしか存在しない`month_ID`の行もすべて抽出されます。
+最後に、`dplyr::relocate()`関数を用いて、`R_Me`を最終列に移動しています。
 
-
-ここでは、**時系列回帰**を使って、市場ポートフォリオの超過リターンを説明変数として、各ポートフォリオの超過リターンを説明するモデルを推定します。
-
-
-```{r}
-# ch06_16: 市場ポートフォリオの超過リターンを追加
-
+```{r ch06_15, filename="超過リターンを追加"}
 ME_sorted_portfolio <- factor_data |>
   select(-R_F) |> # 無リスク金利は重複するので結合前に削除
   full_join(ME_sorted_portfolio, by = "month_ID") |> # month_IDをキーに
-  select(-R_Me, R_Me) # R_Meを最終列へ移動
+  relocate(R_Me, .after=last_col()) # R_Meを最終列へ移動
+
+glimpse(ME_sorted_portfolio)
 ```
 
+このようにして、`ME_sorted_portfolio`には、月次超過リターン`Re`と市場ポートフォリオの月次超過リターン`R_Me`の両方が含まれることになります。
+この`ME_sorted_portfolio`を用いて、CAPMの式を線形回帰モデルで表現し、推定してみましょう。
+まず、時価総額が最小のポートフォリオ(`ME_rank10 == 1`)を抽出し、`lm()`関数で線形回帰を行います。
 
-```{r}
-# ch06_17: 時系列回帰 (1)
 
+```{r ch06_17, filename="時系列回帰"}
 ME_sorted_portfolio |>
-  filter(ME_rank10 == 1) |> # 時価総額が最小のポートフォリオを抽出
-  lm(Re ~ R_Me, data = _) |> # .を使ってlm()関数の第二引数にデータを代入
+  filter(ME_rank10 == 1) |> # 時価総額が最小グループ
+  lm(Re ~ R_Me, data = _) |> # 線形回帰
   tidy() # 線形回帰の結果をtidy()関数でデータフレームに変換
 ```
 
 
-```{r}
-# ch06_18: 時系列回帰 (2)
-
+```{r ch06_18, filename="時系列回帰をグラフで可視化"}
 ME_sorted_portfolio |>
   filter(ME_rank10 == 1) |>
-  ggplot(aes(x = R_Me, y = Re)) + # aes()関数はggplot()関数の中にも代入可能
-  geom_point() +  # geom_point()関数と次のgeom_smooth()関数で共通のaes()関数を受け取る
+  ggplot(aes(x = R_Me, y = Re)) +
+  geom_point() + 
   geom_smooth(method = "lm", color = "black") +
-  labs(x = "Excess Return of Market Portfolio", y = "Excess Return of Small Size Portfolio") +
-  theme_classic()
+  labs(x = "マーケットポートフォリオの超過リターン", y = "小規模株式ポートフォリオの超過リターン") +
+  mystyle
 ```
 
 #### ポートフォリオごとの回帰
 
 ```{r ch06_19, filename="CAPMの実証的な検証 (1)"}
+CAPM_results <- ME_sorted_portfolio |>
+  dplyr::reframe(
+    .by = ME_rank10, # ME_rank10ごとにグループ化
+    broom::tidy(
+      lm(Re ~ R_Me, data = pick(everything()))
+    )
+  )
+glimpse(CAPM_results)
+```
+
+```{r}
+#| eval: false
 # 推定結果を保存するために空のリストを準備
 CAPM_results <- vector("list", 10)
 
@@ -495,12 +509,27 @@ for(i in 1:10){
 
 
 ```{r ch06_20, filename="CAPMの実証的な検証 (2)"}
+#| eval: false
 # リストを一つのデータフレームにまとめる
 CAPM_results <- do.call(rbind, CAPM_results)
 ```
 
 
-```{r ch06_21, filename="グループごとの線形回帰 (1) lapply()関数を使う場合"}
+```{r ch06_21, filename="グループごとの線形回帰"}
+# 推定関数
+estimate_CAPM <- function(return_data) {
+  stats::lm(Re ~ R_Me, data = return_data) |> 
+    broom::tidy()
+}
+
+# split と map_dfr による一括処理（結合まで自動化）
+CAPM_results_by_purrr <- ME_sorted_portfolio |>
+  group_split(ME_rank10) |>
+  map_dfr(estimate_CAPM, .id = "ME_rank10") # purrr::map_dfr()
+```
+
+```{r}
+#| eval: false
 ME_sorted_portfolio_splitted <- split(ME_sorted_portfolio, ME_sorted_portfolio$ME_rank10) # 元データをME_rank10の値に応じて十個のデータフレームに分割
 
 estimate_CAPM <- function(return_data) { # リターン・データを受け取り, CAPMの推定結果をデータフレームで返す関数を準備
@@ -514,7 +543,21 @@ CAPM_results_by_lapply <- lapply(ME_sorted_portfolio_splitted, estimate_CAPM)
 ```
 
 
-```{r ch06_22, filename="グループごとの線形回帰 (2) map()関数を使う場合"}
+
+```{r ch06_22, filename="グループごとの線形回帰 (2)"}
+CAPM_results_nested <- ME_sorted_portfolio |>
+  nest(.by = ME_rank10) |> 
+  mutate(
+    # ネイティブ・ラムダ式 \(x) を用いて、各データフレームに lm と tidy を適用
+    CAPM_summary = purrr::map(data, \(df) broom::tidy(lm(Re ~ R_Me, data = df)))
+  ) |>
+  select(-data) |>
+  unnest(cols = CAPM_summary)
+CAPM_results_nested
+```
+
+```{r}
+#| eval: false
 ME_sorted_portfolio |>
   nest(.by = ME_rank10) |> # 【修正1】ここでグループ化を指定して畳み込む
   mutate(
@@ -531,12 +574,10 @@ ME_sorted_portfolio |>
 
 ```{r ch06_23, filename="CAPMアルファの可視化"}
 CAPM_results |>
-  filter(term == "(Intercept)") |> # 定数項に関する推定結果のみを抽出
+  dplyr::filter(term == "(Intercept)") |> # 定数項に関する推定結果のみを抽出
   mutate(
-    # ME_rank10を整数型からファクター型に
     ME_rank10 = as.factor(ME_rank10)
   ) |>
-  # 横軸をME_rank10, 縦軸をCAPM_alphaとする棒グラフ
   ggplot() + aes(x = ME_rank10, y = estimate) +
   geom_col() + # 棒グラフ
   geom_hline(yintercept = 0) + # y = 0の直線を追加

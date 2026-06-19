@@ -2,14 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Soichi Matsuura">
 <title>4&nbsp; 財務データの取得と可視化 – 実証会計・ファイナンスの勉強ノート</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,18 +67,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./img/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8d3ca4b06cbe525a365245b9186fe341.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-9ad9de00ec9496f4fef5089063f8ffc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-8d3ca4b06cbe525a365245b9186fe341.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-9b98439fbe4ae1eb56616ecad9777bd3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-0907bcc31431a373ae96853dfe16c1d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -977,19 +975,19 @@ Note
 <span id="cb34-2"><a href="#cb34-2"></a>height <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">170</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
 <span id="cb34-3"><a href="#cb34-3"></a><span class="fu">print</span>(height)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 168.0998 167.2074 175.2934 170.1780 175.7760 165.7054 167.5840 163.5061
-  [9] 162.2889 170.5934 169.4860 168.9629 173.9114 166.8987 176.0961 175.0186
- [17] 162.1229 167.7481 175.1391 166.3240 174.6627 171.9215 160.4479 166.9179
- [25] 164.3221 167.7833 164.1626 172.9629 166.5982 172.6906 171.1087 170.9019
- [33] 172.3058 174.1167 168.1801 163.9395 160.6684 161.8761 169.8978 166.3974
- [41] 154.8738 167.1933 174.1750 168.0432 170.3742 176.4389 168.0213 172.5069
- [49] 173.0671 163.7838 173.3716 178.4474 177.6317 170.5480 180.3748 167.9153
- [57] 167.5872 170.5150 168.6871 173.1451 168.7604 170.2474 167.5131 173.3920
- [65] 168.7909 175.6617 170.1251 168.2354 166.5462 157.8068 177.6935 170.8805
- [73] 173.6266 174.8651 169.8313 179.5885 157.9476 170.5540 181.4779 168.5543
- [81] 163.2543 176.7032 170.7151 168.6669 162.6942 172.3306 160.2707 157.7050
- [89] 169.0005 167.3766 170.3048 172.3180 170.6200 163.9780 166.1064 175.8703
- [97] 163.2672 167.9341 170.2299 177.4701</code></pre>
+<pre><code>  [1] 165.6501 164.6953 172.3324 172.3389 169.5559 169.8298 172.6653 165.8277
+  [9] 165.9394 171.8562 164.0687 168.8142 172.9868 172.5511 170.7812 168.9409
+ [17] 162.8153 177.1758 176.0888 168.2036 169.5928 174.1667 169.9959 163.9285
+ [25] 165.1858 162.8039 168.9907 175.3588 171.7358 175.6663 167.8883 167.8990
+ [33] 175.4725 167.9132 166.7830 167.2803 165.9804 171.4927 172.1801 174.7852
+ [41] 170.7580 168.3184 174.1223 173.3305 170.0200 169.2158 171.1829 163.6158
+ [49] 161.2569 165.3530 177.5611 163.3051 163.3575 172.4074 169.3534 158.1339
+ [57] 170.9202 168.3143 166.9693 171.0622 168.7590 166.0696 174.7843 171.1020
+ [65] 176.0543 169.7163 173.1669 171.5255 173.7097 166.9256 167.3082 164.4577
+ [73] 167.3535 167.1467 174.0388 172.1354 164.7153 162.2318 174.8636 177.7922
+ [81] 172.4090 171.2126 167.8126 170.8377 161.7694 173.6519 168.5042 167.2457
+ [89] 171.3851 166.0009 169.0913 172.9589 179.7613 158.5658 166.7944 164.6645
+ [97] 167.5527 165.2087 169.9109 170.9231</code></pre>
 </div>
 </div>
 <p>100個のデータを眺めていても、なかなか特徴をつかめませんよね。そこでこの身長という連続データを5センチごとの区間に分けます。たとえば、165cm以上、170cm未満の区間には何人の生徒がいるのか、170cm以上、175cm未満の区間には何人の生徒がいるのか、というように区間ごとのデータの個数を数えます。 このとき、区間の幅を5cmにするか、10cmにするか、20cmにするか、ということは、データの特徴をつかむ上で重要なことです。区間の幅を大きくすると、データの特徴がざっくりとしかつかめません。一方、区間の幅を小さくすると、データの特徴が細かくつかめますが、データの個数が少ない区間が多くなり、データの特徴をつかむのに時間がかかります。 やってみましょう。</p>
