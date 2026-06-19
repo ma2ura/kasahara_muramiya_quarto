@@ -47,3 +47,13 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+/data/
+/.quarto/
+/chapter*/
+/img/
+
+finalversion.pdf
+shinyアプリの挑戦.r
+chapter03_02.html
+**/*.quarto_ipynb
