@@ -29,7 +29,7 @@ CAPMとFama−Frenchの3ファクターモデルの実装を目指す。
 
 ### 市場ポートフォリオの構築
 
-**市場ポートフォリオ**(market portfolio)とは，**市場に存在する全ての危険資産を時価総額比率で保有したポートフォリオ**をいいます(2章を参照)。
+**市場ポートフォリオ**(market portfolio)とは，**市場に存在する全ての危険資産を時価総額比率で保有したポートフォリオ**をいいます([2章を参照](chapter02.qmd#chap02_CAPM))。
 株価データを取得できる上場企業の株式に限定して、時価総額でウェイトづけた市場インデックスを作成します。
 
 :::{.column-margin}
@@ -172,9 +172,9 @@ $$
 factor_data <- monthly_data |>
   filter(month_ID >= 13) |> # 2016以降のデータを抽出
   summarise(
+    .by = month_ID, # 月次でグループ化
     R_F = R_F[1], # 無リスク金利を抽出
-    R_M = sum(w_M * R, na.rm = TRUE), # 月次リターンの加重平均
-    .by = month_ID
+    R_M = sum(w_M * R, na.rm = TRUE) # 月次リターンの加重平均
   ) |>
   mutate(R_Me = R_M - R_F) # 月次超過リターン変数を作成
 ```
@@ -367,29 +367,24 @@ BEME_sorted_portfolio |>
 
 ```{r ch06_15b, filename="BPRに基づくポートフォリオ・ソート（時価総額加重の場合）"}
 # 中盤で保有比率wと月次超過リターンReを計算している箇所を除けば,ch06_15aと全く同じ
-annual_data <- annual_data |>
-  mutate(
-    lagged_BEME = lagged_BE / lagged_ME
-    ) |>
-  mutate(
-    BEME_rank10 = as.factor(ntile(lagged_BEME, 10)),
-    .by = year
-    )
-
 BEME_sorted_portfolio <- annual_data |>
+  mutate(
+    .by = year, # 年度ごとに
+    lagged_BEME = lagged_BE / lagged_ME, # 簿価時価比率を計算
+    BEME_rank10 = ntile(lagged_BEME, 10) # 10個のグループに分類
+  ) |>
   select(year, firm_ID, BEME_rank10, lagged_ME) |>
-  full_join(monthly_data, by = c("year", "firm_ID")) |>
+  inner_join(monthly_data, by = c("year", "firm_ID")) |>
   drop_na() |>
   mutate(
-    # 各ポートフォリオで保有比率を計算
-    w = lagged_ME / sum(lagged_ME),
-    .by = c(month_ID, BEME_rank10)
+    .by = c(month_ID, BEME_rank10), # 月次とBEME_rank10でグループ化
+    w = lagged_ME / sum(lagged_ME) # 時価総額加重のウェイトを計算
   ) |>
   summarize(
-    # 時価総額加重の月次超過リターンを計算
-    Re = sum(w * Re),
-    .by = c(month_ID, BEME_rank10)
+    .by = c(month_ID, BEME_rank10), # 月次とBEME_rank10でグループ化
+    Re = weighted.mean(Re, lagged_ME) # 時価総額加重平均で月次超過リターンを計算
   )
+
 
 BEME_sorted_portfolio |>
   summarize(
@@ -436,12 +431,12 @@ $$
 :::
 
 
-このCAPMを回帰式で表現すると次のようになります。
+このCAPMを単回帰式で表現すると次のようになります。
 
 $$
 R_{i,t}^e = \beta_i \times R_{M,t}^e + \varepsilon_{i,t}
 $$
-ここで、$R^e_{i,t} = R_{i,t} - R_{F,t}$ である。
+ここで、$R^e_{i,t} = R_{i,t} - R_{F,t}$で計算されます。
 つまり、<span class="markp">$t$ 時点における証券$i$の実現超過リターン$R_{i,t}^e$は、$t$時点における市場ポートフォリオの実現超過リターン$R_{M,t}^e$と、証券$i$の市場ポートフォリオに対するベータ係数$\beta_i$の積に、誤差項$\varepsilon_{i,t}$を加えたもの</span>として表現されます。
 
 また、誤差項$\varepsilon_{i,t}$に関して次の仮定を置きます。
@@ -450,25 +445,26 @@ $$
 - $E[\varepsilon_{i,t}] = 0$
 - $E[R_{M,t}^e , \ \varepsilon_{i,t} ] = 0$
 
+回帰分析における最小二乗法の仮定と同じです。
 こうすることで、CAPM式を線形回帰モデルで表現できるので、最小二乗法による$\beta_i$の推定が可能となります。
 
 ### 時系列回帰
 
 CAPM式は任意の$i$証券で成立するモデルのため、ポートフォリオにも応用できます。
-つまりあるポートフォリオの超過リターンを、市場ポートフォリオの超過リターンと、そのポートフォリオに対するベータ係数の積で説明することができます。
+つまりあるポートフォリオの超過リターン$R_{P,t}^e$を、市場ポートフォリオの超過リターン$R_{M,t}^e$と、そのポートフォリオに対するベータ係数$\beta_P$の積で説明することができます。
 
 $$
 R_{P,t}^e = \alpha _P + \beta_P R_{M,t}^e + \varepsilon_{P,t}
 $$
 
-CAPMの式と比較すると、切片である$\alpha_P$が追加されていることが分かります。
-もし証券市場にCAPMの関係が成立しているなら、$\alpha_P$はゼロとなっているはずです。
+CAPMの式と比較すると、<span class="markp">切片である$\alpha_P$が追加されている</span>ことが分かります。
+<span class="marky">もし証券市場にCAPMの関係が成立しているなら、$\alpha_P$はゼロとなっているはずです。</span>
 この$\alpha_P$を調べることで、CAPMの検証が可能となります。
 
 ここでは、**時系列回帰**(time series regression)を使って、市場ポートフォリオの超過リターンを説明変数として、各ポートフォリオの超過リターンを説明するモデルを推定します。
 `full_join()`関数で、`factor_data`と`ME_sorted_portfolio`を`month_ID`をキーに結合しています。
 `full_join()`関数を使うことで、両方のデータセットに存在する`month_ID`の行は結合され、どちらか一方のデータセットにしか存在しない`month_ID`の行もすべて抽出されます。
-最後に、テキストの方法とは異なりますが、dplyr1.0.0から追加された`dplyr::relocate()`関数を用いて、`R_Me`を最終列に移動しています。
+最後に、テキストの方法とは異なりますが、`dplyr1.0.0`から追加された`dplyr::relocate()`関数を用いて、`R_Me`を最終列に移動しています。
 
 ```{r ch06_15, filename="超過リターンを追加"}
 ME_sorted_portfolio <- factor_data |>
@@ -512,155 +508,180 @@ ME_sorted_portfolio |>
 同時に、`pick()`関数を用いることで、グループごとのデータフレームをまとめて渡すことができます。
 
 :::{.column-margin}
+`dplyr::reframe()`関数は、グループごとにデータフレームを作成する関数です。
+`dplyr::summarise()`関数は、グループごとに要約統計量などを計算する関数で、グループごとに1つの数値を返すことを想定しているのに対し、
+`dplyr::reframe()`関数は、グループごとに長さが2以上のベクトルを返すことができる関数です。
+:::
+
+<!---
+:::{.column-margin}
 `pick()`は列を選んで新しいデータフレーム(tibble)を作る関数です。
 たとえば、`pick(Re, R_Me)`は、`tibble(Re = Re, R_Me = R_Me)`のように、`Re`と`R_Me`の列を持つ新しいデータフレームを作ります。
 `pick(everything())`は、すべての列を持つ新しいデータフレームを作ります。
 :::
+--->
 
 ```{r ch06_19, filename="CAPMの実証的な検証 (1)"}
 CAPM_results <- ME_sorted_portfolio |>
   dplyr::reframe(
     .by = ME_rank10, # ME_rank10ごとにグループ化
-    broom::tidy( # lm()関数の結果をデータフレームに変換
-      lm(Re ~ R_Me, data = dplyr::pick(everything()))
+    broom::tidy( # lm()関数の結果をtidy()関数でデータフレームに変換
+      lm(Re ~ R_Me, data = cur_data())
     )
   )
 glimpse(CAPM_results)
 ```
 
-
-```{r ch06_21, filename="グループごとの線形回帰"}
-#| eval: false
-# 推定関数
-estimate_CAPM <- function(return_data) {
-  stats::lm(Re ~ R_Me, data = return_data) |> 
-    broom::tidy()
-}
-
-# split と map_dfr による一括処理（結合まで自動化）
-CAPM_results_by_purrr <- ME_sorted_portfolio |>
-  group_split(ME_rank10) |>
-  map_dfr(estimate_CAPM, .id = "ME_rank10") # purrr::map_dfr()
-```
-
-```{r}
-#| eval: false
-ME_sorted_portfolio_splitted <- split(ME_sorted_portfolio, ME_sorted_portfolio$ME_rank10) # 元データをME_rank10の値に応じて十個のデータフレームに分割
-
-estimate_CAPM <- function(return_data) { # リターン・データを受け取り, CAPMの推定結果をデータフレームで返す関数を準備
-  lm_results <- lm(Re ~ R_Me, data = return_data)
-  tidied_lm_results <- tidy(lm_results)
-}
-
-CAPM_results_by_lapply <- lapply(ME_sorted_portfolio_splitted, estimate_CAPM)
-```
-
-
+:::{.column-margin}
+`cur_data()`関数は、現在のグループのデータフレームを返す関数です。
+`dplyr::reframe()`関数の中で、グループごとに回帰分析を行うために、`lm()`関数に渡すデータフレームを指定する必要がありますが、そのために`cur_data()`関数を用いて、現在のグループのデータフレームを渡しています。
+::: 
 
 
 
 #### CAPMアルファ
 
 ```{r ch06_23, filename="CAPMアルファの可視化"}
-CAPM_results |>
-  dplyr::filter(term == "(Intercept)") |> # 定数項に関する推定結果のみを抽出
-  mutate(
-    ME_rank10 = as.factor(ME_rank10)
-  ) |>
-  ggplot() + aes(x = ME_rank10, y = estimate) +
-  geom_col() + # 棒グラフ
-  geom_hline(yintercept = 0) + # y = 0の直線を追加
-  labs(x = "ME Rank", y = "CAPM alpha") +
-  scale_y_continuous(limits = c(-0.003, 0.013)) +
-  mystyle
+alpha_plot_data <- CAPM_results |>
+    dplyr::filter(term == "(Intercept)") |> # 定数項に関する推定結果のみを抽出
+    mutate(
+      ME_rank10 = factor(ME_rank10)
+    )
+alpha_plot_data |>     
+    ggplot() + aes(x = ME_rank10, y = estimate) +
+    geom_col() + # 棒グラフ
+    geom_hline(yintercept = 0) + # y = 0の直線を追加
+    labs(x = "ME Rank", y = "CAPM alpha") +
+    scale_y_continuous(limits = c(-0.003, 0.013)) +
+    mystyle
 ```
+
+
+CAPMが成立している世界ではゼロになるはずの切片$\alpha_P$の値をグループごとにみると、時価総額の小さいグループほど$\alpha_P$が大きいことが分かり、CAPMが説明できないサイズ・プレミアムの存在が示唆されます。
 
 
 ```{r ch06_24, filename = "CAPMアルファの統計的な有意性を評価"}
 CAPM_results |>
   filter(term == "(Intercept)") |> # 定数項を抽出
-  rename(
-    # 列名を変更
+  transmute( # 必要な変数を選択して名称変更
+    ME_rank10,
     CAPM_alpha = estimate,
     p_value = p.value
   ) |>
   mutate(
-    # 統計的に有意な結果を*で強調
-    significance = cut(p_value,
-                        breaks = c(0, 0.01, 0.05, 0.1, 1),
-                        labels = c("***", "**", "*", ""),
-                        include.lowest = TRUE)
+    significance = dplyr::case_when( # 統計的に有意な結果を*で強調
+      p_value <= 0.01 ~ "***",
+      p_value <= 0.05 ~ "**",
+      p_value <= 0.10 ~ "*",
+      TRUE ~ ""
+    )
   ) |>
-  select(# 出力したい列を指定
-    ME_rank10, CAPM_alpha, p_value, significance
-  )
+  arrange(ME_rank10) # ME_rank10の順に並び替え
 ```
 
+:::{.column-margin}
+教科書では、`rename()`と`select()`を用いて、変数名を変更して必要な変数のみを残す、という方法が紹介されていますが、ここでは、`transmute()`関数を用いて、必要な変数を選択して名称変更を同時に行っています。
+`transmute()`関数は、`mutate()`関数と同様に新しい変数を作成する関数ですが、`transmute()`関数は、作成した変数のみを残す関数です。
+:::
+
+第1〜第6グループの$\alpha_P$は統計的に有意であることが分かりました。
+
+次に、証券市場線を推定してみます。
+定数項$\alpha_P$を加えた線形回帰モデルを推定します。
+このとき回帰残差の平均値がゼロとなるため、回帰式は次のようになります。
+
+$$
+\bar{R}_{P}^e = \hat{\alpha} _P + \hat{\beta}_P \times \bar{R}_{M}^e 
+$$
 
 ```{r ch06_25, filename = "証券市場線の推定"}
 ME_cross_sectional_return <- CAPM_results |>
-  filter(term == "R_Me") |> # R_Meの係数を抽出
-  rename(CAPM_beta = estimate) |> # 名称変更
-  select(ME_rank10, CAPM_beta) |> # 変数を選択
+  filter(term == "R_Me") |> # R_Meの係数ベータを抽出
+  transmute( # 必要な変数を選択して名称変更
+    ME_rank10,
+    CAPM_beta = estimate
+    ) |>
   mutate( # ファクター型に変換
-    ME_rank10 = as.factor(ME_rank10)
+    ME_rank10 = factor(ME_rank10)
   ) |>
-  # 超過リターンのデータと結合
-  full_join(
-    ME_cross_sectional_return, ., by = "ME_rank10"
+  full_join( # 超過リターンのデータと結合
+    ME_cross_sectional_return,
+    by = "ME_rank10"
   )
 
-# 平均超過リターンと平均市場ポートフォリオ超過リターンを計算
-mean_R_Me <- mean(factor_data$R_Me)
+# 平均超過リターンの平均
+mean_R_Me <- factor_data |>
+  reframe(mean_R_Me = mean(R_Me, na.rm = TRUE)) |>
+  pull()
+
 
 ggplot(ME_cross_sectional_return) +
   aes(x = CAPM_beta, y = mean_Re) +
   geom_point() + # 散布図
-  geom_abline(intercept = 0, slope = mean_R_Me) + # 証券市場線
+  geom_abline(
+    intercept = 0, 
+    slope = mean_R_Me
+  ) + # 証券市場線
   labs(x = "市場beta", y = "平均超過リターン") + #
   scale_x_continuous(limits = c(0, 1.2), expand = c(0, 0)) +
   scale_y_continuous(limits = c(0, 0.02)) + mystyle
 ```
 
+証券市場線から離れた場所に点が分布していることが分かり、CAPMが説明できないサイズ・プレミアムの存在が示唆されます。
+
 ### Fama-Frenchの3ファクター・モデル
 
+FF3モデルは、CAPMの式に、サイズ・ファクターとバリュー・ファクターを説明変数として加えたモデルです。
+
+$$
+R_{i,t}^e = \beta_{M,i} R_{M,t}^e + \beta_{i}^{SMB} SMB_t + \beta_{i}^{HML} HML_t + \varepsilon_{i,t}
+$$
+
 #### 銘柄のランク付け
+
+前年度時価総額に基づいて銘柄を2つのグループに分類し、さらに前年度簿価時価比率に基づいて銘柄を3つのグループに分類します。
+
+まずは、前年度の時価総額に基づいて銘柄を2つのグループに分類します。
+`ntile()`関数を用いて、前年度の時価総額`lagged_ME`を2つのグループに分類し、`as.factor()`関数で因子型に変換して`ME_rank2`を作成します。
+
+:::{.column-margin}
+`ntile()`関数は、データを指定した数のグループに分類する関数です。
+`ntile(x, n)`は、ベクトル`x`を`n`個のグループに分類し、各要素が属するグループ番号を返します。
+::: 
 
 ```{r ch06_26, filename="前年度の時価総額に基づくランク付け"}
 annual_data <- annual_data |>
   mutate(
-    # lagged_BEMEが欠損している場合は欠損扱いに
-    lagged_ME = replace(lagged_ME, is.na(lagged_BEME), NA)
-  ) |>
-  mutate(
     .by = year,
-    ME_rank2 = as.factor(ntile(lagged_ME, 2))
+    lagged_ME = if_else(is.na(lagged_BEME), NA_real_, lagged_ME),
+    ME_rank2  = factor(
+      ntile(lagged_ME, 2), # 前年度時価総額で2グループ      
+      levels = c(1, 2),
+      labels = c("Small", "Big")
+      )
   )
-```
+``` 
 
 ```{r ch06_27, filename = "簿価時価比率に基づくランク付け (1)"}
 annual_data |>
-  mutate(
-    # 年度ごとに簿価時価比率のパーセンタイル順位を計算
-    BEME_percent_rank = percent_rank(lagged_BEME),
-    .by = year
-  )
+  mutate( # 年度ごとに簿価時価比率のパーセンタイル順位を計算
+    .by = year,
+    BEME_percent_rank = percent_rank(lagged_BEME)
+  ) |> head()
 ```
 
 
 ```{r ch06_28, filename = "簿価時価比率に基づくランク付け (2)"}
 annual_data <- annual_data |>
   mutate(
-    # 年度ごとに簿価時価比率のパーセンタイル順位を計算
+    .by = year,
     BEME_percent_rank = percent_rank(lagged_BEME),
-    .by = year
-  ) |>
-  mutate(
-    # BEME_percent_rankの値に応じて1から3までBEME_rank3の値を定義
-    BEME_rank3 = cut(BEME_percent_rank,
-                      breaks = c(0, 0.3, 0.7, 1),
-                      labels = c(1, 2, 3),
-                      include.lowest = TRUE)
+    BEME_rank3 = cut(
+      BEME_percent_rank,
+      breaks = c(0, 0.3, 0.7, 1),
+      labels = c("Low", "Mid", "High"),
+      include.lowest = TRUE
+    )
   )
 ```
 
@@ -672,19 +693,21 @@ annual_data <- annual_data |>
     # ME_rank2とBEME_rank3の組合せで, ファクター型の変数FF_portfolio_typeを定義
     FF_portfolio_type = interaction(ME_rank2, BEME_rank3)
     )
+annual_data$FF_portfolio_type |> table()
 ```
 
 ```{r ch06_30, filename = "Size-BE/MEポートフォリオへの分類 (2)"}
 annual_data <- annual_data |>
-  mutate(
-    # ファクター型の変数
-    FF_portfolio_type = fct_recode(FF_portfolio_type,
-                                        SL = "1.1",
-                                        BL = "2.1",
-                                        SN = "1.2",
-                                        BN = "2.2",
-                                        SH = "1.3",
-                                        BH = "2.3")
+  mutate(     # ファクター型の変数
+    FF_portfolio_type = fct_recode(
+      FF_portfolio_type,
+      SL = "Small.Low",
+      BL = "Big.Low",
+      SN = "Small.Mid",
+      BN = "Big.Mid",
+      SH = "Small.High",
+      BH = "Big.High"
+    )
   )
 ```
 
